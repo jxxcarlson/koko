@@ -12,7 +12,7 @@ defmodule Koko.Web.SessionController do
   end
 
   def create(conn, %{"session" => session_params}) do
-    with {:ok, %Session{} = session} <- Authentication.create_session(session_params) do
+    with {:ok, session} <- Authentication.create_session(session_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", session_path(conn, :show, session))

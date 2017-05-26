@@ -152,18 +152,20 @@ defmodule Koko.Authentication do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_session(attrs \\ %{}) do
-    user_id = attrs.user_id
-    username = attrs.username
+  def create_session(params \\ %{}) do
+      # %{"user_id"=> user_id, "username" => username} = params
+      user_id = params[:user_id] || params["user_id"]
+      username = params[:username] || params["username"]
     cond do
       user_id == nil ->
-        {:error, "User id is nil"}
+        {:error, 422}
       username == nil ->
-        {:error, "Username is nil"}
-      true ->  case Koko.Authentication.Token.get(user_id, username) do
+        {:error, 422}
+      true ->
+        case Koko.Authentication.Token.get(user_id, username) do
         {:ok, generated_token} ->
           %Session{}
-            |> Session.changeset(%{attrs | token: generated_token})
+            |> Session.changeset(%{username: username, user_id: user_id, token: generated_token})
             |> Repo.insert()
         {:error, _ } ->
           {:error, "Could not create session"}

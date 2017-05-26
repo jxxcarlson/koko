@@ -81,7 +81,6 @@ defmodule Koko.AuthenticationTest do
     # @invalid_attrs %{}
 
     # @valid_attrs %{token: "some token"}
-    @update_attrs %{token: "some updated token"}
     @invalid_attrs %{token: nil, user_id: nil, username: nil}
 
     def session_fixture(attrs \\ %{}) do
@@ -95,7 +94,7 @@ defmodule Koko.AuthenticationTest do
 
 
     test "list_sessions/0 returns all sessions" do
-      session = session_fixture()
+      session = session_fixture(@valid_attrs)
       assert Authentication.list_sessions() == [session]
     end
 

@@ -8,8 +8,8 @@ defmodule Koko.Authentication.Token do
     """
     def get(user_id, username) do
       cond do
-        user_id == nil -> {:error, "user id is nil"}
-        username == nil -> {:error, "username is nil"}
+        user_id == nil -> {:error, 400}
+        username == nil -> {:error, 400}
         true ->
           %{"user_id" => user_id, "username" => username}
           |> token
