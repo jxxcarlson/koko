@@ -1,3 +1,0 @@
-# Koko
-
-**TODO: Add description**
