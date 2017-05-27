@@ -1,0 +1,29 @@
+== Documents
+
+GET /documents:: Return list of documents, e.g.,
+  `{"documents":[{"id": 1, "title":"Test", ... },{"id": 2, "title":"Magick",...}]}``
+
+GET /documents?title=magick:: Return list of documents, satisfying the search conditions.
+  #NOT YET IMPLEMENTED# Only documents which are public, have the current user
+  as author, or are authorized by the access control list are returned.  The access
+  control list (to be implemented)
+  is a table with columns (document_id, permissions).  Access to read document
+  7 is granted to user 5 if an entry like `(7, [9, 5, ..], ["read", ..])`  is in the table.
+
+GET /documents?title=magick&tag=hobbies::  #Searches can contain more than one term#
+
+GET /documents?random=20::  #Return 20 random documents#
+
+GET /documents?author=jxxcarlson&random=10::  #Searches can ask for a random selection#
+
+GET /documents/:id:: return the document with the given id #OR IDENTIFIER#
+
+== Users
+
+GET /users:: List users.  URL is  `/api/users`
+
+POST /users:: Create user.  URL is `/api/users`, body of request is like
+key = user, value = {"username": "jxxcarlson", "password": "lobo4795","name": "James Carlson","email": "
+jxxcarlson@gmail.com", "blurb": "whatever"}
+
+DELETE /users/17:: Delete user 17.

@@ -20,7 +20,7 @@ defmodule Koko.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Koko.Application, []},
-     extra_applications: [:logger, :runtime_tools, :guardian]]
+     extra_applications: [:logger, :runtime_tools]]
   end
 
   # Specifies which paths to compile per environment.
@@ -38,8 +38,7 @@ defmodule Koko.Mixfile do
      {:json, "~> 1.0"},
      {:joken, "~> 1.1"},
      {:secure_random, "~> 0.2"},
-     { :uuid, "~> 1.1" },
-     {:guardian, "~> 0.14"}]
+     { :uuid, "~> 1.1" }]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
