@@ -51,7 +51,7 @@ defmodule Koko.Authentication do
   """
   def create_user(attrs \\ %{}) do
     %User{}
-    |> User.changeset(attrs)
+    |> User.registration_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -153,9 +153,9 @@ defmodule Koko.Authentication do
 
   """
   def create_session(params \\ %{}) do
-      # %{"user_id"=> user_id, "username" => username} = params
-      user_id = params[:user_id] || params["user_id"]
-      username = params[:username] || params["username"]
+       %{"user_id"=> user_id, "username" => username} = params
+      # user_id = get_value_of_key(:user_id, params) #params[:user_id] || params["user_id"]
+      # username = get_value_of_key(:username, params) # params[:username] || params["username"]
     cond do
       user_id == nil ->
         {:error, 422}
@@ -173,7 +173,6 @@ defmodule Koko.Authentication do
     end
 
   end
-
 
 
   @doc """

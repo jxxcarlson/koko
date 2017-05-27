@@ -23,10 +23,7 @@ defmodule Koko.Authentication.Token do
 
     end
 
-    @doc """
-    Check to see that the token's signed user_id
-    is the same as user_id.
-    """
+
     defp validate(tok, user_id) do
       tok
       |> token
@@ -47,13 +44,11 @@ defmodule Koko.Authentication.Token do
     is the same as user_id.
     """
     def authenticated(token, user_id) do
-      result = Koko.Authentication.Token.validate(token, user_id)
-      result.error == nil
+      validate(token, user_id).error == nil
     end
 
     def authenticated(token) do
-      result = Koko.Authentication.Token.validate(token)
-      result.error == nil
+      validate(token).error == nil
     end
 
 end

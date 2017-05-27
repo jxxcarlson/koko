@@ -19,15 +19,15 @@ defmodule Koko.Web.UserControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, user_path(conn, :index)
-    assert json_response(conn, 200)["data"] == []
+    assert json_response(conn, 200)["users"] == []
   end
 
   test "creates user and renders user when data is valid", %{conn: conn} do
     conn = post conn, user_path(conn, :create), user: @create_attrs
-    assert %{"id" => id} = json_response(conn, 201)["data"]
+    assert %{"id" => id} = json_response(conn, 201)["user"]
 
     conn = get conn, user_path(conn, :show, id)
-    assert json_response(conn, 200)["data"] == %{
+    assert json_response(conn, 200)["user"] == %{
       "id" => id,
       "admin" => true,
       "blurb" => "some blurb",
@@ -45,10 +45,10 @@ defmodule Koko.Web.UserControllerTest do
   test "updates chosen user and renders user when data is valid", %{conn: conn} do
     %User{id: id} = user = fixture(:user)
     conn = put conn, user_path(conn, :update, user), user: @update_attrs
-    assert %{"id" => ^id} = json_response(conn, 200)["data"]
+    assert %{"id" => ^id} = json_response(conn, 200)["user"]
 
     conn = get conn, user_path(conn, :show, id)
-    assert json_response(conn, 200)["data"] == %{
+    assert json_response(conn, 200)["user"] == %{
       "id" => id,
       "admin" => false,
       "blurb" => "some updated blurb",

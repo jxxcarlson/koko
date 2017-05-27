@@ -6,9 +6,9 @@ defmodule Koko.AuthenticationTest do
   describe "users" do
     alias Koko.Authentication.User
 
-    @valid_attrs %{admin: true, blurb: "some blurb", email: "yada@foo.io", name: "Yada T. Urdik", password_hash: "some password_hash", username: "yada"}
-    @update_attrs %{admin: false, blurb: "some updated blurb", email: "some updated email", name: "some updated name", password_hash: "some updated password_hash", username: "some updated username"}
-    @invalid_attrs %{admin: nil, blurb: nil, email: nil, name: nil, password_hash: nil, username: nil}
+    @valid_attrs %{"admin" => true, "blurb" => "some blurb", "email" => "yada@foo.io", "name" => "Yada T. Urdik", "password_hash" => "some password_hash", "username" => "yada"}
+    @update_attrs %{"admin" => false, "blurb" => "whatever", "email" => "yada@foo.io", "name" => "Yadem V. Aafik", "password_hash" => "s7^%g$l-9+", "username" => "aday"}
+    @invalid_attrs %{"admin" => nil, "blurb" => nil, "email" =>  nil, "name" => nil, "password_hash" =>  nil, "username" => nil}
 
     def user_fixture(attrs \\ %{}) do
       {:ok, user} =
@@ -48,11 +48,11 @@ defmodule Koko.AuthenticationTest do
       assert {:ok, user} = Authentication.update_user(user, @update_attrs)
       assert %User{} = user
       assert user.admin == false
-      assert user.blurb == "some updated blurb"
-      assert user.email == "some updated email"
-      assert user.name == "some updated name"
-      assert user.password_hash == "some updated password_hash"
-      assert user.username == "some updated username"
+      assert user.blurb == "whatever"
+      assert user.email == "yada@foo.io"
+      assert user.name == "Yadem V. Aafik"
+      assert user.password_hash == "s7^%g$l-9+"
+      assert user.username == "aday"
     end
 
     test "update_user/2 with invalid data returns error changeset" do
@@ -77,11 +77,11 @@ defmodule Koko.AuthenticationTest do
     alias Koko.Authentication.Session
 
    # user = user_fixture()
-    @valid_attrs %{user_id: 22, username: "jfoo", token: "abc123"}
+    @valid_attrs %{"user_id" => 22, "username" => "jfoo", "token" => "abc123"}
     # @invalid_attrs %{}
 
     # @valid_attrs %{token: "some token"}
-    @invalid_attrs %{token: nil, user_id: nil, username: nil}
+    @invalid_attrs %{"token" => nil, "user_id" => nil, "username" => nil}
 
     def session_fixture(attrs \\ %{}) do
       {:ok, session} =
