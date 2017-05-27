@@ -19,19 +19,20 @@ defmodule Koko.Authentication.User do
   @doc false
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:name, :username, :email, :password_hash, :admin, :blurb])
-    |> validate_required([:name, :username, :email, :password_hash, :admin, :blurb])
+    |> cast(attrs, [:name, :username, :email, :password, :password_hash, :admin, :blurb])
+    |> validate_required([:name, :username, :email, :password])
   end
 
   def registration_changeset(%User{} = user, params \\ :empty) do
       user
       |> changeset(params)
       |> cast(params, ~w(password))
-      |> validate_length(:password, min: 6)
+      #|> validate_length(:password, min: 6)
       |> put_password_hash
     end
 
     defp put_password_hash(changeset) do
+
       case changeset do
         %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
           put_change(changeset, :password_hash, Comeonin.Bcrypt.hashpwsalt(pass))
