@@ -4,8 +4,9 @@ defmodule Koko.Authentication do
   """
 
   import Ecto.Query, warn: false
-  alias Koko.Repo
+  import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
 
+  alias Koko.Repo
   alias Koko.Authentication.User
 
   @doc """
@@ -153,26 +154,36 @@ defmodule Koko.Authentication do
 
   """
   def create_session(params \\ %{}) do
-       %{"user_id"=> user_id, "username" => username} = params
+       %{"email"=> email, "password" => password} = params
+       IO.puts "in auth, create_session:"
+       IO.puts "email: #{email}"
+       IO.puts "password: #{password}"
+       IO.puts "-------------------------"
       # user_id = get_value_of_key(:user_id, params) #params[:user_id] || params["user_id"]
       # username = get_value_of_key(:username, params) # params[:username] || params["username"]
-    cond do
-      user_id == nil ->
-        {:error, 422}
-      username == nil ->
-        {:error, 422}
-      true ->
-        case Koko.Authentication.Token.get(user_id, username) do
-        {:ok, generated_token} ->
-          %Session{}
-            |> Session.changeset(%{username: username, user_id: user_id, token: generated_token})
-            |> Repo.insert()
-        {:error, _ } ->
-          {:error, "Could not create session"}
-        end
+    with  {:ok, user} <- get_user(params["email"]),
+          {:ok, password} <- checkpw(params["password"], user.password_hash),
+          {:ok, token} <- Koko.Authentication.Token.get(user.id, user.username)
+    do
+      IO.puts "token: #{token}"
+      %Session{}
+        |> Session.changeset(%{username: user.username, user_id: user.id, token: token})
+        |> Repo.insert()
+      else
+        err -> {:error, "Could not create session"}
     end
-
   end
+
+  defp get_user(nil), do: {:error, "email is required"}
+  defp get_user(email), do: Repo.get_by(User, email: email)
+
+  #
+  # def login(conn, user) do
+  #   conn
+  #   |> assign(:current_user, user)
+  #   |> put_session(:user_id, user.id)
+  #   |> configure_session(renew: true)
+  # end
 
 
   @doc """

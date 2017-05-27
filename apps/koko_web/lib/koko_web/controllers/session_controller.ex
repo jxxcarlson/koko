@@ -13,6 +13,8 @@ defmodule Koko.Web.SessionController do
 
   def create(conn, %{"session" => payload}) do
     session_params = Koko.Utility.project2map(payload)
+    IO.puts "----- session_params in session controller, create ----"
+    IO.inspect session_params
     with {:ok, session} <- Authentication.create_session(session_params) do
       conn
       |> put_status(:created)

@@ -3,21 +3,22 @@ defmodule Koko.AuthenticationTest do
 
   alias Koko.Authentication
 
+  @valid_user_attrs %{"admin" => true, "blurb" => "BLURB!", "email" => "yada@foo.io",
+    "name" => "Yada T. Urdik", "username" => "yada", "password" => "abc.617.ioj"}
+
+  def user_fixture(attrs \\ %{}) do
+    {:ok, user} =
+      attrs
+      |> Enum.into(@valid_user_attrs)
+      |> Authentication.create_user()
+    user
+  end
+
   describe "users" do
     alias Koko.Authentication.User
 
-    @valid_attrs %{"admin" => true, "blurb" => "BLURB!", "email" => "yada@foo.io",
-      "name" => "Yada T. Urdik", "username" => "yada", "password" => "abc.617.ioj"}
     @update_attrs %{"admin" => false, "blurb" => "whatever", "email" => "yada@foo.io", "name" => "Yadem V. Aafik", "password_hash" => "s7^%g$l-9+", "username" => "aday"}
     @invalid_attrs %{"admin" => nil, "blurb" => nil, "email" =>  nil, "name" => nil, "password_hash" =>  nil, "username" => nil}
-
-    def user_fixture(attrs \\ %{}) do
-      {:ok, user} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Authentication.create_user()
-      user
-    end
 
     test "list_users/0 returns all users" do
       user = user_fixture()
@@ -33,7 +34,7 @@ defmodule Koko.AuthenticationTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      {:ok, %User{} = user} = Authentication.create_user(@valid_attrs)
+      {:ok, %User{} = user} = Authentication.create_user(@valid_user_attrs)
       assert user.admin == true
       assert user.blurb == "BLURB!"
       assert user.email == "yada@foo.io"
@@ -79,12 +80,15 @@ defmodule Koko.AuthenticationTest do
   describe "sessions" do
     alias Koko.Authentication.Session
 
-   # user = user_fixture()
-    @valid_attrs %{"user_id" => 22, "username" => "jfoo", "token" => "abc123"}
+    user = user_fixture(%{})
+
+    IO.puts "HHH user.id = #{user.id}"
+
+    @valid_attrs %{"email" => "yada@foo.io", "password" => "abc.617.ioj"}
     # @invalid_attrs %{}
 
     # @valid_attrs %{token: "some token"}
-    @invalid_attrs %{"token" => nil, "user_id" => nil, "username" => nil}
+    @invalid_attrs %{"email" => "yada@foo.io", "password" => "abc.617.ioj999"}
 
     def session_fixture(attrs \\ %{}) do
       {:ok, session} =
@@ -102,7 +106,7 @@ defmodule Koko.AuthenticationTest do
     end
 
     test "get_session!/1 returns the session with given id" do
-      session = session_fixture()
+      session = session_fixture(@valid_attrs)
       assert Authentication.get_session!(session.id) == session
     end
 
