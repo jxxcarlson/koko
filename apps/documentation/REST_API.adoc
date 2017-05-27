@@ -17,3 +17,13 @@ GET /documents?random=20::  #Return 20 random documents#
 GET /documents?author=jxxcarlson&random=10::  #Searches can ask for a random selection#
 
 GET /documents/:id:: return the document with the given id #OR IDENTIFIER#
+
+== Users
+
+GET /users:: List users.  URL is  `/api/users`
+
+POST /users:: Create user.  URL is `/api/users`, body of request is like
+key = user, value = {"username": "jxxcarlson", "password": "lobo4795","name": "James Carlson","email": "
+jxxcarlson@gmail.com", "blurb": "whatever"}
+
+DELETE /users/17:: Delete user 17.

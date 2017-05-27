@@ -11,7 +11,8 @@ defmodule Koko.Web.DocumentController do
     render(conn, "index.json", documents: documents)
   end
 
-  def create(conn, %{"document" => document_params}) do
+  def create(conn, %{"document" => payload}) do
+    document_params = Koko.Utility.project2map(payload)
     with {:ok, %Document{} = document} <- DocManager.create_document(document_params) do
       conn
       |> put_status(:created)
@@ -25,7 +26,9 @@ defmodule Koko.Web.DocumentController do
     render(conn, "show.json", document: document)
   end
 
-  def update(conn, %{"id" => id, "document" => document_params}) do
+  def update(conn, %{"id" => id, "document" => payload}) do
+
+    document_params = Koko.Utility.project2map(payload)
     document = DocManager.get_document!(id)
 
     with {:ok, %Document{} = document} <- DocManager.update_document(document, document_params) do

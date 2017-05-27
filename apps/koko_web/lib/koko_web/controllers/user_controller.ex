@@ -14,8 +14,8 @@ defmodule Koko.Web.UserController do
   end
 
   def create(conn, %{"user" => payload}) do
-    # user_params = Koko.Utility.project2map(payload)
-    with {:ok, %User{} = user} <- Authentication.create_user(payload) do
+    user_params = Koko.Utility.project2map(payload)
+    with {:ok, %User{} = user} <- Authentication.create_user(user_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", user_path(conn, :show, user))
@@ -28,7 +28,8 @@ defmodule Koko.Web.UserController do
     render(conn, "show.json", user: user)
   end
 
-  def update(conn, %{"id" => id, "user" => user_params}) do
+  def update(conn, %{"id" => id, "user" => payload}) do
+    user_params = Koko.Utility.project2map(payload)
     user = Authentication.get_user!(id)
 
     with {:ok, %User{} = user} <- Authentication.update_user(user, user_params) do

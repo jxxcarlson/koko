@@ -11,7 +11,8 @@ defmodule Koko.Web.SessionController do
     render(conn, "index.json", sessions: sessions)
   end
 
-  def create(conn, %{"session" => session_params}) do
+  def create(conn, %{"session" => payload}) do
+    session_params = Koko.Utility.project2map(payload)
     with {:ok, session} <- Authentication.create_session(session_params) do
       conn
       |> put_status(:created)
