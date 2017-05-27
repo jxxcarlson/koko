@@ -20,7 +20,7 @@ defmodule Koko.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Koko.Application, []},
-     extra_applications: [:logger, :runtime_tools]]
+     extra_applications: [:logger, :runtime_tools, :guardian]]
   end
 
   # Specifies which paths to compile per environment.
