@@ -36,6 +36,12 @@ defmodule Koko.Web.Endpoint do
     key: "_koko_web_key",
     signing_salt: "umzH5LAX"
 
+  plug Corsica,
+    log: [rejected: :error],
+    origins: ["http://localhost:5000", "http://localhost:8000", "https://elm-docviewer.herokuapp.com"],
+    allow_headers: ["content-type"]
+
+
   plug Koko.Web.Router
 
   @doc """
