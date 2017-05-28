@@ -6,16 +6,16 @@ defmodule Koko.Authentication.Session do
 
   schema "authentication_sessions" do
     field :token, :string
-    field :user_id, :id
+    # field :user_id, :id
 
-    timestamps()
+    # timestamps()
   end
 
   @doc false
   def changeset(%Session{} = session, attrs) do
     session
-    |> cast(attrs, [:token, :user_id])
-    |> validate_required([:token, :user_id])
+    |> cast(attrs, [:token])
+    |> validate_required([:token])
   end
 
 end

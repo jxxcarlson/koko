@@ -113,35 +113,6 @@ defmodule Koko.Authentication do
   alias Koko.Authentication.Session
 
   @doc """
-  Returns the list of sessions.
-
-  ## Examples
-
-      iex> list_sessions()
-      [%Session{}, ...]
-
-  """
-  def list_sessions do
-    Repo.all(Session)
-  end
-
-  @doc """
-  Gets a single session.
-
-  Raises `Ecto.NoResultsError` if the Session does not exist.
-
-  ## Examples
-
-      iex> get_session!(123)
-      %Session{}
-
-      iex> get_session!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_session!(id), do: Repo.get!(Session, id)
-
-  @doc """
   Creates a session.
 
   ## Examples
@@ -159,20 +130,15 @@ defmodule Koko.Authentication do
           {:ok, password} <- checkpw2(params["password"], user.password_hash),
           {:ok, token} <- Koko.Authentication.Token.get(user.id, user.username)
     do
-      old_session = Repo.get_by(Session, user_id: user.id)
-      if old_session != nil, do: Repo.delete(old_session)
-      {:ok, session} = %Session{}
-        |> Session.changeset(%{username: user.username, user_id: user.id, token: token})
-        |> Repo.insert()
-      {:ok, session, user}
+      {:ok, token, user}
     else
       {:error, message} -> {:error, message}
     end
   end
 
-  def get_user(nil), do: {:error, "email is required"}
+  defp get_user(nil), do: {:error, "email is required"}
 
-  def get_user(email) do
+  defp get_user(email) do
     user =  Repo.get_by(User, email: email)
     case user do
      nil -> {:error, "User not found"}
@@ -180,28 +146,12 @@ defmodule Koko.Authentication do
     end
   end
 
-  def checkpw2(password, password_hash) do
+  defp checkpw2(password, password_hash) do
     if  checkpw(password, password_hash) == true do
       {:ok, true}
     else
       {:error, "Incorrect password or email"}
     end
-  end
-
-  @doc """
-  Deletes a Session.
-
-  ## Examples
-
-      iex> delete_session(session)
-      {:ok, %Session{}}
-
-      iex> delete_session(session)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_session(%Session{} = session) do
-    Repo.delete(session)
   end
 
 
