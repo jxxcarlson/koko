@@ -13,6 +13,7 @@ defmodule Koko.Authentication.Token do
     NOTE: the payload is NOT encrypted and so can be read by anyone
     """
     def get(user_id, username) do
+      secret = System.get_env("KOKO_SECRET")
       cond do
         user_id == nil -> {:error, 400}
         username == nil -> {:error, 400}
@@ -20,8 +21,7 @@ defmodule Koko.Authentication.Token do
           %{"user_id" => user_id, "username" => username}
           |> token
           |> with_validation("user_id", &(&1 == user_id))
-          #|> with_validation("username", &(&1 == username))
-          |> with_signer(hs256("yumpa80937173mU,@izq0#$mcq^&!HFQlkdfjonvueo,-+"))
+          |> with_signer(hs256(secret))
           |> sign
           |> get_compact
           |> (fn token -> {:ok, token} end).()
@@ -30,17 +30,19 @@ defmodule Koko.Authentication.Token do
 
 
     defp validate(tok, user_id) do
+      secret = System.get_env("KOKO_SECRET")
       tok
       |> token
       |> with_validation("user_id", &(&1 == user_id))
-      |> with_signer(hs256("yumpa80937173mU,@izq0#$mcq^&!HFQlkdfjonvueo,-+"))
+      |> with_signer(hs256(secret))
       |> verify
     end
 
     defp validate(tok) do
+      secret = System.get_env("KOKO_SECRET")
       tok
       |> token
-      |> with_signer(hs256("yumpa80937173mU,@izq0#$mcq^&!HFQlkdfjonvueo,-+"))
+      |> with_signer(hs256(secret))
       |> verify
     end
 

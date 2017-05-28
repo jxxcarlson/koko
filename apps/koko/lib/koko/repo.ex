@@ -7,5 +7,6 @@ defmodule Koko.Repo do
   """
   def init(_, opts) do
     {:ok, Keyword.put(opts, :url, System.get_env("DATABASE_URL"))}
+    # {:ok, Keyword.put(opts, :url, "koko_dev")}
   end
 end
