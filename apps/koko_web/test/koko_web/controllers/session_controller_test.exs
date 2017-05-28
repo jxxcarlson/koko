@@ -3,8 +3,9 @@ defmodule Koko.Web.SessionControllerTest do
 
   alias Koko.Authentication
 
-  @create_attrs %{"user_id" => 15, "username" => "jerzy1239"}
-  @invalid_attrs %{"user_id" => nil, "username" => nil}
+  @create_attrs %{"email" => "yada@foo.io", "password" => "abc.123"}
+  @bad_credential_attrs %{"email" => "yada@foo.io", "password" => "abc.111"}
+  @invalid_attrs %{"email" => nil, "password" => nil}
 
   def fixture(:session) do
     {:ok, session} = Authentication.create_session(@create_attrs)

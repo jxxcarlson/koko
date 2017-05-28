@@ -37,7 +37,7 @@ defmodule Koko.Authentication.Token do
       |> verify
     end
 
-    def validate(tok) do
+    defp validate(tok) do
       tok
       |> token
       |> with_signer(hs256("yumpa80937173mU,@izq0#$mcq^&!HFQlkdfjonvueo,-+"))

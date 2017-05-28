@@ -23,7 +23,7 @@ defmodule Koko.Web.SessionController do
       conn
       |> put_status(:created)
       |> put_resp_header("location", session_path(conn, :show, session))
-      # |> assign(:current_user, user) ##? do we need this?
+      #  |> assign(:current_user, user) ##? do we need this?
       |> render("show.json", session: session)
     end
   end
