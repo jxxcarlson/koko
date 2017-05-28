@@ -1,4 +1,4 @@
-defmodule Koko.TokenTest do
+defmodule Koko.Authentication.TokenTest do
   use Koko.DataCase
 
   alias Koko.Authentication.Token
@@ -7,6 +7,7 @@ defmodule Koko.TokenTest do
 
     test "generate token with vaid attributes" do
       {:ok, token} = Token.get(1, "joe")
+
       assert token |> String.split(".") |> length == 3
     end
 

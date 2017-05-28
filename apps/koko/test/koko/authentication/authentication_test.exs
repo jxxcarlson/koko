@@ -80,9 +80,9 @@ defmodule Koko.AuthenticationTest do
   describe "sessions" do
     alias Koko.Authentication.Session
 
-    user = user_fixture(%{})
+    # user = user_fixture(%{})
 
-    IO.puts "HHH user.id = #{user.id}"
+    # IO.puts "HHH user.id = #{user.id}"
 
     @valid_attrs %{"email" => "yada@foo.io", "password" => "abc.617.ioj"}
     # @invalid_attrs %{}

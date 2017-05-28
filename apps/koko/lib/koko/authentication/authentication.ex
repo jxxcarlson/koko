@@ -162,20 +162,35 @@ defmodule Koko.Authentication do
       # user_id = get_value_of_key(:user_id, params) #params[:user_id] || params["user_id"]
       # username = get_value_of_key(:username, params) # params[:username] || params["username"]
     with  {:ok, user} <- get_user(params["email"]),
-          {:ok, password} <- checkpw(params["password"], user.password_hash),
+          {:ok, password} <- checkpw2(params["password"], user.password_hash),
           {:ok, token} <- Koko.Authentication.Token.get(user.id, user.username)
     do
       IO.puts "token: #{token}"
       %Session{}
         |> Session.changeset(%{username: user.username, user_id: user.id, token: token})
         |> Repo.insert()
-      else
-        err -> {:error, "Could not create session"}
+    else
+      {:error, message} -> {:error, message}
     end
   end
 
-  defp get_user(nil), do: {:error, "email is required"}
-  defp get_user(email), do: Repo.get_by(User, email: email)
+  def get_user(nil), do: {:error, "email is required"}
+
+  def get_user(email) do
+    user =  Repo.get_by(User, email: email)
+    case user do
+     nil -> {:error, "User not found"}
+     _ -> {:ok, user}
+    end
+  end
+
+  def checkpw2(password, password_hash) do
+    if  checkpw(password, password_hash) == true do
+      {:ok, true}
+    else
+      {:error, "Incorrect password or email"}
+    end
+  end
 
   #
   # def login(conn, user) do
