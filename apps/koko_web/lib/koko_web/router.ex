@@ -9,6 +9,6 @@ defmodule Koko.Web.Router do
     pipe_through :api
     resources "/documents", DocumentController
     resources "/users", UserController, except: [:edit]
-    resources "/sessions", SessionController, except: [:edit]
+    resources "/authentication", AuthenticationController
   end
 end

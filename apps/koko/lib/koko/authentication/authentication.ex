@@ -108,23 +108,18 @@ defmodule Koko.Authentication do
 #################################
 
   @doc """
-  Creates a session.
+  Authentication.get_token(%{"email" => "h12gg@foo.io", "password" => "yada+yada"}) ==
+  {:ok, "aaa.bbb.ccc", "joe23"} if the request is valid.  Here "aaa.bbb.ccc" is the
+  authentication token and "joe23" is the username.
 
-  ## Examples
-
-      iex> create_session(%{field: value})
-      {:ok, %Session{}}
-
-      iex> create_session(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
+  If the request is invalid, then {:error, "Incorrect password or email"} is returned.
   """
   def get_token(params \\ %{}) do
     with  {:ok, user} <- get_user(params["email"]),
           {:ok, _} <- checkpw2(params["password"], user.password_hash),
           {:ok, token} <- Koko.Authentication.Token.get(user.id, user.username)
     do
-      {:ok, token, user}
+      {:ok, token, user.username}
     else
       {:error, message} -> {:error, message}
     end

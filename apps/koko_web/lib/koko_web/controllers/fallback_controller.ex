@@ -18,10 +18,21 @@ defmodule Koko.Web.FallbackController do
     |> render(Koko.Web.ErrorView, :"404")
   end
 
-  def call(conn, {:error, _}) do
+  def call(conn, {:error, message}) do
+    IO.puts "ERROR: #{message  }"
+    conn
+    |> assign(:message, message)
+    |> put_status(:not_found)
+    |> render(Koko.Web.ErrorView, :"501")
+  end
+
+  def call(conn, {:error, message}) do
+    IO.puts "ERRROR: #{message  }"
     conn
     |> put_status(:not_found)
-    |> render(Koko.Web.ErrorView, :"404")
+    |> render(Koko.Web.ErrorView, :"500")
   end
+
+
 
 end
