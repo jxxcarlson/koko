@@ -14,17 +14,17 @@ defmodule Koko.AuthenticationTest do
     user
   end
 
-  setup_all do
-    # Explicitly get a connection before each test
-    # By default the test is wrapped in a transaction
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Koko.Repo)
-
-    # The :shared mode allows a process to share
-    # its connection with any other process automatically
-    Ecto.Adapters.SQL.Sandbox.mode(Koko.Repo, { :shared, self() })
-
-    :ok
-  end
+  # setup_all do
+  #   # Explicitly get a connection before each test
+  #   # By default the test is wrapped in a transaction
+  #   :ok = Ecto.Adapters.SQL.Sandbox.checkout(Koko.Repo)
+  #
+  #   # The :shared mode allows a process to share
+  #   # its connection with any other process automatically
+  #   Ecto.Adapters.SQL.Sandbox.mode(Koko.Repo, { :shared, self() })
+  #
+  #   :ok
+  # end
 
 
 
@@ -94,48 +94,32 @@ defmodule Koko.AuthenticationTest do
   end
 
   describe "sessions" do
-    alias Koko.Authentication.Session
 
-    # user = user_fixture(%{})
+  #   # user = user_fixture(%{})
+   #
+  #   # sIO.puts "HHH user.id = #{user.id}"
+   #
+  #   @valid_attrs %{"email" => "yada@foo.io", "password" => "abc.617.ioj"}
+  #   # @invalid_attrs %{}
+   #
+  #   # @valid_attrs %{token: "some token"}
+  #   @invalid_attrs %{"email" => "yada@foo.io", "password" => "abc.617.ioj999"}
+   #
+  #   u_attr = %{"admin" => true, "blurb" => "BLURB!", "email" => "yada@foo.io",
+  #     "name" => "Yada T. Urdik", "username" => "yada", "password" => "abc.617.ioj"}
+   #
+  #  Authentication.create_user (u_attr)
+   #
+  #   test "create_session/1 with valid data creates a session" do
+  #     {:ok, token} = Authentication.create_session(@valid_attrs)
+  #     assert (token |> String.split(".") |> length) == 3
+  #   end
+   #
+  #   test "create_session/1 with invalid data returns error changeset" do
+  #     {:error, _} = Authentication.create_session(@invalid_attrs)
+  #     # assert message =  "user id is nil"
+  #   end
 
-    # sIO.puts "HHH user.id = #{user.id}"
-
-    @valid_attrs %{"email" => "yada@foo.io", "password" => "abc.617.ioj"}
-    # @invalid_attrs %{}
-
-    # @valid_attrs %{token: "some token"}
-    @invalid_attrs %{"email" => "yada@foo.io", "password" => "abc.617.ioj999"}
-
-    def session_fixture(attrs \\ %{}) do
-      {:ok, session} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Authentication.create_session()
-
-      session
-    end
-
-
-    test "get_session!/1 returns the session with given id" do
-      session = session_fixture(@valid_attrs)
-      assert Authentication.get_session!(session.id) == session
-    end
-
-    test "create_session/1 with valid data creates a session" do
-      {:ok, session} = Authentication.create_session(@valid_attrs)
-      assert (session.token |> String.split(".") |> length) == 3
-    end
-
-    test "create_session/1 with invalid data returns error changeset" do
-      {:error, _} = Authentication.create_session(@invalid_attrs)
-      # assert message =  "user id is nil"
-    end
-
-    test "delete_session/1 deletes the session" do
-      session = session_fixture()
-      assert {:ok, %Session{}} = Authentication.delete_session(session)
-      assert_raise Ecto.NoResultsError, fn -> Authentication.get_session!(session.id) end
-    end
 
   end
 end

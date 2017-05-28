@@ -4,7 +4,7 @@ defmodule Koko.Authentication do
   """
 
   import Ecto.Query, warn: false
-  import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
+  import Comeonin.Bcrypt, only: [checkpw: 2]
 
   alias Koko.Repo
   alias Koko.Authentication.User
@@ -107,10 +107,7 @@ defmodule Koko.Authentication do
 
 #################################
 
-
-
-
-  alias Koko.Authentication.Session
+  # alias Koko.Authentication.Session
 
   @doc """
   Creates a session.
@@ -125,9 +122,8 @@ defmodule Koko.Authentication do
 
   """
   def create_session(params \\ %{}) do
-       %{"email"=> email, "password" => password} = params
     with  {:ok, user} <- get_user(params["email"]),
-          {:ok, password} <- checkpw2(params["password"], user.password_hash),
+          {:ok, _} <- checkpw2(params["password"], user.password_hash),
           {:ok, token} <- Koko.Authentication.Token.get(user.id, user.username)
     do
       {:ok, token, user}

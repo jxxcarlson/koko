@@ -25,16 +25,5 @@ defmodule Koko.Web.SessionController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    session = Authentication.get_session!(id)
-    render(conn, "show.json", session: session)
-  end
 
-
-  def delete(conn, %{"id" => id}) do
-    session = Authentication.get_session!(id)
-    with {:ok, %Session{}} <- Authentication.delete_session(session) do
-      send_resp(conn, :no_content, "")
-    end
-  end
 end
