@@ -14,6 +14,24 @@ defmodule Koko.AuthenticationTest do
     user
   end
 
+  setup_all do
+
+    # Explicitly get a connection before each test
+    # By default the test is wrapped in a transaction
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Koko.Repo)
+
+    # The :shared mode allows a process to share
+    # its connection with any other process automatically
+    Ecto.Adapters.SQL.Sandbox.mode(Koko.Repo, { :shared, self() })
+
+   valid_user = user_fixture()
+    :ok
+  end
+
+
+
+
+
   describe "users" do
     alias Koko.Authentication.User
 
@@ -82,7 +100,7 @@ defmodule Koko.AuthenticationTest do
 
     # user = user_fixture(%{})
 
-    # IO.puts "HHH user.id = #{user.id}"
+    # sIO.puts "HHH user.id = #{user.id}"
 
     @valid_attrs %{"email" => "yada@foo.io", "password" => "abc.617.ioj"}
     # @invalid_attrs %{}
@@ -101,8 +119,13 @@ defmodule Koko.AuthenticationTest do
 
 
     test "list_sessions/0 returns all sessions" do
+      # valid_user = user_fixture()
+      IO.puts "valid_user = #{valid_user.id}"
+      IO.puts "session:"
       session = session_fixture(@valid_attrs)
-      assert Authentication.list_sessions() == [session]
+      IO.puts "---------------"
+      # IO.inspect session
+      # assert Authentication.list_sessions() == [session]
     end
 
     test "get_session!/1 returns the session with given id" do

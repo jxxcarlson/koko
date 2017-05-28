@@ -14,8 +14,8 @@ defmodule Koko.Authentication.Session do
   @doc false
   def changeset(%Session{} = session, attrs) do
     session
-    |> cast(attrs, [:token])
-    |> validate_required([:token])
+    |> cast(attrs, [:token, :user_id])
+    |> validate_required([:token, :user_id])
   end
 
 end

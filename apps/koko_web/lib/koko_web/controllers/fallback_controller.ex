@@ -17,9 +17,10 @@ defmodule Koko.Web.FallbackController do
     |> put_status(:not_found)
     |> render(Koko.Web.ErrorView, :"404")
   end
-  def call(conn, {:error, message}) do
+
+  def call(conn, {:error, _}) do
     conn
-    |> put_status(message)
+    |> put_status(:not_found)
     |> render(Koko.Web.ErrorView, :"404")
   end
 

@@ -2,6 +2,10 @@ use Mix.Config
 
 config :koko, ecto_repos: [Koko.Repo]
 
+config :joken,
+   config_module: Koko.Joken.Config
+
+
 # config :guardian, Guardian,
 #   allowed_algos: ["HS512"], # optional
 #   verify_module: Guardian.JWT,  # optional

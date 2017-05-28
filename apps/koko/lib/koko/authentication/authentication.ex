@@ -155,20 +155,16 @@ defmodule Koko.Authentication do
   """
   def create_session(params \\ %{}) do
        %{"email"=> email, "password" => password} = params
-       IO.puts "in auth, create_session:"
-       IO.puts "email: #{email}"
-       IO.puts "password: #{password}"
-       IO.puts "-------------------------"
-      # user_id = get_value_of_key(:user_id, params) #params[:user_id] || params["user_id"]
-      # username = get_value_of_key(:username, params) # params[:username] || params["username"]
     with  {:ok, user} <- get_user(params["email"]),
           {:ok, password} <- checkpw2(params["password"], user.password_hash),
           {:ok, token} <- Koko.Authentication.Token.get(user.id, user.username)
     do
-      IO.puts "token: #{token}"
-      %Session{}
+      old_session = Repo.get_by(Session, user_id: user.id)
+      if old_session != nil, do: Repo.delete(old_session)
+      {:ok, session} = %Session{}
         |> Session.changeset(%{username: user.username, user_id: user.id, token: token})
         |> Repo.insert()
+      {:ok, session, user}
     else
       {:error, message} -> {:error, message}
     end
@@ -191,15 +187,6 @@ defmodule Koko.Authentication do
       {:error, "Incorrect password or email"}
     end
   end
-
-  #
-  # def login(conn, user) do
-  #   conn
-  #   |> assign(:current_user, user)
-  #   |> put_session(:user_id, user.id)
-  #   |> configure_session(renew: true)
-  # end
-
 
   @doc """
   Deletes a Session.
