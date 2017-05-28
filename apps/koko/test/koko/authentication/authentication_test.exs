@@ -116,16 +116,6 @@ defmodule Koko.AuthenticationTest do
     end
 
 
-    test "list_sessions/0 returns all sessions" do
-      #valid_user = user_fixture()
-      IO.puts "valid_user = #{valid_user.id}"
-      IO.puts "session:"
-      session = session_fixture(@valid_attrs)
-      IO.puts "---------------"
-      # IO.inspect session
-      # assert Authentication.list_sessions() == [session]
-    end
-
     test "get_session!/1 returns the session with given id" do
       session = session_fixture(@valid_attrs)
       assert Authentication.get_session!(session.id) == session
