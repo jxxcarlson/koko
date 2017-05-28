@@ -107,8 +107,6 @@ defmodule Koko.Authentication do
 
 #################################
 
-  # alias Koko.Authentication.Session
-
   @doc """
   Creates a session.
 
@@ -121,7 +119,7 @@ defmodule Koko.Authentication do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_session(params \\ %{}) do
+  def get_token(params \\ %{}) do
     with  {:ok, user} <- get_user(params["email"]),
           {:ok, _} <- checkpw2(params["password"], user.password_hash),
           {:ok, token} <- Koko.Authentication.Token.get(user.id, user.username)

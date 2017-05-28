@@ -15,15 +15,14 @@ defmodule Koko.Web.SessionController do
     render(conn, "index.json", sessions: sessions)
   end
 
-  def create(conn, %{"session" => payload}) do
-    session_params = Koko.Utility.project2map(payload)
-    with {:ok, token, user} <- Authentication.create_session(session_params) do
+  def create(conn, %{"authorize" => payload}) do
+    params = Koko.Utility.project2map(payload)
+    with {:ok, token, user} <- Authentication.get_token(params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", session_path(conn, :show, "headquarters"))
       |> render("show.json", token: token)
     end
   end
-
 
 end
