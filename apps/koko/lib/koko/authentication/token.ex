@@ -12,13 +12,19 @@ defmodule Koko.Authentication.Token do
     Return a signed token with payload %{user_id: USER_ID, username: USERNAME.
     NOTE: the payload is NOT encrypted and so can be read by anyone
     """
-    def get(user_id, username) do
+    def get(user_id, username, seconds_from_now \\ -1) do
+      t = if (seconds_from_now < 0) do
+        System.get_env("KOKO_EXPIRATION") |> String.to_integer
+      else
+        seconds_from_now
+      end
       secret = System.get_env("KOKO_SECRET")
       cond do
         user_id == nil -> {:error, 400}
         username == nil -> {:error, 400}
         true ->
-          %{"user_id" => user_id, "username" => username}
+          %{"user_id" => user_id, "username" => username,
+             "exp" => expiration_time(t)}
           |> token
           |> with_validation("user_id", &(&1 == user_id))
           |> with_signer(hs256(secret))
@@ -28,8 +34,12 @@ defmodule Koko.Authentication.Token do
       end
     end
 
+    def expiration_time(seconds_from_now) do
+      now = DateTime.utc_now() |> DateTime.to_unix()
+      now + seconds_from_now
+    end
 
-    defp validate(tok, user_id) do
+    def validate(tok, user_id) do
       secret = System.get_env("KOKO_SECRET")
       tok
       |> token
@@ -38,7 +48,7 @@ defmodule Koko.Authentication.Token do
       |> verify
     end
 
-    defp validate(tok) do
+    def validate(tok) do
       secret = System.get_env("KOKO_SECRET")
       tok
       |> token
@@ -51,14 +61,22 @@ defmodule Koko.Authentication.Token do
     is the same as user_id.
     """
     def authenticated(token, user_id) do
-      validate(token, user_id).error == nil
+      vt = validate(token, user_id)
+      signature_valid = vt.error == nil
+      now = DateTime.utc_now() |> DateTime.to_unix()
+      expired = vt.claims["exp"] <= now
+      signature_valid && not expired
     end
 
     @doc """
     Return true iff the token signature is valid.
     """
     def authenticated(token) do
-      validate(token).error == nil
+      vt = validate(token)
+      signature_valid = vt.error == nil
+      now = DateTime.utc_now() |> DateTime.to_unix()
+      expired = vt.claims["exp"] <= now
+      signature_valid && not expired
     end
 
     defp decode2string(token) do
