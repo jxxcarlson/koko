@@ -3,16 +3,7 @@ defmodule Koko.AuthenticationTest do
 
   alias Koko.Authentication
 
-  @valid_user_attrs %{"admin" => true, "blurb" => "BLURB!", "email" => "yada@foo.io",
-    "name" => "Yada T. Urdik", "username" => "yada", "password" => "abc.617.ioj"}
 
-  def user_fixture(attrs \\ %{}) do
-    {:ok, user} =
-      attrs
-      |> Enum.into(@valid_user_attrs)
-      |> Authentication.create_user()
-    user
-  end
 
   # setup_all do
   #   # Explicitly get a connection before each test
@@ -33,13 +24,25 @@ defmodule Koko.AuthenticationTest do
   describe "users" do
     alias Koko.Authentication.User
 
+    @valid_user_attrs %{"admin" => true, "blurb" => "BLURB!", "email" => "yada@foo.io",
+      "name" => "Yada T. Urdik", "username" => "yada", "password" => "abc.617.ioj"}
+
+    def user_fixture(attrs \\ %{}) do
+      {:ok, user} =
+        attrs
+        |> Enum.into(@valid_user_attrs)
+        |> Authentication.create_user()
+      user
+    end
+
     @update_attrs %{"admin" => false, "blurb" => "whatever", "email" => "yada@foo.io", "name" => "Yadem V. Aafik", "password_hash" => "s7^%g$l-9+", "username" => "aday"}
     @invalid_attrs %{"admin" => nil, "blurb" => nil, "email" =>  nil, "name" => nil, "password_hash" =>  nil, "username" => nil}
 
     test "list_users/0 returns all users" do
+      n = Authentication.list_users() |> length
       user = user_fixture()
       assert user.email == "yada@foo.io"
-      assert (Authentication.list_users() |> length) == 1
+      assert (Authentication.list_users() |> length) == n + 1
     end
 
     test "get_user!/1 returns the user with given id" do

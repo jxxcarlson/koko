@@ -101,7 +101,7 @@ defmodule Koko.Authentication.Token do
       do
         {:ok, json}
       else
-        err -> {:error, "Could not decode payload"}
+        _ -> {:error, "Could not decode payload"}
       end
     end
 

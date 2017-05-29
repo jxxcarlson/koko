@@ -11,11 +11,11 @@ defmodule Koko.Web.ErrorViewTest do
 
   test "render 500.json" do
     assert render(Koko.Web.ErrorView, "500.json", []) ==
-           %{errors: %{detail: "Internal server error"}}
+           %{errors: %{info: "Due to programmer laziness, I cannot say more about this error."}}
   end
 
   test "render any other" do
     assert render(Koko.Web.ErrorView, "505.json", []) ==
-           %{errors: %{detail: "Internal server error"}}
+           %{errors: %{info: "Due to programmer laziness, I cannot say more about this error."}}
   end
 end

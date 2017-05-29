@@ -2,6 +2,7 @@ defmodule Koko.Web.UserControllerTest do
   use Koko.Web.ConnCase
 
   alias Koko.Authentication
+  alias Koko.Repo
   alias Koko.Authentication.User
 
   @create_attrs %{"admin" => true, "blurb" => "BLURB!", "email" => "yozo@foo.io", "name" => "Yo T. Zo",
@@ -22,8 +23,10 @@ defmodule Koko.Web.UserControllerTest do
   end
 
   test "lists all entries on index", %{conn: conn} do
+    n = Repo.all(User)|> length
     conn = get conn, user_path(conn, :index)
-    assert json_response(conn, 200)["users"] == []
+    nn = json_response(conn, 200)["users"] |> length
+    assert n == nn
   end
 
   test "creates user and renders user when data is valid", %{conn: conn} do
@@ -35,7 +38,7 @@ defmodule Koko.Web.UserControllerTest do
   end
 
   test "does not create user and renders errors when data is invalid", %{conn: conn} do
-    conn = post conn, user_path(conn, :create), user: @invalid_attrs
+    conn = post conn, user_path(conn, :create), user: %{user: @invalid_attrs}
     assert json_response(conn, 422)["errors"] != %{}
   end
 
@@ -58,7 +61,7 @@ defmodule Koko.Web.UserControllerTest do
 
   test "does not update chosen user and renders errors when data is invalid", %{conn: conn} do
     user = fixture(:user)
-    conn = put conn, user_path(conn, :update, user), user: @invalid_attrs
+    conn = put conn, user_path(conn, :update, user), user: %{user: @invalid_attrs}
     assert json_response(conn, 422)["errors"] != %{}
   end
 

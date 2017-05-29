@@ -2,6 +2,7 @@ defmodule Koko.Web.DocumentControllerTest do
   use Koko.Web.ConnCase
 
   alias Koko.DocManager
+  alias Koko.Repo
   alias Koko.DocManager.Document
 
   @create_attrs %{content: "some content", rendered_content: "some rendered_content", title: "some title"}
@@ -18,8 +19,10 @@ defmodule Koko.Web.DocumentControllerTest do
   end
 
   test "lists all entries on index", %{conn: conn} do
+    n = Repo.all(Document) |> length
     conn = get conn, document_path(conn, :index)
-    assert json_response(conn, 200)["documents"] == []
+    nn =json_response(conn, 200)["documents"] |> length
+    assert n == nn
   end
 
   test "creates document and renders document when data is valid", %{conn: conn} do
