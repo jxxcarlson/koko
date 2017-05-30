@@ -4,28 +4,79 @@ defmodule Koko.Web.DocumentControllerTest do
   alias Koko.DocManager
   alias Koko.Repo
   alias Koko.DocManager.Document
+  alias Koko.Authentication
 
-  @create_attrs %{content: "some content", rendered_content: "some rendered_content", title: "some title"}
+  @create_attrs %{content: "some content", rendered_content: "some rendered_content", title: "some title",
+     attributes: %{public: true}}
   @update_attrs %{content: "some updated content", rendered_content: "some updated rendered_content", title: "some updated title"}
   @invalid_attrs %{content: nil, rendered_content: nil, title: nil}
 
-  def fixture(:document) do
-    {:ok, document} = DocManager.create_document(@create_attrs)
+  @user_attrs %{"admin" => false, "blurb" => "BLURB!", "email" => "yozo@foo.io", "name" => "Yo T. Zo",
+     "username" => "yozo", "password" => "yujo&$123"}
+
+  def fixture(:document, attr) do
+    {:ok, document} = DocManager.create_document(attr)
     document
+  end
+
+  def fixture(:user) do
+    {:ok, user} = Authentication.create_user(@user_attrs)
+    user
   end
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    # {:ok, user: fixture{:user}}
+    # {:ok, tok, _} = Authentication.get_token(%{"email" => @user_attrs["email"], "password" => @user_attrs["password"]})
+    # {:ok token: tok}
   end
 
-  test "lists all entries on index", %{conn: conn} do
-    n = Repo.all(Document) |> length
+  test "lists all PUBLIC entries on index", %{conn: conn} do
+    user = fixture :user
+    {:ok, token, _} = Authentication.get_token(%{"email" => user.email, "password" => user.password})
+
+    document_attributes = Map.merge(@create_attrs, %{author_id:  user.id})
+    doc = fixture :document, document_attributes
+
+    n = Koko.DocManager.Search.for_public |> length
+
+    conn = get conn, document_path(conn, :index_public)
+    response = json_response(conn, 200)
+    assert n == (response["documents"] |> length)
+  end
+
+
+  test "lists all USER entries on index", %{conn: conn} do
+    user = fixture :user
+    {:ok, token, _} = Authentication.get_token(%{"email" => user.email, "password" => user.password})
+    IO.puts token
+    IO.puts "Is token authenticated?"
+    IO.inspect Koko.Authentication.Token.authenticated(token)
+
+    document_attributes = Map.merge(@create_attrs, %{author_id:  user.id})
+    doc = fixture :document, document_attributes
+
+    result = DocManager.list_documents(user.id)
+    n = length result
+    IO.puts "RESULT:"
+    IO.inspect result
+
+    IO.puts "#{n} documents found for user #{user.id}"
+
+
+    put_req_header(conn, "authorization", "bearer #{token}")
+    IO.puts "HEADER"
+    IO.inspect Koko.Authentication.Token.get_header(conn, "authorization")
+    IO.puts "---"
+    IO.puts "TOKEN 2"
+    IO.inspect Koko.Authentication.Token.token_from_header(conn)
     conn = get conn, document_path(conn, :index)
-    nn =json_response(conn, 200)["documents"] |> length
-    assert n == nn
+    IO.inspect json_response(conn, 200)
+    # assert n == nn
   end
 
   test "creates document and renders document when data is valid", %{conn: conn} do
+
     conn = post conn, document_path(conn, :create), document: @create_attrs
     assert %{"id" => id} = json_response(conn, 201)["document"]
 
