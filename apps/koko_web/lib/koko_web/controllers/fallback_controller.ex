@@ -1,4 +1,4 @@
-defmodule Koko.Web.FallbackController do
+  defmodule Koko.Web.FallbackController do
   @moduledoc """
   Translates controller action results into valid `Plug.Conn` responses.
 
@@ -29,8 +29,6 @@ defmodule Koko.Web.FallbackController do
 
   def call(_, _) do
       IO.puts "FBC CALL (4)"
-    # |> put_status(:not_found)
-    |> Koko.Utility.conn_message("HERE I AM (2)")
     |> render(Koko.Web.ErrorView, :"501")
   end
 

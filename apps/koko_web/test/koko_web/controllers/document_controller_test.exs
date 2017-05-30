@@ -2,7 +2,6 @@ defmodule Koko.Web.DocumentControllerTest do
   use Koko.Web.ConnCase
 
   alias Koko.DocManager
-  alias Koko.Repo
   alias Koko.DocManager.Document
   alias Koko.Authentication
 
@@ -33,10 +32,9 @@ defmodule Koko.Web.DocumentControllerTest do
 
   test "lists all PUBLIC entries on index", %{conn: conn} do
     user = fixture :user
-    {:ok, token, _} = Authentication.get_token(%{"email" => user.email, "password" => user.password})
 
     document_attributes = Map.merge(@create_attrs, %{author_id:  user.id})
-    doc = fixture :document, document_attributes
+    fixture :document, document_attributes
 
     n = Koko.DocManager.Search.for_public |> length
 
@@ -46,33 +44,21 @@ defmodule Koko.Web.DocumentControllerTest do
   end
 
 
-  test "lists all USER entries on index", %{conn: conn} do
+  test "lists all USER entries on index" do
     user = fixture :user
     {:ok, token, _} = Authentication.get_token(%{"email" => user.email, "password" => user.password})
-    IO.puts token
-    IO.puts "Is token authenticated?"
-    IO.inspect Koko.Authentication.Token.authenticated(token)
 
     document_attributes = Map.merge(@create_attrs, %{author_id:  user.id})
-    doc = fixture :document, document_attributes
+    fixture :document, document_attributes
 
-    result = DocManager.list_documents(user.id)
-    n = length result
-    IO.puts "RESULT:"
-    IO.inspect result
+    n = DocManager.list_documents(:user, user.id) |> length
 
-    IO.puts "#{n} documents found for user #{user.id}"
+    conn = build_conn()
+    |> put_req_header("accept", "application/json")
+    |> put_req_header("authorization", "Bearer #{token}")
+    |> get("/api/documents")
 
-
-    put_req_header(conn, "authorization", "bearer #{token}")
-    IO.puts "HEADER"
-    IO.inspect Koko.Authentication.Token.get_header(conn, "authorization")
-    IO.puts "---"
-    IO.puts "TOKEN 2"
-    IO.inspect Koko.Authentication.Token.token_from_header(conn)
-    conn = get conn, document_path(conn, :index)
-    IO.inspect json_response(conn, 200)
-    # assert n == nn
+    assert n == json_response(conn, 200)["documents"] |> length
   end
 
   test "creates document and renders document when data is valid", %{conn: conn} do

@@ -10,7 +10,7 @@ defmodule Koko.Web.DocumentController do
   def index(conn, _params) do
     with {:ok, user_id} <- Token.user_id_from_header(conn)
     do
-      documents = DocManager.list_documents(user_id)
+      documents = DocManager.list_documents(:user, user_id)
       render(conn, "index.json", documents: documents)
     else
       _ -> {:error, "Not authorized"}

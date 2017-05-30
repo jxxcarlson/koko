@@ -107,9 +107,6 @@ defmodule Koko.Authentication.Token do
 
     defp get_header(conn, name) do
        result = Plug.Conn.get_req_header(conn, name)
-       IO.puts "get_header, result:"
-       IO.inspect result
-       IO.puts "------------------------"
        case result do
            [] -> {:error, "No #{name} header"}
            _ -> {:ok, result}

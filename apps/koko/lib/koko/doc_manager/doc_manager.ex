@@ -19,17 +19,14 @@ defmodule Koko.DocManager do
 
   """
   def list_documents do
-    IO.puts "List documents/0"
     Repo.all(Document)
   end
 
   def list_documents(:public) do
-    IO.puts "List documents:public"
     Search.for_public
   end
 
-  def list_documents(user_id) do
-    IO.puts "List documents/1"
+  def list_documents(:user, user_id) do
     Search.for_author(user_id)
   end
 

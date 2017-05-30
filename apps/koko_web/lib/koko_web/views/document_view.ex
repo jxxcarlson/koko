@@ -12,8 +12,9 @@ defmodule Koko.Web.DocumentView do
 
   def render("document.json", %{document: document}) do
     %{id: document.id,
+      author_id: document.author_id,
       title: document.title,
-      content: document.content,
-      rendered_content: document.rendered_content}
+      content: document.content
+    }
   end
 end
