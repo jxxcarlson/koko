@@ -46,7 +46,7 @@ defmodule Koko.Web.DocumentController do
     do
       render(conn, "show.json", document: document)
     else
-      err -> {:error, "Cannot display document"}
+      {:error, error} -> {:error, error}
     end
   end
 
