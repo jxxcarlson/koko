@@ -6,11 +6,11 @@ defmodule Koko.Web.FallbackController do
   """
   use Koko.Web, :controller
 
-  def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
-    conn
-    |> put_status(:unprocessable_entity)
-    |> render(Koko.Web.ChangesetView, "error.json", changeset: changeset)
-  end
+  # def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
+  #   conn
+  #   |> put_status(:unprocessable_entity)
+  #   |> render(Koko.Web.ChangesetView, "error.json", changeset: changeset)
+  # end
 
   def call(conn, {:error, :not_found}) do
     conn
@@ -18,19 +18,16 @@ defmodule Koko.Web.FallbackController do
     |> render(Koko.Web.ErrorView, :"404")
   end
 
-  def call(conn, {:error, message}) do
-    IO.puts "ERROR: #{message  }"
+  def call(conn, {:error, error}) do
     conn
-    |> assign(:message, message)
     |> put_status(:not_found)
-    |> render(Koko.Web.ErrorView, :"501")
+    |> render(Koko.Web.ErrorView, error)
   end
 
-  def call(conn, {:error, message}) do
-    IO.puts "ERRROR: #{message  }"
+  def call(conn, _) do
     conn
     |> put_status(:not_found)
-    |> render(Koko.Web.ErrorView, :"500")
+    |> render(Koko.Web.ErrorView, :"501")
   end
 
 

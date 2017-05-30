@@ -93,6 +93,7 @@ defmodule Koko.DocManager do
 
   """
   def update_document(%Document{} = document, attrs) do
+    IO.puts "WE ARE HERE (1)"
     document
     |> Document.changeset(attrs)
     |> Repo.update()
@@ -126,5 +127,5 @@ defmodule Koko.DocManager do
   def change_document(%Document{} = document) do
     Document.changeset(document, %{})
   end
-  
+
 end

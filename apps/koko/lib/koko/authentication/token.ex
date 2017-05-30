@@ -106,28 +106,24 @@ defmodule Koko.Authentication.Token do
       end
     end
 
-    def token_from_header1(conn) do
-      headers = Plug.Conn.get_req_header(conn, "authorization")
-      IO.puts "HEADERS:"
-      IO.inspect headers
-      authorization_header = hd headers
-      case String.split(authorization_header, " ") do
-        ["Bearer", token] ->  {:ok, token}
-        _ -> {:error, "Could not decode token from header"}
-      end
+    defp get_header(conn, name) do
+       result = Plug.Conn.get_req_header(conn, name)
+       IO.puts "get_header, result:"
+       IO.inspect result
+       IO.puts "------------------------"
+       case result do
+           [] -> {:error, "No #{name} header"}
+           _ -> {:ok, result}
+       end
     end
 
     def token_from_header(conn) do
-      headers = Plug.Conn.get_req_header(conn, "authorization")
-      IO.puts "HEADERS:"
-      IO.inspect headers
-      IO.puts "length of headers: #{length(headers)}"
-      with true <- (length(headers) > 0),
-           ["Bearer", token] <- String.split(hd(headers), " ")
+      with {:ok, header} <- get_header(conn, "authorization"),
+           ["Bearer", token] <- String.split(hd(header), " ")
       do
         {:ok, token}
       else
-        _ -> {:error, "Could not decode token from header"}
+        {:error, error} -> "error: #{error}"
       end
     end
 

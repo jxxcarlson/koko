@@ -8,7 +8,6 @@ defmodule Koko.Web.DocumentController do
   action_fallback Koko.Web.FallbackController
 
   def index(conn, _params) do
-    IO.puts "index/0"
     with {:ok, user_id} <- Token.user_id_from_header(conn)
     do
       documents = DocManager.list_documents(user_id)
@@ -19,7 +18,6 @@ defmodule Koko.Web.DocumentController do
   end
 
   def index_public(conn, _params) do
-    IO.puts "index_public/0"
     documents = DocManager.list_documents(:public)
     render(conn, "index.json", documents: documents)
   end
@@ -37,12 +35,11 @@ defmodule Koko.Web.DocumentController do
       |> put_resp_header("location", document_path(conn, :show, document))
       |> render("show.json", document: document)
     else
-      err -> {:error, "Could not create document"}
+      {:error, error} -> "error: #{error}"
     end
   end
 
   def show(conn, %{"id" => id}) do
-    IO.puts "show/1"
     document = DocManager.get_document!(id)
     with {:ok, user_id} <- Token.user_id_from_header(conn),
          true <- ((document.attributes["public"] == true) || (user_id == document.author_id))
@@ -54,7 +51,6 @@ defmodule Koko.Web.DocumentController do
   end
 
   def show_public(conn, %{"id" => id}) do
-    IO.puts "show_public/1"
     document = DocManager.get_document!(id)
     if document.attributes["public"] == true do
       render(conn, "show.json", document: document)
@@ -67,11 +63,16 @@ defmodule Koko.Web.DocumentController do
 
     document_params = Koko.Utility.project2map(payload)
     document = DocManager.get_document!(id)
-
-    with {:ok, user_id} <- Token.user_id_from_header(conn),
+    IO.puts "START"
+    with {:ok, message} <- Koko.Utility.ok_message("(0)"),
+        {:ok, user_id} <- Token.user_id_from_header(conn),
+         {:ok, message} <- Koko.Utility.ok_message("(1)"),
          true <- user_id == document.author_id,
-         {:ok, %Document{} = document} <- DocManager.update_document(document, document_params)
+         {:ok, message} <- Koko.Utility.ok_message("(2)"),
+         {:ok, %Document{} = document} <- DocManager.update_document(document, document_params),
+         {:ok, message} <- Koko.Utility.ok_message("(3)")
     do
+      IO.puts "WE ARE HERE"
       render(conn, "show.json", document: document)
     else
       _ -> {:error, "Could not update document"}

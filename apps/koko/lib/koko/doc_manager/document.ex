@@ -18,6 +18,6 @@ defmodule Koko.DocManager.Document do
   def changeset(%Document{} = document, attrs) do
     document
     |> cast(attrs, [:title, :author_id, :content, :rendered_content, :attributes])
-    |> validate_required([:title, :author_id, :content, :rendered_content, :attributes])
+    |> validate_required([:title, :author_id, :content])
   end
 end
