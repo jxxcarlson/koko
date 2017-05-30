@@ -7,6 +7,7 @@ defmodule Koko.DocManager do
   alias Koko.Repo
 
   alias Koko.DocManager.Document
+  alias Koko.DocManager.Search
 
   @doc """
   Returns the list of documents.
@@ -18,8 +19,21 @@ defmodule Koko.DocManager do
 
   """
   def list_documents do
+    IO.puts "List documents/0"
     Repo.all(Document)
   end
+
+  def list_documents(:public) do
+    IO.puts "List documents:public"
+    Search.for_public
+  end
+
+  def list_documents(user_id) do
+    IO.puts "List documents/1"
+    Search.for_author(user_id)
+  end
+
+
 
   @doc """
   Gets a single document.
@@ -49,11 +63,22 @@ defmodule Koko.DocManager do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_document(attrs \\ %{}) do
+  def create_document(attrs, author_id) do
+    attrs = Map.merge(attrs, %{"author_id" => author_id})
+    IO.puts "create document(2)"
+    IO.inspect attrs
     %Document{}
     |> Document.changeset(attrs)
     |> Repo.insert()
   end
+
+  def create_document(attrs \\ %{}) do
+    IO.puts "create_document (1)"
+    %Document{}
+    |> Document.changeset(attrs)
+    |> Repo.insert()
+  end
+
 
   @doc """
   Updates a document.
@@ -101,4 +126,5 @@ defmodule Koko.DocManager do
   def change_document(%Document{} = document) do
     Document.changeset(document, %{})
   end
+  
 end

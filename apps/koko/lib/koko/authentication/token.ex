@@ -106,20 +106,41 @@ defmodule Koko.Authentication.Token do
       end
     end
 
-    def token_from_header(conn) do
-      authorization_header = hd Plug.Conn.get_req_header(conn, "authorization")
+    def token_from_header1(conn) do
+      headers = Plug.Conn.get_req_header(conn, "authorization")
+      IO.puts "HEADERS:"
+      IO.inspect headers
+      authorization_header = hd headers
       case String.split(authorization_header, " ") do
         ["Bearer", token] ->  {:ok, token}
         _ -> {:error, "Could not decode token from header"}
       end
     end
 
+    def token_from_header(conn) do
+      headers = Plug.Conn.get_req_header(conn, "authorization")
+      IO.puts "HEADERS:"
+      IO.inspect headers
+      IO.puts "length of headers: #{length(headers)}"
+      with true <- (length(headers) > 0),
+           ["Bearer", token] <- String.split(hd(headers), " ")
+      do
+        {:ok, token}
+      else
+        _ -> {:error, "Could not decode token from header"}
+      end
+    end
+
+
+    # js, {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTYxNTc1NzIsInVzZXJfaWQiOjE2OSwidXNlcm5hbWUiOiJqb2UifQ.hISpUvnv1ZGnSGqggelYjpjml2v_cXH-GuXaaLgPOs8"}
+    # jc, {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTYxNzgxNDksInVzZXJfaWQiOjIsInVzZXJuYW1lIjoianh4Y2FybHNvbiJ9.KUfL8dk2_Xz2ltaPqXyfoLb7ZfZ1n4_JCpJFDZgu2Zc"}
+
     def authenticated_from_header(conn) do
       with {:ok, token} <- token_from_header(conn)
       do
          {:ok,  authenticated(token)}
       else
-        _ -> {:error, "Could not get verified user ID (2)"}
+        _ -> {:error, "Not authorized"}
       end
     end
 
@@ -130,7 +151,7 @@ defmodule Koko.Authentication.Token do
       do
          {:ok, json["user_id"]}
       else
-        _ -> {:error, "Could not get verified user ID (2)"}
+        _ -> {:error, "Could not get verified user ID"}
       end
     end
 
