@@ -52,6 +52,7 @@ defmodule Koko.Web.DocumentController do
 
   def show_public(conn, %{"id" => id}) do
     document = DocManager.get_document!(id)
+    IO.inspect document.attributes
     if document.attributes["public"] == true do
       render(conn, "show.json", document: document)
     else
@@ -59,23 +60,31 @@ defmodule Koko.Web.DocumentController do
     end
   end
 
+  defp match_integers(a, b, success_message, failure_message) do
+    IO.puts "a = #{a}, b = #{[b]}"
+    if a == b do
+      IO.puts "MATCH: success"
+      {:ok, success_message}
+    else
+      IO.puts "MATCH: FAILURE"
+      {:error, failure_message}
+    end
+  end
+
   def update(conn, %{"id" => id, "document" => payload}) do
 
     document_params = Koko.Utility.project2map(payload)
     document = DocManager.get_document!(id)
+    failure_message = "User id and document author id do not match"
+
     IO.puts "START"
-    with {:ok, message} <- Koko.Utility.ok_message("(0)"),
-        {:ok, user_id} <- Token.user_id_from_header(conn),
-         {:ok, message} <- Koko.Utility.ok_message("(1)"),
-         true <- user_id == document.author_id,
-         {:ok, message} <- Koko.Utility.ok_message("(2)"),
-         {:ok, %Document{} = document} <- DocManager.update_document(document, document_params),
-         {:ok, message} <- Koko.Utility.ok_message("(3)")
+    with {:ok, user_id} <- Token.user_id_from_header(conn),
+         {:ok, "match"} <- match_integers(user_id, document.author_id, "match", failure_message),
+         {:ok, %Document{} = document} <- DocManager.update_document(document, document_params)
     do
-      IO.puts "WE ARE HERE"
       render(conn, "show.json", document: document)
     else
-      _ -> {:error, "Could not update document"}
+      {:error, error} -> "error: #{error}"
     end
   end
 

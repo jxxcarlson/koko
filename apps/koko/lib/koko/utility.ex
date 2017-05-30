@@ -42,4 +42,9 @@ defmodule Koko.Utility do
     {:ok, message}
   end
 
+  def conn_message(conn, message) do
+    IO.puts message
+    conn
+  end
+
 end

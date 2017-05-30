@@ -117,6 +117,17 @@ defmodule Koko.Authentication.Token do
        end
     end
 
+    # def token_from_header1(conn) do
+    #   headers = Plug.Conn.get_req_header(conn, "authorization")
+    #   IO.puts "HEADERS:"
+    #   IO.inspect headers
+    #   authorization_header = hd headers
+    #   case String.split(authorization_header, " ") do
+    #     ["Bearer", token] ->  {:ok, token}
+    #     _ -> {:error, "Could not decode token from header"}
+    #   end
+    # end
+
     def token_from_header(conn) do
       with {:ok, header} <- get_header(conn, "authorization"),
            ["Bearer", token] <- String.split(hd(header), " ")
