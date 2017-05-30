@@ -27,24 +27,7 @@ defmodule Koko.Web.FallbackController do
     |> render(Koko.Web.ErrorView, "error.json", error: message)
   end
 
-
-
-  def call(conn, {:error, msg}) do
-      IO.puts "FBC CALL (3)"
-      IO.puts "111---------------------------------"
-      IO.inspect msg
-      IO.puts "111---------------------------------"
-
-    # IO.inspect msg
-    # {:error, message} = msg
-    # IO.puts "MSG: #{msg}"
-    conn
-    |> put_status(:not_found)
-    |> Koko.Utility.conn_message("HERE I AM (1)")
-    |> render(Koko.Web.ErrorView, :"500")
-  end
-
-  def call(conn, _) do
+  def call(_, _) do
       IO.puts "FBC CALL (4)"
     # |> put_status(:not_found)
     |> Koko.Utility.conn_message("HERE I AM (2)")

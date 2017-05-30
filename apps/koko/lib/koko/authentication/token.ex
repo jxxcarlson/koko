@@ -1,6 +1,5 @@
 defmodule Koko.Authentication.Token do
 
-  alias Koko.Authentication.Token
   @moduledoc """
   This module carries the functions used to generate tokens,
   determine whether they are valid, and inspec the token payload.

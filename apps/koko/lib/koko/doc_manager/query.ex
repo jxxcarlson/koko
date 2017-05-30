@@ -1,8 +1,5 @@
 defmodule Koko.DocManager.Query do
 
-  alias Koko.DocManager.Document
-  alias Koko.Repo
-
   import Ecto.Query
 
   def for_author(query, author_id) do
