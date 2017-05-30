@@ -1,5 +1,6 @@
 defmodule Koko.Authentication.Token do
 
+  alias Koko.Authentication.Token
   @moduledoc """
   This module carries the functions used to generate tokens,
   determine whether they are valid, and inspec the token payload.
@@ -102,6 +103,34 @@ defmodule Koko.Authentication.Token do
         {:ok, json}
       else
         _ -> {:error, "Could not decode payload"}
+      end
+    end
+
+    def token_from_header(conn) do
+      authorization_header = hd Plug.Conn.get_req_header(conn, "authorization")
+      case String.split(authorization_header, " ") do
+        ["Bearer", token] ->  {:ok, token}
+        _ -> {:error, "Could not decode token from header"}
+      end
+    end
+
+    def authenticated_from_header(conn) do
+      with {:ok, token} <- token_from_header(conn)
+      do
+         {:ok,  authenticated(token)}
+      else
+        _ -> {:error, "Could not get verified user ID (2)"}
+      end
+    end
+
+    def user_id_from_header(conn) do
+      with {:ok, token} <- token_from_header(conn),
+           true <- authenticated(token),
+           {:ok, json} <- payload(token)
+      do
+         {:ok, json["user_id"]}
+      else
+        _ -> {:error, "Could not get verified user ID (2)"}
       end
     end
 

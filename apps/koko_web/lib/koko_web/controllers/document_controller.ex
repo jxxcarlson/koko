@@ -3,6 +3,7 @@ defmodule Koko.Web.DocumentController do
 
   alias Koko.DocManager
   alias Koko.DocManager.Document
+  alias Koko.Authentication.Token
 
   action_fallback Koko.Web.FallbackController
 
@@ -11,9 +12,14 @@ defmodule Koko.Web.DocumentController do
     render(conn, "index.json", documents: documents)
   end
 
+
+# {:ok, user_id} <- Token.get_user_id_from_header(conn),
+
   def create(conn, %{"document" => payload}) do
     document_params = Koko.Utility.project2map(payload)
-    with {:ok, %Document{} = document} <- DocManager.create_document(document_params) do
+    with  {:ok, user_id} <- Token.user_id_from_header(conn),
+          {:ok, %Document{} = document} <- DocManager.create_document(document_params)
+    do
       conn
       |> put_status(:created)
       |> put_resp_header("location", document_path(conn, :show, document))
@@ -31,7 +37,9 @@ defmodule Koko.Web.DocumentController do
     document_params = Koko.Utility.project2map(payload)
     document = DocManager.get_document!(id)
 
-    with {:ok, %Document{} = document} <- DocManager.update_document(document, document_params) do
+    with {:ok, user_id} <- Token.user_id_from_header(conn),
+         # true <- user_id == document.user_id
+         {:ok, %Document{} = document} <- DocManager.update_document(document, document_params) do
       render(conn, "show.json", document: document)
     end
   end
