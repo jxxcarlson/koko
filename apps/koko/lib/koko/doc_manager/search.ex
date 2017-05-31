@@ -4,13 +4,13 @@ defmodule Koko.DocManager.Search do
   alias Koko.DocManager.Query
   alias Koko.Repo
 
-  def by_command_list(command_list) do
+  defp by_command_list(command_list) do
     command_list
     |> Enum.reduce(Document, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
     |> Repo.all
   end
 
-  def parse_query_string(str) do
+  defp parse_query_string(str) do
     str
     |> String.split("&")
     |> (Enum.map fn(item) -> String.split(item, "=") end)
