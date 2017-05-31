@@ -25,8 +25,12 @@ defmodule Koko.DocManager.Search do
   end
 
   def by_query_string_for_user(query_string, user_id) do
-    if query_string == "" || query_string == nil, do: query_string = "sort=title"
-    if !String.contains?(query_string, "sort=title"), do: query_string = "#{query_string}&sort=title"
+    query_string = if query_string == "" || query_string == nil do
+      "sort=title"
+    else
+      query_string
+    end
+    query_string = if !String.contains?(query_string, "sort=title"), do: "#{query_string}&sort=title"
     by_query_string("author=#{user_id}&#{query_string}")
   end
 

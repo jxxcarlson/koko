@@ -114,7 +114,9 @@ defmodule Koko.Web.DocumentControllerTest do
       "id" => id,
       "content" => "some updated content",
       "author_id" => user.id,
-      "title" => "some updated title"}
+      "title" => "some updated title",
+       "attributes" => %{"public" => true}
+  }
   end
 
   test "does not update chosen document when not authorized" do
