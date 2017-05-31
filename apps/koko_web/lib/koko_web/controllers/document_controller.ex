@@ -1,12 +1,31 @@
 defmodule Koko.Web.DocumentController do
   use Koko.Web, :controller
 
+  @moduledoc """
+    The actions in this module, with the exception of
+    `index_public` and `show_public`, are accesible
+    to users only if they present a valid token.
+    For instance, the `index` action is guarded in this way.
+    Moreover, it will only display the user's documents.
+    (or public documents, one uses `index_public`).  Likewise,
+    a document can be deleted only by its owner, and newly
+    created documents are automatically assigned to the user
+    listed in the token.
+
+    See REST_API.adoc for documetation of the requests (header,
+    route, body) as well as the form of the reply.
+  """
+
   alias Koko.DocManager
   alias Koko.DocManager.Document
   alias Koko.Authentication.Token
 
   action_fallback Koko.Web.FallbackController
 
+  @doc """
+  List and search for documents owned by the user
+  defined in the token.
+  """
   def index(conn, _params) do
     with {:ok, user_id} <- Token.user_id_from_header(conn)
     do
@@ -17,6 +36,9 @@ defmodule Koko.Web.DocumentController do
     end
   end
 
+  @doc """
+  All public documents are listable and searchable.
+  """
   def index_public(conn, _params) do
     documents = DocManager.list_documents(:public)
     render(conn, "index.json", documents: documents)
@@ -25,6 +47,10 @@ defmodule Koko.Web.DocumentController do
 
 # {:ok, user_id} <- Token.get_user_id_from_header(conn),
 
+   @doc """
+   To create a document, the user must present a token.  The user_id
+   information in that token is used to define ownership of the document.
+   """
   def create(conn, %{"document" => payload}) do
     document_params = Koko.Utility.project2map(payload)
     with  {:ok, user_id} <- Token.user_id_from_header(conn),
@@ -39,6 +65,9 @@ defmodule Koko.Web.DocumentController do
     end
   end
 
+  @doc """
+  Display a document if it is owned by the user defined by the token.
+  """
   def show(conn, %{"id" => id}) do
     document = DocManager.get_document!(id)
     with {:ok, user_id} <- Token.user_id_from_header(conn),
@@ -50,9 +79,11 @@ defmodule Koko.Web.DocumentController do
     end
   end
 
+  @doc """
+  All public documents are readable/displayble.
+  """
   def show_public(conn, %{"id" => id}) do
     document = DocManager.get_document!(id)
-    IO.inspect document.attributes
     if document.attributes["public"] == true do
       render(conn, "show.json", document: document)
     else
@@ -68,6 +99,9 @@ defmodule Koko.Web.DocumentController do
     end
   end
 
+  @doc """
+  A user can only update the documents he owns.
+  """
   def update(conn, %{"id" => id, "document" => payload}) do
 
     document_params = Koko.Utility.project2map(payload)
@@ -84,6 +118,9 @@ defmodule Koko.Web.DocumentController do
     end
   end
 
+  @doc """
+  A user can only delete the documents he owns.
+  """
   def delete(conn, %{"id" => id}) do
     document = DocManager.get_document!(id)
     with {:ok, user_id} <- Token.user_id_from_header(conn),

@@ -4,10 +4,11 @@ defmodule Koko.Web.DocumentControllerTest do
   alias Koko.DocManager
   alias Koko.Authentication
 
+  # https://hexdocs.pm/phoenix/Phoenix.ConnTest.html
+
   @create_attrs %{content: "some content", rendered_content: "some rendered_content", title: "some title",
      attributes: %{public: true}}
   @update_attrs %{content: "some updated content", rendered_content: "some updated rendered_content", title: "some updated title"}
-  #@invalid_attrs %{content: nil, rendered_content: nil, title: nil}
   @invalid_attrs %{content: "uuu"}
   @user_attrs %{"admin" => false, "blurb" => "BLURB!", "email" => "yozo@foo.io", "name" => "Yo T. Zo",
      "username" => "yozo", "password" => "yujo&$123"}

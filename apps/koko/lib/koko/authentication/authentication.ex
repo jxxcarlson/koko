@@ -1,6 +1,17 @@
 defmodule Koko.Authentication do
   @moduledoc """
-  The boundary for the Authentication system.
+  The boundary for the Authentication system. It manages
+  user registration and authentication: a registered user
+  can present email and password to receive a JWTtoken that
+  grants access to the system.  A user can then create documents
+  (of which he will be the author/owner), as well as list,read, edit,
+  and delete them.  User actions run through /api/users and document
+  actions through /api/documents.  Documents which carry the attribute
+  public: true may be listed and read through the /api/public/documents
+  route.
+
+  NOTE: 
+
   """
 
   import Ecto.Query, warn: false
@@ -143,22 +154,6 @@ defmodule Koko.Authentication do
     end
   end
 
-  #   def login_by_username_and_pass(conn, username, given_pass, opts) do
-  #     repo = Keyword.fetch!(opts, :repo)
-  #     user = Repo.get_by(User, username: username)
-  #     cond do
-  #       user && checkpw(given_pass, user.password_hash) ->
-  #        {:ok, login(conn, user)}
-  #       user ->
-  #         {:error, :unauthorized, conn}
-  #       true ->
-  #         dummy_checkpw()
-  #         {:error, :not_found, conn}
-  #     end
-  #   end
-  #
-  #   def logout(conn) do
-  #     configure_session(conn, drop: true)
-  #   end
+
 
 end
