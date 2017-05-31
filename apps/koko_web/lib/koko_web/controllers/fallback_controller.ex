@@ -20,14 +20,12 @@
   end
 
   def call(conn, {:error, message}) do
-    IO.puts "FBC CALL (2)"
-    IO.puts "MESSAGE: #{message}"
     conn
     |> put_status(:not_found)
     |> render(Koko.Web.ErrorView, "error.json", error: message)
   end
 
-  def call(_, _) do
+  def call(_, _ ) do
       IO.puts "FBC CALL (4)"
       IO.puts "Unknown error"
     |> render(Koko.Web.ErrorView, :"501")

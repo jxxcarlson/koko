@@ -139,11 +139,12 @@ defmodule Koko.Authentication.Token do
     # jc, {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTYxNzgxNDksInVzZXJfaWQiOjIsInVzZXJuYW1lIjoianh4Y2FybHNvbiJ9.KUfL8dk2_Xz2ltaPqXyfoLb7ZfZ1n4_JCpJFDZgu2Zc"}
 
     def authenticated_from_header(conn) do
+      IO.puts "AUTH CONN"
       with {:ok, token} <- token_from_header(conn)
       do
          {:ok,  authenticated(token)}
       else
-        _ -> {:error, "Not authorized"}
+        _ -> {:error, "authentication error (2)"}
       end
     end
 
