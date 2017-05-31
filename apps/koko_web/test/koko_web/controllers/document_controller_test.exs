@@ -3,6 +3,7 @@ defmodule Koko.Web.DocumentControllerTest do
 
   alias Koko.DocManager
   alias Koko.Authentication
+  alias Koko.DocManager.Search
 
   # https://hexdocs.pm/phoenix/Phoenix.ConnTest.html
 
@@ -61,7 +62,7 @@ defmodule Koko.Web.DocumentControllerTest do
   test "lists all USER entries on index" do
     [user, token, _] = set_values()
 
-    n = DocManager.list_documents(:user, user.id) |> length
+    n = Search.by_query_string_for_user("", user.id) |> length
 
     conn = build_conn()
     |> put_req_header("accept", "application/json")

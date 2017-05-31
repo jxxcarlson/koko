@@ -3,8 +3,6 @@ defmodule Koko.DocManager.Search do
   alias Koko.DocManager.Document
   alias Koko.DocManager.Query
   alias Koko.Repo
-  alias Koko.DocManager.QP
-
 
   def by_command_list(command_list) do
     command_list
@@ -25,13 +23,20 @@ defmodule Koko.DocManager.Search do
   end
 
   def by_query_string_for_user(query_string, user_id) do
-    query_string = if query_string == "" || query_string == nil do
-      "sort=title"
+    query_string = query_string || ""
+    # prepend author query
+    query_string = if query_string == "" do
+       "author=#{user_id}"
     else
-      query_string
+       "author=#{user_id}&#{query_string}"
     end
-    query_string = if !String.contains?(query_string, "sort=title"), do: "#{query_string}&sort=title"
-    by_query_string("author=#{user_id}&#{query_string}")
+    # postpend sort by title
+    query_string = if String.contains?(query_string, "sort=title") do
+      query_string
+    else
+      "#{query_string}&sort=title"
+    end
+    by_query_string(query_string)
   end
 
   def for_public do
