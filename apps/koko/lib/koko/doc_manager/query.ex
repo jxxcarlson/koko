@@ -7,9 +7,6 @@ defmodule Koko.DocManager.Query do
   yields the output [[foo, 1], [bar, 2]]
   """
 
-def build_query1(args) do
-
-end
 
  def by(query, cmd, arg) do
     case {cmd, arg} do

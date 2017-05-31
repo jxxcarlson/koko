@@ -5,24 +5,11 @@ defmodule Koko.DocManager.Search do
   alias Koko.Repo
   alias Koko.DocManager.QP
 
-  require Koko.DocManager.QP
-
 
   def by_command_list(command_list) do
-    n = length command_list
-    case n do
-      1 ->
-        QP.query1(command_list)
-      2 ->
-        QP.query2(command_list)
-      3 ->
-        QP.query3(command_list)
-      4 ->
-        QP.query4(command_list)
-      _ ->
-        QP.query5(command_list)
-    end
-
+    command_list
+    |> Enum.reduce(Document, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
+    |> Repo.all
   end
 
   def parse_query_string(str) do
@@ -30,14 +17,18 @@ defmodule Koko.DocManager.Search do
     |> String.split("&")
     |> (Enum.map fn(item) -> String.split(item, "=") end)
   end
-  #
-  # def by_query_string(query_string) do
-  #   qs = query_string
-  #   |> parse_query_string
-  #   IO.inspect qs
-  #   qs
-  #   |> by_command_list
-  # end
+
+  def by_query_string(query_string) do
+    query_string
+    |> parse_query_string
+    |> by_command_list
+  end
+
+  def by_query_string_for_user(query_string, user_id) do
+    if query_string == "" || query_string == nil, do: query_string = "sort=title"
+    if !String.contains?(query_string, "sort=title"), do: query_string = "#{query_string}&sort=title"
+    by_query_string("author=#{user_id}&#{query_string}")
+  end
 
 
   def for_public do

@@ -19,6 +19,7 @@ defmodule Koko.Web.DocumentController do
   alias Koko.DocManager
   alias Koko.DocManager.Document
   alias Koko.Authentication.Token
+  alias Koko.DocManager.Search
 
   action_fallback Koko.Web.FallbackController
 
@@ -27,11 +28,10 @@ defmodule Koko.Web.DocumentController do
   defined in the token.
   """
   def index(conn, _params) do
-    IO.puts "QS: #{conn.query_string}"
     with {:ok, user_id} <- Token.user_id_from_header(conn)
     do
-      # documents = DocManager.list_documents(:user, user_id)
-      documents = Search.for_user_with_query_string(user_id, conn.query_string) 
+      documents = Search.by_query_string_for_user(conn.query_string, user_id)
+      # documents = Search.by_query_string(query_string)
       render(conn, "index.json", documents: documents)
     else
       _ -> {:error, "Not authorized"}

@@ -14,6 +14,7 @@ defmodule Koko.Web.DocumentView do
     %{id: document.id,
       author_id: document.author_id,
       title: document.title,
+      attributes: document.attributes,
       content: document.content
     }
   end
