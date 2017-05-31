@@ -11,21 +11,21 @@ defmodule Koko.DocManager.Query do
  def by(query, cmd, arg) do
     case {cmd, arg} do
       {"author",_} ->
-        for_author(query, arg)
+        has_author(query, arg)
       {"title", _} ->
-        select_by_title(query, arg)
+        has_title(query, arg)
       {"sort", "date"} ->
         sort_by_inserted_at(query)
       {"sort", "title"} ->
           sort_by_title(query)
       {"text",_} ->
-        full_text_search(query, arg)
+        has_text(query, arg)
       _ ->
-        select_by_title(query, arg)
+        has_title(query, arg)
     end
  end
 
-  def for_author(query, author_id) do
+  def has_author(query, author_id) do
     from d in query,
       where: d.author_id == ^author_id
   end
@@ -40,15 +40,15 @@ defmodule Koko.DocManager.Query do
         order_by: [desc: d.inserted_at]
   end
 
-  def select_by_title(query, term) do
+  def has_title(query, term) do
        from d in query,
          where: ilike(d.title, ^"%#{term}%")
   end
 
-  def full_text_search(query, term) do
+  def has_text(query, term) do
        from d in query,
          where: ilike(d.content, ^"%#{term}%")
-   end
+  end
 
 
   # https://hackernoon.com/how-to-query-jsonb-beginner-sheet-cheat-4da3aa5082a3
