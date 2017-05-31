@@ -1,5 +1,6 @@
 defmodule Koko.Repo do
   use Ecto.Repo, otp_app: :koko
+  
 
   @doc """
   Dynamically loads the repository url from the

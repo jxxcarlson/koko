@@ -27,9 +27,11 @@ defmodule Koko.Web.DocumentController do
   defined in the token.
   """
   def index(conn, _params) do
+    IO.puts "QS: #{conn.query_string}"
     with {:ok, user_id} <- Token.user_id_from_header(conn)
     do
-      documents = DocManager.list_documents(:user, user_id)
+      # documents = DocManager.list_documents(:user, user_id)
+      documents = Search.for_user_with_query_string(user_id, conn.query_string) 
       render(conn, "index.json", documents: documents)
     else
       _ -> {:error, "Not authorized"}

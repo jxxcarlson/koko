@@ -2,10 +2,57 @@ defmodule Koko.DocManager.Query do
 
   import Ecto.Query
 
+  @doc """
+  Return a list of 2-lists, e.g., the input "foo=1&bar=2"
+  yields the output [[foo, 1], [bar, 2]]
+  """
+
+def build_query1(args) do
+
+end
+
+ def by(query, cmd, arg) do
+    case {cmd, arg} do
+      {"author",_} ->
+        for_author(query, arg)
+      {"title", _} ->
+        select_by_title(query, arg)
+      {"sort", "date"} ->
+        sort_by_inserted_at(query)
+      {"sort", "title"} ->
+          sort_by_title(query)
+      {"text",_} ->
+        full_text_search(query, arg)
+      _ ->
+        select_by_title(query, arg)
+    end
+ end
+
   def for_author(query, author_id) do
     from d in query,
       where: d.author_id == ^author_id
   end
+
+  def sort_by_title(query) do
+        from d in query,
+        order_by: [asc: d.title]
+  end
+
+  def sort_by_inserted_at(query) do
+        from d in query,
+        order_by: [desc: d.inserted_at]
+  end
+
+  def select_by_title(query, term) do
+       from d in query,
+         where: ilike(d.title, ^"%#{term}%")
+  end
+
+  def full_text_search(query, term) do
+       from d in query,
+         where: ilike(d.content, ^"%#{term}%")
+   end
+
 
   # https://hackernoon.com/how-to-query-jsonb-beginner-sheet-cheat-4da3aa5082a3
   # https://elixirnation.io/references/ecto-query-examples

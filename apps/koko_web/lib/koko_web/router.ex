@@ -1,5 +1,6 @@
 defmodule Koko.Web.Router do
   use Koko.Web, :router
+  # use Plug.Router
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -13,6 +14,8 @@ defmodule Koko.Web.Router do
 
     get "/public/documents", DocumentController, :index_public
     get "/public/documents/:id", DocumentController, :show_public
-
   end
+
+  
+
 end
