@@ -31,7 +31,6 @@ defmodule Koko.Web.DocumentController do
     with {:ok, user_id} <- Token.user_id_from_header(conn)
     do
       documents = Search.by_query_string_for_user(conn.query_string, user_id)
-      # documents = Search.by_query_string(query_string)
       render(conn, "index.json", documents: documents)
     else
       _ -> {:error, "Not authorized"}

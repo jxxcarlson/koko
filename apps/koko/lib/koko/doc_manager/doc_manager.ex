@@ -27,7 +27,7 @@ defmodule Koko.DocManager do
   end
 
   def list_documents(:user, user_id) do
-    Search.for_author(user_id)
+    Search.by_query_string("author=#{user_id}")
   end
 
 

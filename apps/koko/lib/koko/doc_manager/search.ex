@@ -30,31 +30,11 @@ defmodule Koko.DocManager.Search do
     by_query_string("author=#{user_id}&#{query_string}")
   end
 
-
   def for_public do
     Ecto.Adapters.SQL.query!(Repo, Query.public).rows
     |> List.flatten
     |> (Enum.map fn(id) -> Repo.get!(Document, id) end)
   end
 
-
-
-  def for_user_with_query_string(user_id, query_string) do
-
-  end
-
-  def by_title_for_user(term, user_id) do
-    Document
-       |> Query.for_author(user_id)
-       |> Query.select_by_title(term)
-       |> Query.sort_by_title
-       |> Repo.all
-  end
-
-  def for_author(author_id) do
-    Document
-       |> Query.for_author(author_id)
-       |> Repo.all
-  end
 
 end
