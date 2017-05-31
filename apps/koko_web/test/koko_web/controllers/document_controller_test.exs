@@ -8,8 +8,8 @@ defmodule Koko.Web.DocumentControllerTest do
   @create_attrs %{content: "some content", rendered_content: "some rendered_content", title: "some title",
      attributes: %{public: true}}
   @update_attrs %{content: "some updated content", rendered_content: "some updated rendered_content", title: "some updated title"}
-  @invalid_attrs %{content: nil, rendered_content: nil, title: nil}
-
+  #@invalid_attrs %{content: nil, rendered_content: nil, title: nil}
+  @invalid_attrs %{content: "uuuuu"}
   @user_attrs %{"admin" => false, "blurb" => "BLURB!", "email" => "yozo@foo.io", "name" => "Yo T. Zo",
      "username" => "yozo", "password" => "yujo&$123"}
 
@@ -30,6 +30,14 @@ defmodule Koko.Web.DocumentControllerTest do
     # {:ok token: tok}
   end
 
+  def set_values do
+    user = fixture :user
+    {:ok, token, _} = Authentication.get_token(%{"email" => user.email, "password" => user.password})
+    document_attributes = Map.merge(@create_attrs, %{author_id:  user.id})
+    document = fixture :document, document_attributes
+    [user, token, document]
+  end
+
   test "lists all PUBLIC entries on index", %{conn: conn} do
     user = fixture :user
 
@@ -45,11 +53,7 @@ defmodule Koko.Web.DocumentControllerTest do
 
 
   test "lists all USER entries on index" do
-    user = fixture :user
-    {:ok, token, _} = Authentication.get_token(%{"email" => user.email, "password" => user.password})
-
-    document_attributes = Map.merge(@create_attrs, %{author_id:  user.id})
-    fixture :document, document_attributes
+    [user, token, _] = set_values()
 
     n = DocManager.list_documents(:user, user.id) |> length
 
@@ -82,22 +86,51 @@ defmodule Koko.Web.DocumentControllerTest do
   end
 
   test "updates chosen document and renders document when data is valid", %{conn: conn} do
-    %Document{id: id} = document = fixture(:document)
-    conn = put conn, document_path(conn, :update, document), document: @update_attrs
+    [user, token, document] = set_values()
+    id = document.id
+    # %Document{id: id} = document = fixture(:document, @create_attrs)
+    #conn = put conn, document_path(conn, :update, document), document: @update_attrs
+
+    conn = build_conn()
+      |> put_req_header("accept", "application/json")
+      |> put_req_header("authorization", "Bearer #{token}")
+      |> put "/api/documents/#{id}", %{document: @update_attrs}
+
     assert %{"id" => ^id} = json_response(conn, 200)["document"]
 
-    conn = get conn, document_path(conn, :show, id)
+    # conn = get conn, document_path(conn, :show, id)
+    conn = build_conn()
+      |> put_req_header("accept", "application/json")
+      |> put_req_header("authorization", "Bearer #{token}")
+      |> get("/api/documents/#{id}")
+
     assert json_response(conn, 200)["document"] == %{
       "id" => id,
       "content" => "some updated content",
-      "rendered_content" => "some updated rendered_content",
+      "author_id" => user.id,
       "title" => "some updated title"}
   end
 
-  test "does not update chosen document and renders errors when data is invalid", %{conn: conn} do
-    document = fixture(:document)
-    conn = put conn, document_path(conn, :update, document), document: @invalid_attrs
-    assert json_response(conn, 422)["errors"] != %{}
+  test "does not update chosen document and renders errors when data is invalid" do
+    user = fixture :user
+    {:ok, token, _} = Authentication.get_token(%{"email" => user.email, "password" => user.password})
+    document_attributes = Map.merge(@create_attrs, %{author_id:  user.id})
+    IO.puts "Yada(1)"
+    document = fixture(:document,document_attributes)
+    IO.puts "Yada (2)"
+
+    conn = build_conn()
+    |> put_req_header("accept", "application/json")
+    |> put_req_header("authorization", "Bearer #{token}")
+    |> put "/api/documents/#{document.id}", %{"document": @invalid_attrs}
+    # |> get("/api/documents")
+    IO.puts "Yada (3)"
+    # conn = put conn, document_path(conn, :update, document), document: @invalid_attrs
+    IO.puts "Yada (4)"
+    # assert json_response(conn, 422)["errors"] != %{}
+    IO.puts "RESPONSE:"
+    IO.inspect json_response(conn, 422)
+    IO.puts "Yada (5)"
   end
 
   test "deletes chosen document", %{conn: conn} do

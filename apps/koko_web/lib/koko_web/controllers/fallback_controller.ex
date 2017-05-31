@@ -29,6 +29,7 @@
 
   def call(_, _) do
       IO.puts "FBC CALL (4)"
+      IO.puts "Unknown error"
     |> render(Koko.Web.ErrorView, :"501")
   end
 
