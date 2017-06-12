@@ -1,4 +1,4 @@
-defmodule Koko.Web.DocumentController do
+                                                                                                                                    defmodule Koko.Web.DocumentController do
   use Koko.Web, :controller
 
   @moduledoc """
@@ -41,7 +41,11 @@ defmodule Koko.Web.DocumentController do
   All public documents are listable and searchable.
   """
   def index_public(conn, _params) do
-    documents = DocManager.list_documents(:public)
+    if conn.query_string == "all" do
+      documents = DocManager.list_documents(:public)
+    else
+      documents = Search.by_query_string(conn.query_string)
+    end
     render(conn, "index.json", documents: documents)
   end
 
