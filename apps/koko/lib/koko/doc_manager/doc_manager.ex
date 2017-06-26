@@ -61,7 +61,10 @@ defmodule Koko.DocManager do
 
   """
   def create_document(attrs, author_id) do
-    attrs = Map.merge(attrs, %{"author_id" => author_id})
+    attrs =
+      Map.merge(attrs, %{"author_id" => author_id})
+      |> Map.merge %{ "attributes" => Document.default_attributes }
+    IO.inspect attrs
     %Document{}
     |> Document.changeset(attrs)
     |> Repo.insert()
@@ -87,6 +90,9 @@ defmodule Koko.DocManager do
 
   """
   def update_document(%Document{} = document, attrs) do
+    default_attrs = %{ "attributes" => Document.default_attributes }
+    attrs =
+      Map.merge(attrs, default_attrs)
     document
     |> Document.changeset(attrs)
     |> Repo.update()

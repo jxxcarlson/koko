@@ -20,4 +20,16 @@ defmodule Koko.DocManager.Document do
     |> cast(attrs, [:title, :author_id, :content, :rendered_content, :attributes])
     |> validate_required([:title, :author_id, :content])
   end
+
+  def default_attributes() do
+    %{ "public" => false,
+      "text_type" => "adoc",
+       "doc_type" => "doc"
+     }
+  end
+
+  def default_attributes(document) do
+    Map.merge default_attributes(), document.attributes
+  end
+
 end

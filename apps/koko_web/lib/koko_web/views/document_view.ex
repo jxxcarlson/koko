@@ -15,7 +15,8 @@ defmodule Koko.Web.DocumentView do
       author_id: document.author_id,
       title: document.title,
       content: document.content,
-      rendered_content: document.rendered_content
+      rendered_content: document.rendered_content,
+      attributes: document.attributes
     }
   end
 end
