@@ -30,7 +30,11 @@
   def index(conn, _params) do
     with {:ok, user_id} <- Token.user_id_from_header(conn)
     do
-      documents = Search.by_query_string_for_user(conn.query_string, user_id)
+      if conn.query_string == "all" do
+        documents = DocManager.list_documents(:user, user_id)
+      else
+        documents = Search.by_query_string_for_user(conn.query_string, user_id)
+      end
       render(conn, "index.json", documents: documents)
     else
       _ -> {:error, "Not authorized"}
