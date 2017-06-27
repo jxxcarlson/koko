@@ -7,6 +7,7 @@ defmodule Koko.DocManager.Search do
   defp by_command_list(command_list) do
     command_list
     |> Enum.reduce(Document, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
+    |> Query.sort_by_updated_at
     |> Repo.all
   end
 

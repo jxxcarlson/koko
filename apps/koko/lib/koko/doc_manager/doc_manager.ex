@@ -24,7 +24,7 @@ defmodule Koko.DocManager do
   end
 
   def list_documents(:public) do
-    Document |> Query.is_public |> Repo.all
+    Document |> Query.is_public |> Query.sort_by_updated_at |> Repo.all
     # Search.for_public
   end
 
@@ -65,7 +65,7 @@ defmodule Koko.DocManager do
   def create_document(attrs, author_id) do
     attrs =
       Map.merge(attrs, %{"author_id" => author_id})
-      |> Map.merge %{ "attributes" => Document.default_attributes }
+      |> Map.merge(%{ "attributes" => Document.default_attributes })
     IO.inspect attrs
     %Document{}
     |> Document.changeset(attrs)
@@ -94,7 +94,7 @@ defmodule Koko.DocManager do
   def update_document(%Document{} = document, attrs) do
     default_attrs = %{ "attributes" => Document.default_attributes }
     attrs =
-      Map.merge(attrs, default_attrs)
+      Map.merge(default_attrs, attrs)
     document
     |> Document.changeset(attrs)
     |> Repo.update()

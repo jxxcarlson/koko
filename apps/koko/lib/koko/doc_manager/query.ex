@@ -38,8 +38,6 @@ defmodule Koko.DocManager.Query do
     end
  end
 
-
-
   def has_author(query, author_id) do
     from d in query,
       where: d.author_id == ^author_id
@@ -53,6 +51,11 @@ defmodule Koko.DocManager.Query do
   def sort_by_inserted_at(query) do
         from d in query,
         order_by: [desc: d.inserted_at]
+  end
+
+  def sort_by_updated_at(query) do
+        from d in query,
+        order_by: [desc: d.updated_at]
   end
 
   def has_title(query, term) do
@@ -76,22 +79,11 @@ defmodule Koko.DocManager.Query do
 
   # BUILD QUERIES (macros): https://github.com/belaustegui/trans/blob/master/lib/trans/query_builder.ex#L90-L100
 
-  # def is_public(query)do
-  #   from d in query,
-  #     where: QueryMacro.has_attribute(d.attributes, ^"public", ^true)
-  # end
-
   def is_public(query)do
     # fragment("? @&gt; '{?: ?}'", unquote(field), unquote(key), unquote(value))
     from d in query,
       where: fragment("attributes @> '{\"public\": true}'")
   end
-
-  def public do
-"""
-    SELECT id FROM documents WHERE attributes @> '{"public": true}';
-  """
-end
 
 
 end
