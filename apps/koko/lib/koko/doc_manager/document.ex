@@ -23,8 +23,8 @@ defmodule Koko.DocManager.Document do
 
   def default_attributes() do
     %{ "public" => false,
-      "text_type" => "adoc",
-       "doc_type" => "doc"
+       "text_type" => "adoc",
+       "doc_type" => "standard"
      }
   end
 

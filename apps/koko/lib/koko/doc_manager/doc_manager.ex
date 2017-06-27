@@ -8,6 +8,7 @@ defmodule Koko.DocManager do
 
   alias Koko.DocManager.Document
   alias Koko.DocManager.Search
+  alias Koko.DocManager.Query
 
   @doc """
   Returns the list of documents.
@@ -23,7 +24,8 @@ defmodule Koko.DocManager do
   end
 
   def list_documents(:public) do
-    Search.for_public
+    Document |> Query.is_public |> Repo.all
+    # Search.for_public
   end
 
   def list_documents(:user, user_id) do
