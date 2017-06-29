@@ -40,11 +40,7 @@ defmodule Koko.DocManager.Search do
     by_query_string(query_string)
   end
 
-  def for_public do
-    Ecto.Adapters.SQL.query!(Repo, Query.public).rows
-    |> List.flatten
-    |> (Enum.map fn(id) -> Repo.get!(Document, id) end)
-  end
+
 
 
 end
