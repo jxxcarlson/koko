@@ -1,4 +1,5 @@
-                                                                                                                                    defmodule Koko.Web.DocumentController do
+defmodule Koko.Web.DocumentController do
+                                                                                                                                      defmodule Koko.Web.DocumentController do
   use Koko.Web, :controller
 
   @moduledoc """
@@ -115,7 +116,7 @@
 
     document_params = Koko.Utility.project2map(payload)
     document = DocManager.get_document!(id)
-    failure_message = "User id and document author id do not match"
+    failure_message = "User id and document author id dont' match"
 
     with {:ok, user_id} <- Token.user_id_from_header(conn),
          {:ok, "match"} <- match_integers(user_id, document.author_id, "match", failure_message),
@@ -141,4 +142,6 @@
       _ -> {:error, "Could not delete document"}
     end
   end
+
+end
 end
