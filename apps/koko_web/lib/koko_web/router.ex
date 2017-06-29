@@ -14,8 +14,10 @@ defmodule Koko.Web.Router do
 
     get "/public/documents", DocumentController, :index_public
     get "/public/documents/:id", DocumentController, :show_public
+
+    get "/hello", StatusController, :hello
   end
 
-  
+
 
 end
