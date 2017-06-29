@@ -28,8 +28,10 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
         has_author(query, arg)
       {"title", _} ->
         has_title(query, arg)
-      {"sort", "date"} ->
+      {"sort", "created"} ->
         sort_by_inserted_at(query)
+      {"sort", "updated"} ->
+          sort_by_updated_at(query)
       {"sort", "title"} ->
           sort_by_title(query)
       {"text",_} ->
