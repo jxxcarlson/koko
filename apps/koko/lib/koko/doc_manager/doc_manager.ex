@@ -65,6 +65,7 @@ defmodule Koko.DocManager do
     attrs =
       Map.merge(attrs, %{"author_id" => author_id})
       |> Map.merge(%{ "attributes" => Document.default_attributes })
+      |> Map.merge(%{ "tags" => []})
     IO.inspect attrs
     %Document{}
     |> Document.changeset(attrs)
@@ -98,6 +99,14 @@ defmodule Koko.DocManager do
     |> Document.changeset(attrs)
     |> Repo.update()
   end
+
+  # Assume a comma or space separated string
+  def update_tags_with_string(document, str) do
+     tags = Regex.split(~r/[, ]/, str) |> Enum.filter(fn(item) -> item != "" end) |> Enum.map(fn(item) -> String.trim(item) end )
+     update_document(document,%{"tags" => tags})
+  end
+
+
 
   @doc """
   Deletes a Document.

@@ -33,4 +33,11 @@ defmodule Koko.DocManager.Document do
     Map.merge default_attributes(), document.attributes
   end
 
+  def tags_as_string(document) do
+    document.tags |> Enum.join(", ")
+  end
+
+
+
+
 end
