@@ -1,9 +1,9 @@
-defmodule Koko.Web.DocumentController do
-                                                                                                                                  defmodule Koko.Web.DocumentController do
-  use Koko.Web, :controller
+defmodule Koko.Web.StatusController do
 
-  def hello(conn, _params) do
-    render(conn, "hello.json")
-  end
+use Koko.Web, :controller
+
+def hello(conn, _params) do
+  render(conn, "hello.json")
+end
 
 end
