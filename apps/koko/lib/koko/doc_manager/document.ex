@@ -10,6 +10,7 @@ defmodule Koko.DocManager.Document do
     field :title, :string
     field :author_id, :integer
     field :attributes, :map
+    field :tags, {:array, :string}
 
     timestamps()
   end
@@ -17,7 +18,7 @@ defmodule Koko.DocManager.Document do
   @doc false
   def changeset(%Document{} = document, attrs) do
     document
-    |> cast(attrs, [:title, :author_id, :content, :rendered_content, :attributes])
+    |> cast(attrs, [:title, :author_id, :content, :rendered_content, :attributes, :tags])
     |> validate_required([:title, :author_id, :content])
   end
 
