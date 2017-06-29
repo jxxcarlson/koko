@@ -6,4 +6,10 @@ defmodule Koko.DocManager.QueryMacro do
     end
   end
 
+  defmacro in_any(left, right) do
+    quote do
+      fragment("? = ANY (?)", unquote(left), unquote(right))
+    end
+  end
+
 end
