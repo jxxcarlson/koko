@@ -15,7 +15,8 @@ defmodule Koko.DocManager.Query do
 
     iex> Document |> Query.has_title("math") |> Query.has_author(2) |> Repo.all
 
-    alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; alias Koko.DocManager.Query
+alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; alias Koko.DocManager
+
     Document |> Query.is_public |> Repo.all
 
   """
@@ -33,6 +34,12 @@ defmodule Koko.DocManager.Query do
           sort_by_title(query)
       {"text",_} ->
         has_text(query, arg)
+      {"key", _} ->
+        has_tag(query, arg)
+      {"public", "yes"}  ->
+        is_public(query)
+      {"public", "no"}  ->
+        is_not_public(query)
       _ ->
         has_title(query, arg)
     end
@@ -68,6 +75,25 @@ defmodule Koko.DocManager.Query do
          where: ilike(d.content, ^"%#{term}%")
   end
 
+  def is_public(query)do
+    # fragment("? @&gt; '{?: ?}'", unquote(field), unquote(key), unquote(value))
+    from d in query,
+      where: fragment("attributes @> '{\"public\": true}'")
+  end
+
+  def is_not_public(query)do
+    # fragment("? @&gt; '{?: ?}'", unquote(field), unquote(key), unquote(value))
+    from d in query,
+      where: fragment("attributes @> '{\"public\": false}'")
+  end
+
+
+  def has_tag(query, tag) do
+    from d in query,
+      where: ^tag in d.tags
+      # fragment("? @> '{?}'", d.tags, ^tag)
+  end
+
   # https://hackernoon.com/how-to-query-jsonb-beginner-sheet-cheat-4da3aa5082a3
   # https://elixirnation.io/references/ecto-query-examples
   # https://elixirforum.com/t/how-do-i-use-the-postgres-jsonb-postgrex-json-extension/3214/2
@@ -78,12 +104,6 @@ defmodule Koko.DocManager.Query do
   # Repo.update(cs)
 
   # BUILD QUERIES (macros): https://github.com/belaustegui/trans/blob/master/lib/trans/query_builder.ex#L90-L100
-
-  def is_public(query)do
-    # fragment("? @&gt; '{?: ?}'", unquote(field), unquote(key), unquote(value))
-    from d in query,
-      where: fragment("attributes @> '{\"public\": true}'")
-  end
 
 
 end
