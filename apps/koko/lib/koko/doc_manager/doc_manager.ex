@@ -25,7 +25,6 @@ defmodule Koko.DocManager do
 
   def list_documents(:public) do
     Document |> Query.is_public |> Query.sort_by_updated_at |> Repo.all
-    # Search.for_public
   end
 
   def list_documents(:user, user_id) do
