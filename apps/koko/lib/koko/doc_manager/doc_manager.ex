@@ -67,9 +67,15 @@ defmodule Koko.DocManager do
       |> Map.merge(%{ "attributes" => Document.default_attributes })
       |> Map.merge(%{ "tags" => []})
     IO.inspect attrs
-    %Document{}
-    |> Document.changeset(attrs)
-    |> Repo.insert()
+    result = %Document{}
+      |> Document.changeset(attrs)
+      |> Repo.insert()
+    case result  do
+      {:ok, doc} ->
+        Document.set_identifier(doc)
+      {:error, error} ->
+        IO.puts "Could not create document"
+    end
   end
 
   def create_document(attrs \\ %{}) do

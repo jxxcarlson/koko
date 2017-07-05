@@ -3,6 +3,8 @@ defmodule Koko.DocManager.Document do
   import Ecto.Changeset
   import SecureRandom
   alias Koko.DocManager.Document
+  alias Koko.Repo
+  alias Koko.Authentication.User
 
 
   schema "documents" do
@@ -40,19 +42,39 @@ defmodule Koko.DocManager.Document do
   end
 
   def normalize_string(str) do
-    Regex.replace(~r/[^A-Za-z0-9_.:]/, str, "")
+    Regex.replace(~r/[^A-Za-z0-9_.: ]/, str, "") |> String.replace(" ", "_")
   end
 
  # alias Koko.DocManager.Document; alias Koko.Repo; alias Koko.Authentication.User;
- # u = Repo.get(User, 1); d = Repo.get(Document, 1)
-  def make_identifier(user, document) do
-    part1 = user.username
-    part2 = document.title |> String.downcase |> normalize_string
+   # u = Repo.get(User, 1); d = Repo.get(Document, 1)
+  def make_identifier(document) do
+    user = Repo.get(User, document.author_id)
+    part0 = user.username
+    part1 = document.title |> String.downcase |> normalize_string
     date = document.inserted_at
-    part3 = "#{date.year}-#{date.month}-#{date.day}@#{date.hour}:#{date.minute}:#{date.second}"
-    part4 = SecureRandom.hex(3)
-    Enum.join([part1, part2, part3, part4], ".")
+    part2 = "#{date.year}-#{date.month}-#{date.day}@#{date.hour}:#{date.minute}:#{date.second}"
+    part3 = SecureRandom.hex(3)
+    Enum.join([part0,  part1, part2, part3], ".")
   end
 
+  def set_identifier(document) do
+   identifier = make_identifier(document)
+   cs = changeset(document, %{identifier: identifier})
+   Repo.update(cs)
+  end
+
+  def update_identifier(document) do
+    part = String.split(document.identifier, ".")
+    part1 = document.title |> String.downcase |> normalize_string
+    identifier = Enum.join [(Enum.at part, 0), part1, (Enum.at part, 2), (Enum.at part, 3)], "."
+    cs = changeset(document, %{identifier: identifier})
+    Repo.update(cs)
+  end
+
+  def identifier_suffix(document) do
+      part = String.split(document.identifier, ".")
+      tail = part |> tl |> tl
+      Enum.join(tail, ".")
+  end
 
 end

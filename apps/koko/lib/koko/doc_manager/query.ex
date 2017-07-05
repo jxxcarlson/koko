@@ -72,6 +72,11 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
          where: ilike(d.title, ^"%#{term}%")
   end
 
+  def has_identifier_suffix(query, term) do
+    from d in query,
+      where: ilike(d.identifier, ^"%#{term}%")
+  end
+
   def has_text(query, term) do
        from d in query,
          where: ilike(d.content, ^"%#{term}%")
