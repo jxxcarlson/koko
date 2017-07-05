@@ -101,9 +101,15 @@ defmodule Koko.DocManager do
     default_attrs = %{ "attributes" => Document.default_attributes }
     attrs =
       Map.merge(default_attrs, attrs)
-    document
-    |> Document.changeset(attrs)
-    |> Repo.update()
+    result = document
+      |> Document.changeset(attrs)
+      |> Repo.update()
+    case result do
+     {:ok, doc} ->
+       Document.update_identifier(doc)
+     {:error, _} ->
+       document
+     end
   end
 
   # Assume a comma or space separated string
