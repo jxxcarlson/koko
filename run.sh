@@ -1,1 +1,1 @@
-iex -S mix phx.server
+iex -S mix phoenix.server

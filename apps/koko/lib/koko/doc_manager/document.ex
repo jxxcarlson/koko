@@ -1,6 +1,7 @@
 defmodule Koko.DocManager.Document do
   use Ecto.Schema
   import Ecto.Changeset
+  import SecureRandom
   alias Koko.DocManager.Document
 
 
@@ -11,6 +12,7 @@ defmodule Koko.DocManager.Document do
     field :author_id, :integer
     field :attributes, :map
     field :tags, {:array, :string}
+    field :identifier, :string
 
     timestamps()
   end
@@ -18,7 +20,7 @@ defmodule Koko.DocManager.Document do
   @doc false
   def changeset(%Document{} = document, attrs) do
     document
-    |> cast(attrs, [:title, :author_id, :content, :rendered_content, :attributes, :tags])
+    |> cast(attrs, [:title, :author_id, :content, :rendered_content, :attributes, :tags, :identifier])
     |> validate_required([:title, :author_id, :content])
   end
 
@@ -37,7 +39,20 @@ defmodule Koko.DocManager.Document do
     document.tags |> Enum.join(", ")
   end
 
+  def normalize_string(str) do
+    Regex.replace(~r/[^A-Za-z0-9_.:]/, str, "")
+  end
 
+ # alias Koko.DocManager.Document; alias Koko.Repo; alias Koko.Authentication.User;
+ # u = Repo.get(User, 1); d = Repo.get(Document, 1)
+  def make_identifier(user, document) do
+    part1 = user.username
+    part2 = document.title |> String.downcase |> normalize_string
+    date = document.inserted_at
+    part3 = "#{date.year}-#{date.month}-#{date.day}@#{date.hour}:#{date.minute}:#{date.second}"
+    part4 = SecureRandom.hex(3)
+    Enum.join([part1, part2, part3, part4], ".")
+  end
 
 
 end
