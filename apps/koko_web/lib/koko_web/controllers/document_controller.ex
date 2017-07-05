@@ -34,10 +34,13 @@ defmodule Koko.Web.DocumentController do
           documents = DocManager.list_documents(:user, user_id)
         else
           documents = Search.by_query_string_for_user(conn.query_string, user_id)
+          IO.puts "#{length(documents)} Documents found"
         end
+        IO.puts "#{length(documents)} Documents found"
         render(conn, "index.json", documents: documents)
         else
-        _ -> {:error, "Not authorized"}
+        _ -> IO.puts "Error getting documents; "; {:error, "Not authorized"}
+
       end
   end
 
