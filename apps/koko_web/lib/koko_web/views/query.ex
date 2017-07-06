@@ -23,11 +23,14 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
 
 
  def by(query, cmd, arg) do
+     IO.inspect [query, cmd, arg]
     case {cmd, arg} do
       {"author",_} ->
         has_author(query, arg)
       {"title", _} ->
         has_title(query, arg)
+      {"id", _} ->
+        has_identifier_suffix(query, arg)
       {"sort", "created"} ->
         sort_by_inserted_at(query)
       {"sort", "updated"} ->
@@ -50,6 +53,12 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
   def has_author(query, author_id) do
     from d in query,
       where: d.author_id == ^author_id
+  end
+
+  def has_identifier_suffix(query, term) do
+    IO.puts "has_identifier_suffix, term = #{term}"
+    from d in query,
+      where: ilike(d.identifier, ^"%#{term}%")
   end
 
   def sort_by_title(query) do
