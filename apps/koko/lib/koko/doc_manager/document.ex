@@ -15,6 +15,7 @@ defmodule Koko.DocManager.Document do
     field :attributes, :map
     field :tags, {:array, :string}
     field :identifier, :string
+    embeds_many :children, Child
 
     timestamps()
   end
@@ -23,6 +24,7 @@ defmodule Koko.DocManager.Document do
   def changeset(%Document{} = document, attrs) do
     document
     |> cast(attrs, [:title, :author_id, :content, :rendered_content, :attributes, :tags, :identifier])
+    # |> cast_embed([:children])
     |> validate_required([:title, :author_id, :content])
   end
 
@@ -77,4 +79,27 @@ defmodule Koko.DocManager.Document do
       Enum.join(tail, ".")
   end
 
+  # https://hexdocs.pm/ecto/Ecto.Changeset.html#put_embed/4
+  def update_children(document, children) do
+    Ecto.Changeset.change(document)
+     |> Ecto.Changeset.put_embed(:children, children)
+     |> Repo.update!
+  end
+
+end
+
+# alias Koko.Repo; alias Koko.DocManager.Document
+# doc = Repo.get(Document, 1)
+# https://robots.thoughtbot.com/embedding-elixir-structs-in-ecto-models
+# http://blog.simonstrom.xyz/w/
+# http://blog.plataformatec.com.br/2015/08/working-with-ecto-associations-and-embeds/
+# ch = [%Child{ level: 2, title: "Foo", doc_id: 33, doc_identifier: "jxx.foo.abc"}]
+defmodule Child do
+  use Ecto.Schema
+  embedded_schema do
+    field :level, :integer
+    field :title, :string
+    field :doc_id, :integer
+    field :doc_identifier, :string
+  end
 end

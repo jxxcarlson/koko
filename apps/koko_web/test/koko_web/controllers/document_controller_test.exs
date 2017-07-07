@@ -4,11 +4,14 @@ defmodule Koko.Web.DocumentControllerTest do
   alias Koko.DocManager
   alias Koko.Authentication
   alias Koko.DocManager.Search
+  alias Koko.DocManager.Query
+  alias Koko.DocManager.Document
+  alias Koko.Repo
 
   # https://hexdocs.pm/phoenix/Phoenix.ConnTest.html
 
   @create_attrs %{content: "some content", rendered_content: "some rendered_content", title: "some title",
-     attributes: %{public: true}}
+     attributes: %{public: true}, identifier: "jxxcarlson.some_title.2017.777a"}
   @update_attrs %{content: "some updated content", rendered_content: "some updated rendered_content", title: "some updated title"}
   @invalid_attrs %{content: "uuu"}
   @user_attrs %{"admin" => false, "blurb" => "BLURB!", "email" => "yozo@foo.io", "name" => "Yo T. Zo",
@@ -51,7 +54,7 @@ defmodule Koko.Web.DocumentControllerTest do
     document_attributes = Map.merge(@create_attrs, %{author_id:  user.id})
     fixture :document, document_attributes
 
-    n = Koko.DocManager.Search.for_public |> length
+    n = Document |> Query.is_public |> Repo.all |> length
 
     conn = get conn, document_path(conn, :index_public)
     response = json_response(conn, 200)
@@ -111,13 +114,16 @@ defmodule Koko.Web.DocumentControllerTest do
     conn = setup_conn(token)
       |> (get "/api/documents/#{id}")
 
-    assert json_response(conn, 200)["document"] == %{
-      "id" => id,
+    response =  json_response(conn, 200)["document"]
+     |> Map.delete("id") |> Map.delete("author_id")
+
+    assert response == %{
       "content" => "some updated content",
-      "author_id" => user.id,
-      "title" => "some updated title",
-       "attributes" => %{"public" => true}
-  }
+       "title" => "some updated title",
+      "attributes" => %{"public" => false, "doc_type" => "standard", "text_type" => "adoc"},
+      "identifier" => "jxxcarlson.some_updated_title.2017.777a",
+      "rendered_content" => "some updated rendered_content",
+      "tags" => nil}
   end
 
   test "does not update chosen document when not authorized" do
