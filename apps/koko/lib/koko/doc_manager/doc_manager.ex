@@ -7,6 +7,7 @@ defmodule Koko.DocManager do
   alias Koko.Repo
 
   alias Koko.DocManager.Document
+    alias Koko.DocManager.MasterDocument
   alias Koko.DocManager.Search
   alias Koko.DocManager.Query
 
@@ -101,15 +102,23 @@ defmodule Koko.DocManager do
     default_attrs = %{ "attributes" => Document.default_attributes }
     attrs =
       Map.merge(default_attrs, attrs)
-    result = document
+    document
       |> Document.changeset(attrs)
+      |> Document.update_identifier(document)
+      |> MasterDocument.set_children(document)
       |> Repo.update()
-    case result do
-     {:ok, doc} ->
-       Document.update_identifier(doc)
-     {:error, _} ->
-       document
-     end
+
+
+    # case result do
+    #  {:ok, doc} ->
+    #    Document.update_identifier(doc)
+    #    if doc.attributes["doc_type"] == "master" do
+    #      IO.puts "UPDATE MASTER DOCUMENT !!!" # MasterDocument.set_children(doc)
+    #    end
+    #  {:error, _} ->
+    #    document
+    #  end
+
   end
 
   # Assume a comma or space separated string

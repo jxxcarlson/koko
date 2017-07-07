@@ -121,7 +121,7 @@ defmodule Koko.Web.DocumentController do
     failure_message = "User id and document author id do not match"
 
     with {:ok, user_id} <- Token.user_id_from_header(conn),
-      {:ok, "match"} <- match_integers(user_id, document.author_id, "match", failure_message),
+      {:ok, "match"} <- match_integers(user_id, document.author_id, "match", "couldn't match #{user_id} with #{document.author_id}"),
       {:ok, %Document{} = document} <- DocManager.update_document(document, document_params)
     do
       render(conn, "show.json", document: document)

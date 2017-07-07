@@ -15,10 +15,12 @@ defmodule Koko.DocManager.Document do
     field :attributes, :map
     field :tags, {:array, :string}
     field :identifier, :string
-    embeds_many :children, Child
+    embeds_many :children, Child, on_replace: :delete
 
     timestamps()
   end
+
+ #, on_replace: :delete
 
   @doc false
   def changeset(%Document{} = document, attrs) do
@@ -65,12 +67,12 @@ defmodule Koko.DocManager.Document do
    Repo.update(cs)
   end
 
-  def update_identifier(document) do
+  # document -> changeset
+  def update_identifier(changeset, document) do
     part = String.split(document.identifier, ".")
     part1 = document.title |> String.downcase |> normalize_string
     identifier = Enum.join [(Enum.at part, 0), part1, (Enum.at part, 2), (Enum.at part, 3)], "."
-    cs = changeset(document, %{identifier: identifier})
-    Repo.update(cs)
+    Ecto.Changeset.put_change(changeset, :identifier, identifier)
   end
 
   def identifier_suffix(document) do
@@ -98,17 +100,18 @@ defmodule Child do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key false
   embedded_schema do
     field :level, :integer
     field :title, :string
     field :doc_id, :integer
     field :doc_identifier, :string
+    field :comment, :string
   end
 
   def changeset(%Child{} = child, attrs) do
     child
-    |> cast(attrs, [:level, :title, :doc_id, :doc_identifier])
+    |> cast(attrs, [:level, :title, :doc_id, :doc_identifier, :comment])
   end
-
 
 end
