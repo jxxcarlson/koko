@@ -33,6 +33,7 @@ defmodule Koko.Web.DocumentController do
         cond do
           conn.query_string =~ ~r/^master=/ ->
             [_, id] = String.split(conn.query_string, "=")
+            id = String.to_integer id
             documents = DocManager.list_children(:user, id, user_id)
           conn.query_string == "all" ->
             documents = DocManager.list_documents(:user, user_id)
@@ -122,7 +123,7 @@ defmodule Koko.Web.DocumentController do
   """
   def update(conn, %{"id" => id, "document" => payload}) do
 
-  document_params = Koko.Utility.project2map(payload)
+    document_params = Koko.Utility.project2map(payload)
     document = DocManager.get_document!(id)
     failure_message = "User id and document author id do not match"
 
@@ -134,6 +135,7 @@ defmodule Koko.Web.DocumentController do
     else
       {:error, error} -> {:error, error} #{ }"error: #{error}"
     end
+    
   end
 
   @doc """

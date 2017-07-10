@@ -44,7 +44,7 @@ defmodule Koko.DocManager do
     end
   end
 
-  def list_children(:private, id, user_id) do
+  def list_children(:user, id, user_id) do
     master_document = Repo.get(Document, id)
     cond do
       master_document == nil ->
@@ -56,7 +56,7 @@ defmodule Koko.DocManager do
     end
   end
 
-  def list_children(master_document) do
+  defp list_children(master_document) do
     Enum.reduce master_document.children,
       [master_document],
       fn(child, acc) -> acc ++ getChild(child) end
