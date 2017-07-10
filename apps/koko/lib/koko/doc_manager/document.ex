@@ -33,7 +33,8 @@ defmodule Koko.DocManager.Document do
   def default_attributes() do
     %{ "public" => false,
        "text_type" => "adoc",
-       "doc_type" => "standard"
+       "doc_type" => "standard",
+       "level" => 0
      }
   end
 
@@ -64,6 +65,17 @@ defmodule Koko.DocManager.Document do
   def set_identifier(document) do
    identifier = make_identifier(document)
    cs = changeset(document, %{identifier: identifier})
+   Repo.update(cs)
+  end
+
+  def set_level(document, level) do
+   attributes = Map.merge(document.attributes, %{level: level})
+   cs = changeset(document, %{attributes: attributes})
+   Repo.update(cs)
+  end
+
+  def set_defaults(document, level) do
+   cs = changeset(document, %{attributes: %{level: 0, public: false, doc_type: "standard", text_type: "adoc"}})
    Repo.update(cs)
   end
 
