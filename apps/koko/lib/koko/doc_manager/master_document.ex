@@ -61,12 +61,13 @@ defmodule Koko.DocManager.MasterDocument do
   end
 
   def parse_string(input) do
-    [a|b] = String.split(input, "----")
+    [a|b] = String.split(input, "TOC:\n")
     if b == [] do
       str = a
     else
-      str = b
+      str = b |> hd
     end
+
     lines = String.split(str, ["\n", "\r", "\r\n"])
       |> Enum.map(fn(line) -> String.trim(line) end)
       |> Enum.with_index(1)

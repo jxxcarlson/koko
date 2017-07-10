@@ -141,22 +141,24 @@ defmodule Koko.DocManager do
       Map.merge(default_attrs, attrs)
     document
       |> Document.changeset(attrs)
+      |> render(document)
       |> Document.update_identifier(document)
       |> MasterDocument.set_children(document)
       |> Repo.update()
-
-
-    # case result do
-    #  {:ok, doc} ->
-    #    Document.update_identifier(doc)
-    #    if doc.attributes["doc_type"] == "master" do
-    #      IO.puts "UPDATE MASTER DOCUMENT !!!" # MasterDocument.set_children(doc)
-    #    end
-    #  {:error, _} ->
-    #    document
-    #  end
-
   end
+
+  def render(changeset, document) do
+    if document.attributes["doc_type"] == "master" do
+      [rendered_content|_] = String.split(document.content, "TOC:\n")
+      IO.puts "RC: #{rendered_content}"
+      Ecto.Changeset.put_change(changeset, :rendered_content, rendered_content)
+    else
+      rendered_content = document.content
+      Ecto.Changeset.put_change(changeset, :rendered_content, rendered_content)
+    end
+  end
+
+
 
   # Assume a comma or space separated string
   def update_tags_with_string(document, str) do
