@@ -7,7 +7,7 @@ defmodule Koko.DocManager.MasterDocument do
   import Child
 
   # alias Koko.Repo; alias Koko.DocManager.Document
-    # alias Koko.DocManager.MasterDocument; MasterDocument.parse_line({"== 1", 33})
+  # alias Koko.DocManager.MasterDocument; MasterDocument.parse_line({"== 1", 33})
 
   str = """
 == 1 // First document

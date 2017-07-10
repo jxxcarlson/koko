@@ -29,10 +29,47 @@ defmodule Koko.DocManager do
   end
 
   def list_documents(:user, user_id) do
-    results = Search.by_query_string("author=#{user_id}")
+    Search.by_query_string("author=#{user_id}")
   end
 
+  def list_children(:public, id) do
+    master_document = Repo.get(Document, id)
+    cond do
+      master_document == nil ->
+        []
+      master_document.attributes["public"] == true ->
+        list_children(master_document)
+      true ->
+        []
+    end
+  end
 
+  def list_children(:private, id, user_id) do
+    master_document = Repo.get(Document, id)
+    cond do
+      master_document == nil ->
+        []
+      master_document.author_id == user_id ->
+        list_children(master_document)
+      true ->
+        []
+    end
+  end
+
+  def list_children(master_document) do
+    Enum.reduce master_document.children,
+      [master_document],
+      fn(child, acc) -> acc ++ getChild(child) end
+  end
+
+  defp getChild(child) do
+    doc = Repo.get(Document, child.doc_id)
+    if doc == nil do
+      []
+    else
+      [doc]
+    end
+  end
 
   @doc """
   Gets a single document.
