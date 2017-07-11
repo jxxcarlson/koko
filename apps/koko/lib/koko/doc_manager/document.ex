@@ -74,8 +74,15 @@ defmodule Koko.DocManager.Document do
    Repo.update(cs)
   end
 
+  def set_level_of_child(child) do
+    doc = Repo.get(Document, child.doc_id)
+    if doc != nil do
+      set_level(doc, child.level)
+    end
+  end
+
   def set_defaults(document, level) do
-   cs = changeset(document, %{attributes: %{level: 0, public: false, doc_type: "standard", text_type: "adoc"}})
+   cs = changeset(document, %{attributes: %{level: 1, public: false, doc_type: "standard", text_type: "adoc"}})
    Repo.update(cs)
   end
 

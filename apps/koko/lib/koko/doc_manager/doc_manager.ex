@@ -87,7 +87,7 @@ defmodule Koko.DocManager do
   """
   def get_document!(id), do: Repo.get!(Document, id)
 
-  
+
   @doc """
   Creates a document.
 
@@ -146,6 +146,17 @@ defmodule Koko.DocManager do
       |> Document.update_identifier(document)
       |> MasterDocument.set_children(document)
       |> Repo.update()
+    if document.attributes["doc_type"] == "master" do
+      IO.puts "I AM GOING TO SET LEVEL OF CHILDREN ..."
+      update_child_levels(document)
+    end
+    {:ok, document}
+  end
+
+  def update_child_levels(document) do
+    IO.puts "... SETTING LEVEL OF CHILDREN"
+    document.children
+    |> Enum.map(fn(child) -> Document.set_level_of_child(child) end)
   end
 
   def render(changeset, document) do
