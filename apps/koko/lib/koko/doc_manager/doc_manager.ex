@@ -142,7 +142,7 @@ defmodule Koko.DocManager do
       Map.merge(default_attrs, attrs)
     document
       |> Document.changeset(attrs)
-      |> render(document)
+      # |> render(document)
       |> Document.update_identifier(document)
       |> MasterDocument.set_children(document)
       |> Repo.update()
@@ -159,16 +159,35 @@ defmodule Koko.DocManager do
     |> Enum.map(fn(child) -> Document.set_level_of_child(child) end)
   end
 
+  def render(:master, changeset, document) do
+    [rendered_content|_] = String.split(document.content, "TOC:\n")
+    IO.puts "RC: #{rendered_content}"
+    Ecto.Changeset.put_change(changeset, :rendered_content, rendered_content)
+  end
+
+  def render(:latex, changeset, document) do
+    rendered_content = Regex.replace(~r/%.*$/m, document.content, "")
+      # String.split(document.content, ["\n", "\r", "\r\n"])
+      # |> Enum.filter(fn(line) -> !(line =~ ~r/^%.*/) end)
+      # |> Enum.join("\n")
+    IO.puts "\n==========\nLATEX CONTENT: #{rendered_content}\n==========\n"
+    Ecto.Changeset.put_change(changeset, :rendered_content, rendered_content)
+  end
+
   def render(changeset, document) do
-    if document.attributes["doc_type"] == "master" do
-      [rendered_content|_] = String.split(document.content, "TOC:\n")
-      IO.puts "RC: #{rendered_content}"
-      Ecto.Changeset.put_change(changeset, :rendered_content, rendered_content)
-    else
-      rendered_content = document.content
-      Ecto.Changeset.put_change(changeset, :rendered_content, rendered_content)
+    dt = document.attributes["doc_type"]
+    IO.puts "render, doc_type = #{dt}"
+    cond do
+      document.attributes["doc_type"] == "master"  ->
+        render(:master, changeset, document)
+      document.attributes["text_type"] == "latex"  ->
+        render(:latex, changeset, document)
+      true ->
+        rendered_content = document.content
+        Ecto.Changeset.put_change(changeset, :rendered_content, rendered_content)
     end
   end
+
 
 
 
