@@ -29,7 +29,9 @@ defmodule Koko.DocManager do
   end
 
   def list_documents(:user, user_id) do
-    Search.by_query_string("author=#{user_id}")
+    docs = Search.by_query_string("author=#{user_id}")
+    IO.puts "#{length docs} User docs found"
+    docs
   end
 
   def list_children(:public, id) do
