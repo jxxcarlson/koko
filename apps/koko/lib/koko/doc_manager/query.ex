@@ -1,9 +1,8 @@
 defmodule Koko.DocManager.Query do
 
   import Ecto.Query
-  import Koko.DocManager.QueryMacro
-  alias Koko.DocManager.QueryMacro
-  alias Koko.DocManager.Document
+  alias Koko.Authentication.User
+  alias Koko.Repo
 
 
 
@@ -26,6 +25,8 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
     case {cmd, arg} do
       {"author",_} ->
         has_author(query, arg)
+      {"authorname",_} ->
+          has_author_name(query, arg)
       {"title", _} ->
         has_title(query, arg)
       {"sort", "created"} ->
@@ -42,6 +43,10 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
         is_public(query)
       {"public", "no"}  ->
         is_not_public(query)
+      {"id", _} ->
+        has_id(query, arg)
+      {"ident", _} ->
+          has_identifier_suffix(query, arg)
       _ ->
         has_title(query, arg)
     end
@@ -50,6 +55,19 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
   def has_author(query, author_id) do
     from d in query,
       where: d.author_id == ^author_id
+  end
+
+  # alias Koko.Authentication.User; alias Koko.Repo; alias Koko.DocManager.Query
+
+  def get_user(query, name) do
+    from u in query,
+      where: u.username == ^name
+  end
+
+  def has_author_name(query, author_name) do
+    author = User |> get_user(author_name) |> Repo.one
+    from d in query,
+      where: d.author_id == ^author.id
   end
 
   def sort_by_title(query) do
@@ -75,6 +93,11 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
   def has_identifier_suffix(query, term) do
     from d in query,
       where: ilike(d.identifier, ^"%#{term}%")
+  end
+
+  def has_id(query, term) do
+    from d in query,
+      where: d.id == ^term
   end
 
   def has_text(query, term) do
