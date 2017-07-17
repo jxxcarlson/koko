@@ -6,6 +6,14 @@ defmodule Koko.Web.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :browser do
+   plug :accepts, ["html"]
+   plug :fetch_session
+   plug :fetch_flash
+   plug :protect_from_forgery
+   plug :put_secure_browser_headers
+ end
+
   scope "/api", Koko.Web do
     pipe_through :api
     resources "/documents", DocumentController
@@ -16,6 +24,11 @@ defmodule Koko.Web.Router do
     get "/public/documents/:id", DocumentController, :show_public
 
     get "/hello", StatusController, :hello
+  end
+
+  scope "/print", Koko.Web do
+    pipe_through :browser
+    get "/documents/:id", PrintController, :show
   end
 
 

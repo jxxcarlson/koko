@@ -34,6 +34,7 @@ defmodule Koko.Web.Mixfile do
   defp deps do
     [{:phoenix, "~> 1.3.0-rc"},
      {:phoenix_pubsub, "~> 1.0"},
+     {:phoenix_html, "~> 2.6"},
      {:phoenix_ecto, "~> 3.2"},
      {:gettext, "~> 0.11"},
      {:koko, in_umbrella: true},
