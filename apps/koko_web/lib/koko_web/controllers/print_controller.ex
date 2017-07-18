@@ -11,8 +11,10 @@ defmodule Koko.Web.PrintController do
     case qs do
       "text=plain" ->
         conn |> render("plain.html", document: document)
-      "text=asciidoc" ->
+      "text=adoc" ->
         conn |> render("asciidoc.html", document: document)
+      "text=latex" ->
+        conn |> render("latex.html", document: document)
       _ ->
         conn |> render("plain.html", document: document)
     end

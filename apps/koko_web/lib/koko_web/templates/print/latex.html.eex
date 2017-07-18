@@ -28,9 +28,6 @@
       </script>
 
 
-
-
-
     <!-- IMAGE -->
 
 
@@ -38,10 +35,9 @@
 
   <body>
 
-    <script src="/js/asciidoctor.js/asciidoctor.js/dist/asciidoctor.js"></script>
 
     <style>
-      #asciidoc {
+      #latex {
         font-size:0.9em;
         margin: 1in;
         padding-bottom:4em;
@@ -50,8 +46,8 @@
     </style>
 
 
-    <div id="asciidoc">
-       <%= @document.rendered_content %>
+    <div id="latex">
+       <%= Phoenix.HTML.raw @document.rendered_content %>
     </div>
   </body>
 
