@@ -4,8 +4,20 @@
   <head>
     <meta charset="utf-8" />
     <title>Noteshare</title>
-    <LINK href="src/css/asciidoc2.css" rel="stylesheet" type="text/css">
-    <LINK href="src/css/extra.css" rel="stylesheet" type="text/css">
+
+      <LINK href="/css/asciidoc.css" rel="stylesheet" type="text/css">
+      <LINK href="/css/extra.css" rel="stylesheet" type="text/css">
+      <script src="/js/asciidoctor/asciidoctor.js/dist/asciidoctor.js"></script>
+      <script src="/js/test.js"></script>
+
+      <script>
+        var asciidoctor = Asciidoctor();
+        var render_asciidoc = function() {
+            console.log("Rendering ... ")
+            var content = document.getElementById('asciidoc').innerHTML
+            document.getElementById('asciidoc').innerHTML = asciidoctor.convert(content);
+         }
+     </script>
 
       <script type="text/javascript" async
         src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
@@ -27,10 +39,6 @@
           typesetNow2()
       </script>
 
-
-
-
-
     <!-- IMAGE -->
 
 
@@ -38,7 +46,7 @@
 
   <body>
 
-    <script src="/js/asciidoctor.js/asciidoctor.js/dist/asciidoctor.js"></script>
+
 
     <style>
       #asciidoc {
@@ -54,5 +62,7 @@
        <%= @document.rendered_content %>
     </div>
   </body>
+
+  <script>render_asciidoc() </script>
 
 </html>
