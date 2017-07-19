@@ -16,6 +16,7 @@ defmodule Koko.DocManager.Document do
     field :tags, {:array, :string}
     field :identifier, :string
     embeds_many :children, Child, on_replace: :delete
+    field :parent_id, :integer
 
     timestamps()
   end
@@ -25,7 +26,7 @@ defmodule Koko.DocManager.Document do
   @doc false
   def changeset(%Document{} = document, attrs) do
     document
-    |> cast(attrs, [:title, :author_id, :content, :rendered_content, :attributes, :tags, :identifier])
+    |> cast(attrs, [:title, :author_id, :content, :rendered_content, :attributes, :tags, :identifier, :parent_id])
     |> cast_embed(:children)
     |> validate_required([:title, :author_id, :content])
   end

@@ -104,7 +104,7 @@ defmodule Koko.DocManager do
   """
   def create_document(attrs, author_id) do
     attrs =
-      Map.merge(attrs, %{"author_id" => author_id})
+      Map.merge(attrs, %{"author_id" => author_id, "parent_id" => 0})
       |> Map.merge(%{ "attributes" => Document.default_attributes })
       |> Map.merge(%{ "tags" => []})
     IO.inspect attrs

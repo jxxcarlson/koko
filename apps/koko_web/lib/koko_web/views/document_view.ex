@@ -19,7 +19,8 @@ defmodule Koko.Web.DocumentView do
       rendered_content: document.rendered_content,
       attributes: document.attributes,
       tags: document.tags,
-      children: document.children
+      children: document.children,
+      parent_id: document.parent_id || 0
     }
   end
 end
