@@ -1,0 +1,99 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "opal-runtime@0.11.0-integration7",
+        "scope": null,
+        "escapedName": "opal-runtime",
+        "name": "opal-runtime",
+        "rawSpec": "0.11.0-integration7",
+        "spec": "0.11.0-integration7",
+        "type": "version"
+      },
+      "/Users/carlson/dev/node_modules/asciidoctor.js"
+    ]
+  ],
+  "_from": "opal-runtime@0.11.0-integration7",
+  "_id": "opal-runtime@0.11.0-integration7",
+  "_inCache": true,
+  "_location": "/opal-runtime",
+  "_nodeVersion": "7.7.1",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/opal-runtime-0.11.0-integration7.tgz_1496234281273_0.5326435172464699"
+  },
+  "_npmUser": {
+    "name": "ggrossetie",
+    "email": "ggrossetie@gmail.com"
+  },
+  "_npmVersion": "4.1.2",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "opal-runtime@0.11.0-integration7",
+    "scope": null,
+    "escapedName": "opal-runtime",
+    "name": "opal-runtime",
+    "rawSpec": "0.11.0-integration7",
+    "spec": "0.11.0-integration7",
+    "type": "version"
+  },
+  "_requiredBy": [
+    "/asciidoctor.js"
+  ],
+  "_resolved": "https://registry.npmjs.org/opal-runtime/-/opal-runtime-0.11.0-integration7.tgz",
+  "_shasum": "e165be3a79f0f48b18417c8ab333da853a9e696a",
+  "_shrinkwrap": null,
+  "_spec": "opal-runtime@0.11.0-integration7",
+  "_where": "/Users/carlson/dev/node_modules/asciidoctor.js",
+  "author": {
+    "name": "Guillaume Grossetie"
+  },
+  "bugs": {
+    "url": "https://github.com/asciidoctor/opal-node-runtime/issues"
+  },
+  "dependencies": {
+    "glob": "6.0.4"
+  },
+  "description": "Opal Runtime",
+  "devDependencies": {
+    "jasmine": "^2.4.1",
+    "jasmine-core": "^2.4.1"
+  },
+  "directories": {
+    "lib": "src"
+  },
+  "dist": {
+    "shasum": "e165be3a79f0f48b18417c8ab333da853a9e696a",
+    "tarball": "https://registry.npmjs.org/opal-runtime/-/opal-runtime-0.11.0-integration7.tgz"
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "gitHead": "f85de19d023bee696a278ab180a8c10a393a13bd",
+  "homepage": "http://github.com/asciidoctor/opal-node-runtime",
+  "keywords": [
+    "javascript",
+    "opal",
+    "runtime",
+    "ruby"
+  ],
+  "license": "MIT",
+  "main": "src/index.js",
+  "maintainers": [
+    {
+      "name": "ggrossetie",
+      "email": "ggrossetie@gmail.com"
+    }
+  ],
+  "name": "opal-runtime",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/asciidoctor/opal-node-runtime.git"
+  },
+  "scripts": {
+    "test": "node npm/test.js"
+  },
+  "version": "0.11.0-integration7"
+}

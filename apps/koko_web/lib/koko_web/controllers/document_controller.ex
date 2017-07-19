@@ -135,7 +135,7 @@ defmodule Koko.Web.DocumentController do
     else
       {:error, error} -> {:error, error} #{ }"error: #{error}"
     end
-    
+
   end
 
   @doc """

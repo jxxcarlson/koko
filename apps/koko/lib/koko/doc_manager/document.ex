@@ -1,9 +1,9 @@
 defmodule Koko.DocManager.Document do
   use Ecto.Schema
   import Ecto.Changeset
-  import SecureRandom
   alias Koko.DocManager.Document
   alias Koko.Repo
+
   alias Koko.Authentication.User
 
 
@@ -83,8 +83,13 @@ defmodule Koko.DocManager.Document do
   end
 
   def set_defaults(document, level) do
-   cs = changeset(document, %{attributes: %{level: 1, public: false, doc_type: "standard", text_type: "adoc"}})
+   cs = changeset(document, %{attributes: %{level: level, public: false, doc_type: "standard", text_type: "adoc"}})
    Repo.update(cs)
+  end
+
+  def set_parent(document, id) do
+    cs = changeset(document, %{parent_id: id})
+    Repo.update(cs)
   end
 
   # document -> changeset
@@ -108,7 +113,23 @@ defmodule Koko.DocManager.Document do
      |> Repo.update!
   end
 
+  def parent(document) do
+    Repo.get(Document, document.parent_id)
+  end
+
+  # Needs test
+  def parent_title(document) do
+      p = parent(document)
+      if p == nil do
+        ""
+      else
+        p.title
+      end
+  end
+
 end
+
+
 
 # alias Koko.Repo; alias Koko.DocManager.Document
 # doc = Repo.get(Document, 1)
@@ -133,5 +154,6 @@ defmodule Child do
     child
     |> cast(attrs, [:level, :title, :doc_id, :doc_identifier, :comment])
   end
+
 
 end

@@ -1,0 +1,170 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "asciidoctor.js",
+        "scope": null,
+        "escapedName": "asciidoctor.js",
+        "name": "asciidoctor.js",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/Users/carlson/dev/apps/koko"
+    ]
+  ],
+  "_from": "asciidoctor.js@latest",
+  "_id": "asciidoctor.js@1.5.6-preview.2",
+  "_inCache": true,
+  "_location": "/asciidoctor.js",
+  "_nodeVersion": "7.7.1",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/asciidoctor.js-1.5.6-preview.2.tgz_1497979596090_0.5318995623383671"
+  },
+  "_npmUser": {
+    "name": "ggrossetie",
+    "email": "ggrossetie@gmail.com"
+  },
+  "_npmVersion": "4.1.2",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "asciidoctor.js",
+    "scope": null,
+    "escapedName": "asciidoctor.js",
+    "name": "asciidoctor.js",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/asciidoctor.js/-/asciidoctor.js-1.5.6-preview.2.tgz",
+  "_shasum": "4cc7aefc2b3a9dc47abbf46785b15f8dfc60a152",
+  "_shrinkwrap": null,
+  "_spec": "asciidoctor.js",
+  "_where": "/Users/carlson/dev/apps/koko",
+  "authors": [
+    "Dan Allen (https://github.com/mojavelinux)",
+    "Guillaume Grossetie (https://github.com/mogztter)",
+    "Anthonny Quérouil (https://github.com/anthonny)"
+  ],
+  "bugs": {
+    "url": "https://github.com/asciidoctor/asciidoctor.js/issues"
+  },
+  "dependencies": {
+    "opal-runtime": "0.11.0-integration7",
+    "xmlhttprequest": "~1.7.0"
+  },
+  "description": "A JavaScript AsciiDoc processor, cross-compiled from the Ruby-based AsciiDoc implementation, Asciidoctor, using Opal",
+  "devDependencies": {
+    "asciidoctor-docbook.js": "1.5.5-integration3",
+    "asciidoctor-reveal.js": "1.0.1",
+    "asciidoctor-template.js": "1.5.5-integration3",
+    "async": "^1.5.0",
+    "bestikk-download": "^0.1.0",
+    "bestikk-fs": "^0.1.0",
+    "bestikk-jdk-ea": "0.1.1",
+    "bestikk-log": "0.1.0",
+    "bestikk-opal-compiler": "0.3.0-integration6",
+    "bestikk-uglify": "0.1.1",
+    "browserify": "^13.0.0",
+    "cross-env": "^1.0.8",
+    "documentation": "^4.0.0-beta.18",
+    "eslint": "^2.11.0",
+    "http-server": "^0.9.0",
+    "jasmine": "^2.4.1",
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.22",
+    "karma-browserify": "^5.0.3",
+    "karma-jasmine": "^0.3.8",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "karma-requirejs": "1.1.0",
+    "phantomjs-prebuilt": "^2.1.7",
+    "requirejs": "2.1.0",
+    "watchify": "^3.7.0",
+    "webpack": "^1.13.3"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "4cc7aefc2b3a9dc47abbf46785b15f8dfc60a152",
+    "tarball": "https://registry.npmjs.org/asciidoctor.js/-/asciidoctor.js-1.5.6-preview.2.tgz"
+  },
+  "engines": {
+    "node": ">=4",
+    "npm": ">=3.0.0"
+  },
+  "files": [
+    "dist/asciidoctor.js",
+    "dist/extensions",
+    "dist/css",
+    "LICENSE",
+    "README.adoc"
+  ],
+  "gitHead": "6e62f868f1976c74f5c16c5400d79315d09f5ce5",
+  "homepage": "https://github.com/asciidoctor/asciidoctor.js",
+  "keywords": [
+    "asciidoc",
+    "asciidoctor",
+    "opal",
+    "javascript",
+    "library"
+  ],
+  "license": "MIT",
+  "main": "dist/asciidoctor.js",
+  "maintainers": [
+    {
+      "name": "mojavelinux",
+      "email": "dan.j.allen@gmail.com"
+    },
+    {
+      "name": "anthonny.querouil",
+      "email": "anthonny.querouil@gmail.com"
+    },
+    {
+      "name": "ggrossetie",
+      "email": "ggrossetie@gmail.com"
+    },
+    {
+      "name": "ldez",
+      "email": "lfernandez.dev@gmail.com"
+    },
+    {
+      "name": "obilodeau",
+      "email": "olivier@bottomlesspit.org"
+    },
+    {
+      "name": "hsablonniere",
+      "email": "hubert.sablonniere@gmail.com"
+    }
+  ],
+  "name": "asciidoctor.js",
+  "optionalDependencies": {},
+  "publishConfig": {
+    "access": "public"
+  },
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asciidoctor/asciidoctor.js.git"
+  },
+  "scripts": {
+    "benchmark": "node npm/benchmark.js",
+    "build": "node npm/build.js && npm run test",
+    "dist": "cross-env MINIFY=1 node npm/dist.js",
+    "docs": "npm run docs:lint && npm run docs:build",
+    "docs:build": "documentation build src/** -f html -o build/docs -g",
+    "docs:lint": "documentation lint src/**",
+    "docs:serve": "documentation serve src/** -g -w",
+    "examples": "node npm/examples.js",
+    "lint": "eslint src spec npm",
+    "package": "cross-env MINIFY=1 node npm/build.js && cross-env MINIFY=1 npm run test",
+    "release": "cross-env MINIFY=1 node npm/release.js",
+    "server": "node npm/server.js",
+    "test": "node npm/test/unsupported-features.js && node npm/test/jasmine-browser.js && node npm/test/jasmine-browser-min.js && node npm/test/jasmine-node.js && node npm/test/jasmine-webpack.js && npm run test:karmaBrowserify && npm run test:karmaRequirejs",
+    "test:karmaBrowserify": "karma start karma-browserify.conf.js",
+    "test:karmaRequirejs": "karma start karma-requirejs.conf.js"
+  },
+  "version": "1.5.6-preview.2"
+}
