@@ -7,7 +7,7 @@ defmodule Koko.DocManager do
   alias Koko.Repo
 
   alias Koko.DocManager.Document
-    alias Koko.DocManager.MasterDocument
+  alias Koko.DocManager.MasterDocument
   alias Koko.DocManager.Search
   alias Koko.DocManager.Query
 
@@ -131,14 +131,14 @@ defmodule Koko.DocManager do
 
   ## Examples
 
-      iex> update_document(document, %{field: new_value})
+      iex> update_document(document, %{field: new_value}, "")
       {:ok, %Document{}}
 
-      iex> update_document(document, %{field: bad_value})
+      iex> update_document(document, %{field: bad_value}, "")
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_document(%Document{} = document, attrs) do
+  def update_document(%Document{} = document, attrs, query_string) do
     default_attrs = %{ "attributes" => Document.default_attributes }
     attrs =
       Map.merge(default_attrs, attrs)
@@ -151,6 +151,9 @@ defmodule Koko.DocManager do
     if document.attributes["doc_type"] == "master" do
       IO.puts "I AM GOING TO SET LEVEL OF CHILDREN ..."
       update_child_levels(document)
+    end
+    if query_string == "adopt_children=yes" do
+      MasterDocument.adopt_children(document)
     end
     {:ok, document}
   end
@@ -196,7 +199,7 @@ defmodule Koko.DocManager do
   # Assume a comma or space separated string
   def update_tags_with_string(document, str) do
      tags = Regex.split(~r/[, ]/, str) |> Enum.filter(fn(item) -> item != "" end) |> Enum.map(fn(item) -> String.trim(item) end )
-     update_document(document,%{"tags" => tags})
+     update_document(document,%{"tags" => tags}, "")
   end
 
 

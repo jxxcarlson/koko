@@ -87,6 +87,7 @@ defmodule Koko.DocManager.Document do
    Repo.update(cs)
   end
 
+  # Set the parent_id of document to id
   def set_parent(document, id) do
     cs = changeset(document, %{parent_id: id})
     Repo.update(cs)
@@ -125,6 +126,11 @@ defmodule Koko.DocManager.Document do
       else
         p.title
       end
+  end
+
+  # return document corresponding to a child
+  def child_document(child) do
+    Repo.get(Document, child.doc_id )
   end
 
 end

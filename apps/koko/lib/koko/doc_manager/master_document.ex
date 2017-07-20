@@ -4,17 +4,10 @@ defmodule Koko.DocManager.MasterDocument do
 
   alias Koko.Repo
   alias Koko.DocManager.Document
-  import Child
 
   # alias Koko.Repo; alias Koko.DocManager.Document
   # alias Koko.DocManager.MasterDocument; MasterDocument.parse_line({"== 1", 33})
 
-  str = """
-== 1 // First document
-== 3 // Trajectories and uncertainty
-// The next item is invalid
-=== 555
-"""
 
   def parse(document) do
     parse_string(document.content)
@@ -49,7 +42,7 @@ defmodule Koko.DocManager.MasterDocument do
   end
 
   def string_of_level(level) do
-    Enum.reduce 1..level, "", fn(k, acc) -> "=" <> acc end
+    Enum.reduce 1..level, "", fn(_, acc) -> "=" <> acc end
   end
 
   def string_of(item) do
@@ -68,7 +61,7 @@ defmodule Koko.DocManager.MasterDocument do
       str = b |> hd
     end
 
-    lines = String.split(str, ["\n", "\r", "\r\n"])
+    String.split(str, ["\n", "\r", "\r\n"])
       |> Enum.map(fn(line) -> String.trim(line) end)
       |> Enum.with_index(1)
       |> Enum.map(fn(item) -> parse_line(item) end)
@@ -141,6 +134,11 @@ defmodule Koko.DocManager.MasterDocument do
 
   end
 
+  ############
 
+  def adopt_children(master_document) do
+    master_document.children
+    |> Enum.map( fn(child) -> Document.set_parent(Document.child_document(child), master_document.id) end)
+  end
 
 end

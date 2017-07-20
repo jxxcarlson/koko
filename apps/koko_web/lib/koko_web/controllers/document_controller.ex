@@ -129,7 +129,7 @@ defmodule Koko.Web.DocumentController do
 
     with {:ok, user_id} <- Token.user_id_from_header(conn),
       {:ok, "match"} <- match_integers(user_id, document.author_id, "match", "couldn't match #{user_id} with #{document.author_id}"),
-      {:ok, %Document{} = document} <- DocManager.update_document(document, document_params)
+      {:ok, %Document{} = document} <- DocManager.update_document(document, document_params, conn.query_string)
     do
       render(conn, "show.json", document: document)
     else
