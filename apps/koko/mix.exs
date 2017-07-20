@@ -20,7 +20,7 @@ defmodule Koko.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Koko.Application, []},
-     extra_applications: [:logger, :runtime_tools]]
+     extra_applications: [:logger, :runtime_tools, :ex_aws, :hackney, :poison, :arc_ecto]]
   end
 
   # Specifies which paths to compile per environment.
@@ -38,6 +38,12 @@ defmodule Koko.Mixfile do
      {:json, "~> 1.0"},
      {:joken, "~> 1.1"},
      {:secure_random, "~> 0.2"},
+     {:arc, "~> 0.8.0"},
+     {:ex_aws, "~> 1.1"},
+     {:hackney,"~> 1.6"},
+     {:poison, "~> 3.1"},
+     {:sweet_xml, "~> 0.6"},
+     {:arc_ecto, "~> 0.7.0"},
      { :uuid, "~> 1.1" }]
   end
 
