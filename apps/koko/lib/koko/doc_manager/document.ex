@@ -58,15 +58,17 @@ defmodule Koko.DocManager.Document do
     part0 = user.username
     part1 = document.title |> String.downcase |> normalize_string
     date = document.inserted_at
-    part2 = "#{date.year}-#{date.month}-#{date.day}-#{date.hour}-#{date.minute}-#{date.second}"
+    part2 = "#{date.year}-#{date.month}-#{date.day}@#{date.hour}-#{date.minute}-#{date.second}"
     part3 = SecureRandom.hex(3)
     Enum.join([part0,  part1, part2, part3], ".")
   end
 
   def rewrite_identifier(document) do
-    document.identifier
-    |> String.split(".")
-    |> Enum.join("-")
+    new_identifier = document.identifier
+      |> String.split(":")
+      |> Enum.join("-")
+    cs = changeset(document, %{identifier: new_identifier})
+    Repo.update(cs)
   end
 
   def set_identifier(document) do
