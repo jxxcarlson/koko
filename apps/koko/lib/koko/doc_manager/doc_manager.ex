@@ -158,6 +158,17 @@ defmodule Koko.DocManager do
     {:ok, document}
   end
 
+  def execute_query_string_commands(document, query_string) do
+    [command|remaining_commands] = String.split(query_string, "&") |> Enum.map(fn(item) -> String.split(item, "=") end)
+    [cmd, arg] = command
+    case cmd do
+      "adopt_children" ->
+         MasterDocument.adopt_children(document)
+      "attach" ->
+         MasterDocument.attach(document, arg, remaining_commands)
+    end
+  end
+
   def update_child_levels(document) do
     IO.puts "... SETTING LEVEL OF CHILDREN"
     document.children

@@ -141,4 +141,54 @@ defmodule Koko.DocManager.MasterDocument do
     |> Enum.map( fn(child) -> Document.set_parent(Document.child_document(child), master_document.id) end)
   end
 
+  def attach(document, position, remaining_commands) do
+
+    [child_command|remaining_commands] = remaining_commands
+    ["child", child_id_str] = child_command # error handling
+    child_id = String.to_integer(child_id_str)
+    child_document = Repo.get(Document, child_id)
+
+    new_child = %Child{doc_id: child_id, level: 2,
+      title: child_document.title, doc_identifier: child_document.identifier,
+      comment: "comment"}
+
+    children = case position do
+      "at-top" ->
+        [new_child] ++ document.children
+      "at-bottom" ->
+        document.children ++ [new_child]
+      _ ->
+        document.children
+    end
+
+    children = if remaining_commands != [] do
+      ["current", current_id] = (hd remaining_commands)
+      k = index_of_child_with_id(children, current_id)
+      case position do
+        "above" ->
+          insert_before(new_child, k, children)
+        "below" ->
+          insert_after(new_child, k, children)
+        _ ->
+          children
+      end
+    end
+
+    Document.changeset(document, %{children: children})
+    |> Repo.update
+
+  end
+
+  def index_of_child_with_id(children, id) do
+    Enum.find_index(children, fn(child) -> child.doc_id == id end)
+  end
+
+  def insert_before(item, position, items) do
+    Enum.take(items, position) ++ [item] ++ Enum.drop(items, position)
+  end
+
+  def insert_after(item, position, items) do
+    Enum.take(items, position+1) ++ [item] ++ Enum.drop(items, position+1)
+  end
+
 end
