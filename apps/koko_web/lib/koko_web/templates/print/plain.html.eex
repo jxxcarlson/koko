@@ -13,5 +13,5 @@
 
 
 <div class="plain_text">
-   <%= @document.rendered_content %>
+   <%= @text %>
 </div>

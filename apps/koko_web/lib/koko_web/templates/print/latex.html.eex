@@ -47,7 +47,7 @@
 
 
     <div id="latex">
-       <%= Phoenix.HTML.raw @document.rendered_content %>
+       <%= Phoenix.HTML.raw @text %>
     </div>
   </body>
 

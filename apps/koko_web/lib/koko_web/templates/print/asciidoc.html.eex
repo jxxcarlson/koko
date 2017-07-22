@@ -13,9 +13,8 @@
       <script>
         var asciidoctor = Asciidoctor();
         var render_asciidoc = function() {
-            console.log("Rendering ... ")
-            var content = document.getElementById('asciidoc').innerHTML
-            document.getElementById('asciidoc').innerHTML = asciidoctor.convert(content);
+            var content = `<%= Phoenix.HTML.raw(@text) %>`
+            document.getElementById('asciidoc').innerHTML = asciidoctor.convert(content.replace( /!!aWz!!/g, '`'));
          }
      </script>
 
@@ -59,8 +58,9 @@
 
 
     <div id="asciidoc">
-       <%= @document.rendered_content %>
+      RENDERED CONTENT HERE
     </div>
+
   </body>
 
   <script>render_asciidoc() </script>
