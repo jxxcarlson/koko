@@ -166,6 +166,8 @@ defmodule Koko.DocManager.MasterDocument do
       title: child_document.title, doc_identifier: child_document.identifier,
       comment: "comment"}
 
+    Document.set_parent(Document.child_document(new_child), document.id)    
+
     children = case position do
       "at-top" ->
         [new_child] ++ document.children
