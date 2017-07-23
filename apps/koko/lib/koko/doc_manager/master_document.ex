@@ -134,6 +134,16 @@ defmodule Koko.DocManager.MasterDocument do
 
   end
 
+  def stringOfChild(child) do
+    "#{string_of_level(child.level)} #{child.doc_id} #{child.title} // #{child.comment}\n"
+  end
+
+  def updated_text(document) do
+    [text1, _] = String.split(document.content, "TOC:\n")
+    text2 = Enum.reduce(document.children, "", fn(child, acc) -> acc <> stringOfChild(child) end)
+    text1 <> "\nTOC:\n" <> text2
+  end
+
   ############
 
   def adopt_children(master_document) do
@@ -142,6 +152,10 @@ defmodule Koko.DocManager.MasterDocument do
   end
 
   def attach(document, position, remaining_commands) do
+
+    IO.puts "Enter attach with position = #{position}, title = #{document.title}"
+    IO.inspect(remaining_commands)
+    IO.puts("===========")
 
     [child_command|remaining_commands] = remaining_commands
     ["child", child_id_str] = child_command # error handling
@@ -161,22 +175,24 @@ defmodule Koko.DocManager.MasterDocument do
         document.children
     end
 
-    children = if remaining_commands != [] do
+    children = if Enum.member?(["above", "below"], position) do
       ["current", current_id] = (hd remaining_commands)
-      k = index_of_child_with_id(children, current_id)
+       k = index_of_child_with_id(document.children, String.to_integer(current_id))
       case position do
         "above" ->
-          insert_before(new_child, k, children)
+          insert_before(new_child, k, document.children)
         "below" ->
-          insert_after(new_child, k, children)
+          insert_after(new_child, k, document.children)
         _ ->
-          children
+          document.children
       end
     end
 
-    Document.changeset(document, %{children: children})
-    |> Repo.update
-
+    doc = Document.update_children(document, children)
+    new_content = updated_text(doc)
+    IO.puts(new_content)
+    cs = Document.changeset(doc, %{content: new_content})
+    Repo.update!(cs)
   end
 
   def index_of_child_with_id(children, id) do
