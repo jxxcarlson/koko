@@ -146,6 +146,7 @@ defmodule Koko.DocManager do
       |> Document.changeset(attrs)
       # |> render(document)
       |> Document.update_identifier(document)
+      |> Document.update_viewed_at
       |> MasterDocument.set_children(document)
       |> Repo.update()
     if document.attributes["doc_type"] == "master" do
@@ -171,7 +172,7 @@ defmodule Koko.DocManager do
       "attach" ->
          MasterDocument.attach(document, arg, remaining_commands)
       _ ->
-        IO.puts "query string #{query_string} for #{document.id} (#{document.title}) not recognized"   
+        IO.puts "query string #{query_string} for #{document.id} (#{document.title}) not recognized"
     end
   end
 

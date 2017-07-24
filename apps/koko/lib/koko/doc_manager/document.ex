@@ -17,6 +17,7 @@ defmodule Koko.DocManager.Document do
     field :identifier, :string
     embeds_many :children, Child, on_replace: :delete
     field :parent_id, :integer
+    field :viewed_at, :utc_datetime
 
     timestamps()
   end
@@ -26,7 +27,7 @@ defmodule Koko.DocManager.Document do
   @doc false
   def changeset(%Document{} = document, attrs) do
     document
-    |> cast(attrs, [:title, :author_id, :content, :rendered_content, :attributes, :tags, :identifier, :parent_id])
+    |> cast(attrs, [:title, :author_id, :content, :rendered_content, :attributes, :tags, :identifier, :parent_id, :viewed_at])
     |> cast_embed(:children)
     |> validate_required([:title, :author_id, :content])
   end
@@ -107,6 +108,10 @@ defmodule Koko.DocManager.Document do
     part1 = document.title |> String.downcase |> normalize_string
     identifier = Enum.join [(Enum.at part, 0), part1, (Enum.at part, 2), (Enum.at part, 3)], "."
     Ecto.Changeset.put_change(changeset, :identifier, identifier)
+  end
+
+  def update_viewed_at(changeset) do
+    Ecto.Changeset.put_change(changeset, :viewed_at, DateTime.utc_now())
   end
 
   def identifier_suffix(document) do

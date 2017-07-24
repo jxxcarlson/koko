@@ -33,6 +33,8 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
         sort_by_inserted_at(query)
       {"sort", "updated"} ->
           sort_by_updated_at(query)
+      {"sort", "viewed"} ->
+          sort_by_viewed_at(query)
       {"sort", "title"} ->
           sort_by_title(query)
       {"text",_} ->
@@ -85,6 +87,11 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
   def sort_by_updated_at(query) do
         from d in query,
         order_by: [desc: d.updated_at]
+  end
+
+  def sort_by_viewed_at(query) do
+        from d in query,
+        order_by: [desc: d.viewed_at]
   end
 
   def has_title(query, term) do
