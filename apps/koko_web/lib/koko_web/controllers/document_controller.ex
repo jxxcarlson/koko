@@ -92,6 +92,9 @@ defmodule Koko.Web.DocumentController do
     with {:ok, user_id} <- Token.user_id_from_header(conn),
       true <- ((document.attributes["public"] == true) || (user_id == document.author_id))
     do
+      cs = Document.changeset(document, %{viewed_at: Time.now})
+      IO.puts "#{document.title} viewed at #{Time.now}"
+      Repo.update(cs)
       render(conn, "show.json", document: document)
       else
       {:error, error} -> {:error, error}
@@ -104,6 +107,9 @@ defmodule Koko.Web.DocumentController do
   def show_public(conn, %{"id" => id}) do
     document = DocManager.get_document!(id)
     if document.attributes["public"] == true do
+      cs = Document.changeset(document, %{viewed_at: Time.now})
+      IO.puts "#{document.title} viewed at #{Time.now}"
+      Repo.update(cs)
       render(conn, "show.json", document: document)
     else
       {:error, "Cannot display document"}
