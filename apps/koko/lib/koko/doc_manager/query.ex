@@ -47,6 +47,8 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
         has_id(query, arg)
       {"ident", _} ->
           has_identifier_suffix(query, arg)
+      {"limit", _} ->
+          has_limit(query, arg)
       _ ->
         has_title(query, arg)
     end
@@ -123,6 +125,12 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
       where: ^tag in d.tags
       # fragment("? @> '{?}'", d.tags, ^tag)
   end
+
+  def has_limit(query, limit) do
+    from d in query,
+      limit: ^limit
+ end
+
 
   # https://hackernoon.com/how-to-query-jsonb-beginner-sheet-cheat-4da3aa5082a3
   # https://elixirnation.io/references/ecto-query-examples

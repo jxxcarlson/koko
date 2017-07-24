@@ -24,6 +24,7 @@ defmodule Koko.DocManager.Search do
   end
 
   def by_query_string_for_user(query_string, user_id) do
+    IO.puts "QS: #{query_string}"
     query_string = query_string || ""
     # prepend author query
     query_string = if query_string == "" do
@@ -31,6 +32,7 @@ defmodule Koko.DocManager.Search do
     else
        "author=#{user_id}&#{query_string}"
     end
+    # query_string = "#{query_string}&limit=5"
     # postpend sort by title
     query_string = if String.contains?(query_string, "sort=title") do
       query_string
