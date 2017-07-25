@@ -44,6 +44,7 @@ defmodule Koko.Mixfile do
      {:poison, "~> 3.1"},
      {:sweet_xml, "~> 0.6"},
      {:arc_ecto, "~> 0.7.0"},
+     {:s3_direct_upload, "~> 0.1.0"},
      { :uuid, "~> 1.1" }]
   end
 

@@ -1,6 +1,7 @@
 # defmodule :"Elixir..Avatar" do
 defmodule Koko.Web.Uploaders.Avatar do
-  #  ElixirAvatar.store("/Users/carlson/Downloads/frog.jpeg")
+  
+  #  Avatar.store("/Users/carlson/Downloads/frog.jpeg")
 
   # /Users/carlson/Downloads/frog.jpeg
 
