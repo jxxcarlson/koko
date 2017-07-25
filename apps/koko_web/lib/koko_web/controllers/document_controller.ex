@@ -28,6 +28,7 @@ defmodule Koko.Web.DocumentController do
   defined in the token.
   """
   def index(conn, _params) do
+    IO.puts "INDEX"
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
         cond do
@@ -92,9 +93,10 @@ defmodule Koko.Web.DocumentController do
     with {:ok, user_id} <- Token.user_id_from_header(conn),
       true <- ((document.attributes["public"] == true) || (user_id == document.author_id))
     do
-      cs = Document.changeset(document, %{viewed_at: Time.now})
-      IO.puts "#{document.title} viewed at #{Time.now}"
+      cs = Document.changeset(document, %{})
+      |> Document.update_viewed_at
       Repo.update(cs)
+      IO.puts "XXXXX: #{document.title} viewed at #{DateTime.utc_now()}"
       render(conn, "show.json", document: document)
       else
       {:error, error} -> {:error, error}

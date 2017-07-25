@@ -1,9 +1,9 @@
 defmodule Koko.DocManager.Query do
 
   import Ecto.Query
-  import Koko.DocManager.QueryMacro
-  alias Koko.DocManager.QueryMacro
-  alias Koko.DocManager.Document
+  # import Koko.DocManager.QueryMacro
+  # alias Koko.DocManager.QueryMacro
+  # alias Koko.DocManager.Document
 
 
 
