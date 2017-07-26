@@ -24,6 +24,7 @@ defmodule Koko.Web.Router do
     get "/public/documents/:id", DocumentController, :show_public
 
     get "/hello", StatusController, :hello
+    get "/credentials", CredentialsController, :presigned
   end
 
   scope "/print", Koko.Web do
