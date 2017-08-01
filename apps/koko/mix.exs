@@ -44,7 +44,7 @@ defmodule Koko.Mixfile do
      {:poison, "~> 3.1"},
      {:sweet_xml, "~> 0.6"},
      {:arc_ecto, "~> 0.7.0"},
-     {:s3_direct_upload, path: "/Users/carlson/dev/apps/s3_direct_upload"},
+     {:s3_direct_upload, git: "https://github.com/jxxcarlson/s3_direct_upload"},
      { :uuid, "~> 1.1" }]
   end
 
