@@ -5,9 +5,19 @@ defmodule Koko.Web.UserSocket do
   channel "room:*", Koko.Web.RoomChannel
 
   ## Transports
-  # transport :websocket, Phoenix.Transports.WebSocket, timeout: 45_000
 
-  transport :longpoll, Phoenix.Transports.LongPoll
+  # transport :longpoll, Phoenix.Transports.LongPoll
+  transport :websocket, Phoenix.Transports.WebSocket,
+    timeout: 45_000,
+    check_origin: false
+
+  # check_origin: ["https://localhost:3000"]
+
+
+  def connect(_params, socket) do
+   # {:ok, assign(socket, :user_id, params["user_id"])}
+   {:ok, assign(socket, :foo, ["bar"])}
+  end
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
