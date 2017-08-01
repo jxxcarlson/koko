@@ -15,8 +15,18 @@ defmodule Koko.Web.UserView do
       name: user.name,
       username: user.username,
       email: user.email,
-      password_hash: user.password_hash,
       admin: user.admin,
       blurb: user.blurb}
   end
+
+  def render("show_with_token.json", %{user: u}) do
+     %{id: u.id,
+      name: u.name,
+      username: u.username,
+      email: u.email,
+      admin: u.admin,
+      blurb: u.blurb,
+      token: u.token}
+  end
+
 end
