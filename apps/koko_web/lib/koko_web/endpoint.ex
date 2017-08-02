@@ -38,7 +38,7 @@ defmodule Koko.Web.Endpoint do
 
   plug Corsica,
     log: [rejected: :error],
-    origins: ["http://183.197.81.6", "https://183.197.81.6", "http://localhost:3000", "http://localhost:5000", "http://localhost:8000", "https://elm-docviewer.herokuapp.com"],
+    http://www.knode.ioorigins: ["https://www.knode.io", "https://183.197.81.6", "http://localhost:3000", "http://localhost:5000", "http://localhost:8000", "https://elm-docviewer.herokuapp.com"],
     allow_headers: ["content-type", "authorization"]
 
 
