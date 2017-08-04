@@ -28,14 +28,14 @@ defmodule Koko.Web.DocumentController do
   defined in the token.
   """
   def index(conn, _params) do
-    IO.puts "INDEX"
+    IO.puts "INDEX __"
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
         cond do
           conn.query_string =~ ~r/^master=/ ->
             [_, id] = String.split(conn.query_string, "=")
-            id = String.to_integer id
-            documents = DocManager.list_children(:user, id, user_id)
+            master_document_id = String.to_integer id
+            documents = DocManager.list_children(:user, user_id, master_document_id)
           conn.query_string == "all" ->
             documents = DocManager.list_documents(:user, user_id)
           true ->
@@ -52,6 +52,7 @@ defmodule Koko.Web.DocumentController do
   All public documents are listable and searchable.
   """
   def index_public(conn, _params) do
+      IO.puts "INDEX PUBLIC"
     cond do
       conn.query_string =~ ~r/^master=/ ->
         [_, id] = String.split(conn.query_string, "=")

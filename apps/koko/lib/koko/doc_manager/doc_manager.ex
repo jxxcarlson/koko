@@ -35,41 +35,63 @@ defmodule Koko.DocManager do
   end
 
   def list_children(:public, id) do
+    IO.puts "list_children, :public"
+    IO.puts "Master: #{id}"
     master_document = Repo.get(Document, id)
+    IO.puts "Master: #{master_document.title}"
     cond do
       master_document == nil ->
         []
-      master_document.attributes["public"] == true ->
-        list_children(master_document)
-      true ->
-        []
+      # master_document.attributes["public"] == true ->
+      #  list_children_aux(:public, master_document)
+      true -> list_children_aux(:public, master_document)
     end
   end
 
-  def list_children(:user, id, user_id) do
+  def list_children(:user, user_id, id) do
+    IO.puts "list_children, :user, id = #{id}, user_id = #{user_id}"
     master_document = Repo.get(Document, id)
+    IO.puts "master = #{master_document.id}"
     cond do
       master_document == nil ->
         []
       master_document.author_id == user_id ->
-        list_children(master_document)
+        list_children_aux(:user,  master_document)
       true ->
         []
     end
   end
 
-  defp list_children(master_document) do
+  defp list_children_aux(:public, master_document) do
     Enum.reduce master_document.children,
       [master_document],
-      fn(child, acc) -> acc ++ getChild(child) end
+      fn(child, acc) -> acc ++ getChild(:public, child) end
   end
 
-  defp getChild(child) do
+  defp list_children_aux(:user, master_document) do
+    IO.puts "list_children, :user, aux, master = #{master_document.id}"
+    Enum.reduce master_document.children,
+      [master_document],
+      fn(child, acc) -> acc ++ getChild(:private, child) end
+  end
+
+  defp getChild(:public, child) do
+    IO.puts "getChild, :public, #{child.doc_id}, title: #{child.title}"
     doc = Repo.get(Document, child.doc_id)
-    if doc == nil do
-      []
-    else
-      [doc]
+    IO.puts "public: #{doc.attributes["public"]}"
+    cond do
+      doc == nil -> []
+      doc.attributes["public"] == false -> []
+      true -> [doc]
+    end
+  end
+
+  defp getChild(:private, child) do
+    IO.puts "getChild, :private, #{child.doc_id}, title: #{child.title}"
+    doc = Repo.get(Document, child.doc_id)
+    cond do
+      doc == nil -> []
+      true -> [doc]
     end
   end
 
