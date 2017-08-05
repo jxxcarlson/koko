@@ -8,7 +8,7 @@ defmodule Koko.Web.PrintController do
   def fix_html(text) do
     text
     |> String.replace("`", "!!aWz!!")
-    |> String.replace("\\", "\\\\")
+    # |> String.replace("\\", "\\\\")
   end
 
   def show(conn, %{"id" => id}) do
