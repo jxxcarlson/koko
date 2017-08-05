@@ -10,13 +10,7 @@
       <script src="/js/asciidoctor/asciidoctor.js/dist/asciidoctor.js"></script>
       <script src="/js/test.js"></script>
 
-      <script>
-        var asciidoctor = Asciidoctor();
-        var render_asciidoc = function() {
-            var content = `<%= Phoenix.HTML.raw(@text) %>`
-            document.getElementById('asciidoc').innerHTML = asciidoctor.convert(content.replace( /!!aWz!!/g, '`'));
-         }
-     </script>
+      
 
       <script type="text/javascript" async
         src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
@@ -58,7 +52,7 @@
 
 
     <div id="asciidoc">
-      RENDERED CONTENT HERE
+       <%= Phoenix.HTML.raw @text %>
     </div>
 
   </body>
