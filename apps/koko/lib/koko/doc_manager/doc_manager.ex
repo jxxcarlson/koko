@@ -125,13 +125,23 @@ defmodule Koko.DocManager do
 
   """
   def create_document(attrs, author_id) do
-    attrs =
+    attributes = Document.default_attributes
+      |> Map.merge attrs["attributes"]
+    IO.puts "attributes\n-------"
+    IO.inspect attributes
+    IO.puts "-------"
+
+    tags = attrs["tags"] || []
+    doc_attrs =
       Map.merge(attrs, %{"author_id" => author_id, "parent_id" => 0})
-      |> Map.merge(%{ "attributes" => Document.default_attributes })
-      |> Map.merge(%{ "tags" => []})
-    IO.inspect attrs
+      |> Map.merge(%{ "attributes" => attributes })
+      |> Map.merge(%{ "tags" => tags })
+
+    IO.puts "doc_attrs\n--------"
+    IO.inspect doc_attrs
+    IO.puts "------------"
     result = %Document{}
-      |> Document.changeset(attrs)
+      |> Document.changeset(doc_attrs)
       |> Repo.insert()
     case result  do
       {:ok, doc} ->
