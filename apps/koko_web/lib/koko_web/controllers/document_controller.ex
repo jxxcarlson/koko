@@ -57,10 +57,10 @@ defmodule Koko.Web.DocumentController do
       conn.query_string =~ ~r/^master=/ ->
         [_, id] = String.split(conn.query_string, "=")
         documents = DocManager.list_children(:public, id)
-      conn.query_string == "all" || conn.query_string == "" ->
+      conn.query_string == "all" || conn.query_string == "public=yes&limit=30" ->
         documents = DocManager.list_documents(:public)
       true ->
-        documents = Search.by_query_string(conn.query_string)
+        documents = Search.by_query_string(conn.query_string <> "&public=yes&limit=30")
     end
     render(conn, "index.json", documents: documents)
   end
