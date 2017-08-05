@@ -13,5 +13,5 @@
 
 
 <div class="plain_text">
-   <%= @text %>
+   <%= Phoenix.HTML.raw @text %>
 </div>

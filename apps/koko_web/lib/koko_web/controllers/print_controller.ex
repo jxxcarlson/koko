@@ -8,26 +8,32 @@ defmodule Koko.Web.PrintController do
   def fix_html(text) do
     text
     |> String.replace("`", "!!aWz!!")
-    # |> String.replace("\\", "\\\\")
+    |> String.replace("\\", "\\\\")
   end
 
   def show(conn, %{"id" => id}) do
     IO.puts "PRINT CONTROLLER, SHOW"
-    document = Repo.get(Document, id)
+    document = Repo.get(Document, String.to_integer(id))
     IO.puts "Title: #{document.title}"
     IO.inspect document.attributes
     text_type = document.attributes["text_type"]
     IO.puts("text_type: #{text_type}")
-    IO.puts("RC: #{document.rendered_content}")
     case text_type do
       "plain" ->
+        IO.puts "Branch: PLAIN"
         conn |> render("plain.html", text: document.rendered_content)
       "adoc" ->
-        conn |> render("asciidoc.html", text: fix_html(document.rendered_content))
+          IO.puts "Branch: ADOC"
+        conn |> render("asciidoc.html", text: fix_html(document.content))
+      "adoc_latex" ->
+            IO.puts "Branch: ADOC LATEX"
+          conn |> render("asciidoc.html", text: fix_html(document.content))
       "latex" ->
-        conn |> render("latex.html", text: document.rendered_content)
+          IO.puts "Branch: LATEX"
+        conn |> render("latex.html", text: document.content)
       _ ->
-        conn |> render("plain.html", text: document.rendered_content)
+        IO.puts "Branch: DEFAULT"
+        conn |> render("asciidoc.html", text: fix_html(document.content))
     end
   end
 end
