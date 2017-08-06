@@ -20,6 +20,7 @@ defmodule Koko.Web.DocumentController do
   alias Koko.DocManager.Document
   alias Koko.Authentication.Token
   alias Koko.DocManager.Search
+  alias Koko.Repo
 
   action_fallback Koko.Web.FallbackController
 
@@ -110,8 +111,8 @@ defmodule Koko.Web.DocumentController do
   def show_public(conn, %{"id" => id}) do
     document = DocManager.get_document!(id)
     if document.attributes["public"] == true do
-      cs = Document.changeset(document, %{viewed_at: Time.now})
-      IO.puts "#{document.title} viewed at #{Time.now}"
+      cs = Document.changeset(document, %{viewed_at: DateTime.utc_now()})
+      IO.puts "#{document.title} viewed at #{DateTime.utc_now()}"
       Repo.update(cs)
       render(conn, "show.json", document: document)
     else
@@ -134,7 +135,7 @@ defmodule Koko.Web.DocumentController do
 
     document_params = Koko.Utility.project2map(payload)
     document = DocManager.get_document!(id)
-    failure_message = "User id and document author id do not match"
+    # failure_message = "User id and document author id do not match"
 
     with {:ok, user_id} <- Token.user_id_from_header(conn),
       {:ok, "match"} <- match_integers(user_id, document.author_id, "match", "couldn't match #{user_id} with #{document.author_id}"),
