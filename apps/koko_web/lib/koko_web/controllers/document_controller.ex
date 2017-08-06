@@ -29,7 +29,7 @@ defmodule Koko.Web.DocumentController do
   defined in the token.
   """
   def index(conn, _params) do
-    IO.puts "INDEX __"
+    IO.puts "INDEX __, QS = #{conn.query_string}"
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
         cond do
@@ -37,8 +37,11 @@ defmodule Koko.Web.DocumentController do
             [_, id] = String.split(conn.query_string, "=")
             master_document_id = String.to_integer id
             documents = DocManager.list_children(:user, user_id, master_document_id)
-          conn.query_string == "all" ->
+          conn.query_string == "userdocs=all" ->
             documents = DocManager.list_documents(:user, user_id)
+          String.contains? conn.query_string, "docs=any" ->
+            qs = String.replace conn.query_string, "docs=any&", ""
+            documents = Search.by_query_string(qs)
           true ->
             documents = Search.by_query_string_for_user(conn.query_string, user_id)
         end
@@ -58,8 +61,9 @@ defmodule Koko.Web.DocumentController do
       conn.query_string =~ ~r/^master=/ ->
         [_, id] = String.split(conn.query_string, "=")
         documents = DocManager.list_children(:public, id)
-      conn.query_string == "all" || conn.query_string == "public=yes&limit=30" ->
-        documents = DocManager.list_documents(:public)
+      conn.query_string == "publicdocs=all" || conn.query_string == "public=yes&limit=30" ->
+        documents = Search.by_query_string("public=yes&limit=30" )
+        # DocManager.list_documents(:public)
       true ->
         documents = Search.by_query_string(conn.query_string <> "&public=yes&limit=30")
     end
