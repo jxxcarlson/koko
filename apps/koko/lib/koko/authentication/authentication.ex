@@ -153,7 +153,7 @@ defmodule Koko.Authentication do
     do
       {:ok, token, user.username}
     else
-      {:error, message} -> {:error, message}
+      {:error, _} -> {:error, "Incorrect username (email) or password"}
     end
   end
 

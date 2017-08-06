@@ -6,5 +6,8 @@ defmodule Koko.Web.AuthenticationView do
     %{token: token}
   end
 
+  def render("error.json", %{error: error}) do
+    %{error: error}
+  end
 
 end
