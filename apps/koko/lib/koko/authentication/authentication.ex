@@ -10,7 +10,7 @@ defmodule Koko.Authentication do
   public: true may be listed and read through the /api/public/documents
   route.
 
-  NOTE: 
+  NOTE:
 
   """
 
@@ -19,6 +19,7 @@ defmodule Koko.Authentication do
 
   alias Koko.Repo
   alias Koko.Authentication.User
+  alias Koko.Authentication.UserQuery
 
   @doc """
   Returns the list of users.
@@ -48,6 +49,26 @@ defmodule Koko.Authentication do
 
   """
   def get_user!(id), do: Repo.get!(User, id)
+
+
+  def user_available(username, email) do
+    username = username || ""
+    email = email || ""
+    errors = []
+    if String.length(username) < 4 do
+      errors = errors ++ ["Username must have at least four characters"]
+    end
+    if not (String.contains? email, "@") do
+      errors = errors ++ ["Email is invalid"]
+    end
+    if UserQuery.get_by_email(email) != nil do
+      errors = errors ++ ["That email is taken"]
+    end
+    if UserQuery.get_by_username(username) != nil do
+      errors = errors ++ ["That username is taken"]
+    end
+    errors
+  end
 
   @doc """
   Creates a user.

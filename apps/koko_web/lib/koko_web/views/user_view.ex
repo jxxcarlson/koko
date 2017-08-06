@@ -29,4 +29,8 @@ defmodule Koko.Web.UserView do
       token: u.token}
   end
 
+  def render("error.json", %{error: error_message}) do
+    %{error: error_message}
+  end
+
 end

@@ -24,18 +24,39 @@ defmodule Koko.Web.UserController do
     }
   end
 
+
   def create(conn, %{"user" => payload}) do
+    IO.inspect payload
+    username = payload["username"]
+    email = payload["email"]
+    IO.puts "username = #{username}, email = #{email}"
+    errors = Authentication.user_available username, email
+    IO.puts "ERRORS:"
+    IO.inspect errors
+
+    case errors do
+      [] -> create(:success, conn, payload)
+      _ -> create(:error, conn, errors)
+    end
+
+  end
+
+  def create(:success, conn, payload) do
     user_params = Koko.Utility.project2map(payload)
     with {:ok, %User{} = user} <- Authentication.create_user(user_params) do
       {:ok, token} = Koko.Authentication.Token.get(user.id, user.username, 86400)
       user = Map.merge(user, %{token: token})
       DocManager.create_document(home_page_params(user), user.id)
-      IO.inspect user
       conn
       |> put_status(:created)
       |> put_resp_header("location", user_path(conn, :show, user))
       |> render("show_with_token.json", user: user)
     end
+  end
+
+  def create(:error, conn, errors) do
+    error_message = Enum.join(errors, "; ") <> "."
+    conn |> render("error.json", error: error_message)
   end
 
   def show(conn, %{"id" => id}) do
