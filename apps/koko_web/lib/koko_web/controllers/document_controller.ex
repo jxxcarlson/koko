@@ -24,8 +24,46 @@ defmodule Koko.Web.DocumentController do
 
   action_fallback Koko.Web.FallbackController
 
+  def get_master_doc_id(query_string) do
+    (Regex.run(~r/master=\d+/, query_string) || ["master=0"])
+    |> hd
+    |> String.split("=")
+    |> Enum.at(1)
+    |> String.to_integer
+  end
 
+  def remove_command(command, query_string) do
+    query_string
+    |> String.split("&")
+    |> Enum.filter(fn(c) -> c != command end)
+    |> Enum.join("&")
+  end
 
+  def prepend_command(command, query_string) do
+    if query_string == "" do
+      command
+    else
+      "#{command}&#{query_string}"
+    end
+  end
+
+  def get_documents_for_user(user_id, query_string, opts) do
+    IO.puts "-------- gdfu ----------"
+    IO.inspect([user_id, query_string, opts])
+    cond do
+      query_string == "userdocs=all" ->
+        {qs, opts2} = {"", ["author=#{user_id}", "sort=viewed", "limit=20"] ++ opts}
+      String.contains? query_string, "docs=any" ->
+        qs = remove_command("docs=any", query_string)
+        {qs, opts2} = { qs, [] ++ ["sort=viewed", "limit=20"]}
+      true ->
+        {qs, opts2} = {query_string, ["author=#{user_id}", "sort=viewed"] ++ opts}
+    end
+    IO.puts "------------------"
+    IO.inspect([qs, opts2])
+    IO.puts "------------------"
+    Search.by_query_string(qs, opts2)
+  end
 
   @doc """
   List and search for documents owned by the user
@@ -35,27 +73,16 @@ defmodule Koko.Web.DocumentController do
     IO.puts "INDEX USER, QS = #{conn.query_string}"
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
-        target = conn.query_string
-        master_document_id =
-        (Regex.run(~r/master=\d+/, target ) || ["master=0"]) |> hd |> String.split("=") |> Enum.at(1) |> String.to_integer
-
-        cond do
-          master_document_id > 0  ->
-            documents = DocManager.list_children(:user, user_id, master_document_id)
-          conn.query_string == "userdocs=all" ->
-            documents = Search.by_query_string("author=#{user_id}&sort=viewed&limit=20", [])
-            # "author=#{user_id}"
-            # DocManager.list_documents(:user, user_id)
-          String.contains? conn.query_string, "docs=any" ->
-            qs = String.replace conn.query_string, "docs=any&", ""
-            documents = Search.by_query_string(qs, [])
-          true ->
-            documents = Search.by_query_string_for_user(conn.query_string, user_id)
+        master_document_id = get_master_doc_id(conn.query_string)
+        if master_document_id > 0 do
+          documents = DocManager.list_children(:user, user_id, master_document_id)
+        else
+          documents = get_documents_for_user(user_id, conn.query_string, [])
+          IO.puts "NUMBER OF DOCS FOUND: #{length(documents)}"
         end
         render(conn, "index.json", documents: documents)
-        else
+      else
         _ -> IO.puts "Error getting documents; "; {:error, "Not authorized"}
-
       end
   end
 

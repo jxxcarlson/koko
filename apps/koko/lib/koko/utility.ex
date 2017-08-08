@@ -37,6 +37,15 @@ defmodule Koko.Utility do
     end
   end
 
+
+  # Example yada | foo |> Utility.inspect_pipe("FOO")
+  def inspect_pipe(arg, message) do
+    IO.puts message
+    IO.inspect(arg)
+    IO.puts "-----------------"
+    arg
+  end
+
   def ok_message(message) do
     IO.puts message
     {:ok, message}

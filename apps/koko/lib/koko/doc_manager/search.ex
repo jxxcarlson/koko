@@ -3,11 +3,12 @@ defmodule Koko.DocManager.Search do
   alias Koko.DocManager.Document
   alias Koko.DocManager.Query
   alias Koko.Repo
+  alias Koko.Utility
 
-  defp by_command_list(command_list) do
+  def by_command_list(command_list) do
     command_list
     |> Enum.reduce(Document, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
-    |> Query.sort_by_updated_at
+    # |> Query.sort_by_updated_at
     |> Repo.all
   end
 
@@ -18,14 +19,21 @@ defmodule Koko.DocManager.Search do
   end
 
   def prepend_options(query_string, options) do
-    Enum.reduce(options, query_string, fn(option, query_string) -> "#{option}&#{query_string}" end)
+    if query_string == "" do
+      Enum.join(options, "&")
+    else
+      Enum.join(options ++ [query_string] , "&")
+    end
   end
 
   def by_query_string(query_string, options) do
     query_string
     |> prepend_options(options)
+    |> Utility.inspect_pipe("QS:")
     |> parse_query_string
+    |> Utility.inspect_pipe("COMMANDS:")
     |> by_command_list
+    # |> Utility.inspect_pipe("QUERY:")
   end
 
   def by_query_string_for_user(query_string, user_id) do
