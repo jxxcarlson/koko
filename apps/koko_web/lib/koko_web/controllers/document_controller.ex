@@ -38,7 +38,6 @@ defmodule Koko.Web.DocumentController do
 
         cond do
           master_document_id > 0  ->
-            [_, id] = String.split(conn.query_string, "=")
             documents = DocManager.list_children(:user, user_id, master_document_id)
           conn.query_string == "userdocs=all" ->
             documents = DocManager.list_documents(:user, user_id)
