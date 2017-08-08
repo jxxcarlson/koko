@@ -24,7 +24,11 @@ defmodule Koko.Web.DocumentController do
 
   action_fallback Koko.Web.FallbackController
 
-  def get_master_doc_id(query_string) do
+  defp search_limit do
+    20
+  end
+
+  defp get_master_doc_id(query_string) do
     (Regex.run(~r/master=\d+/, query_string) || ["master=0"])
     |> hd
     |> String.split("=")
@@ -32,14 +36,14 @@ defmodule Koko.Web.DocumentController do
     |> String.to_integer
   end
 
-  def remove_command(command, query_string) do
+  defp remove_command(command, query_string) do
     query_string
     |> String.split("&")
     |> Enum.filter(fn(c) -> c != command end)
     |> Enum.join("&")
   end
 
-  def prepend_command(command, query_string) do
+  defp prepend_command(command, query_string) do
     if query_string == "" do
       command
     else
@@ -52,12 +56,13 @@ defmodule Koko.Web.DocumentController do
     IO.inspect([user_id, query_string, opts])
     cond do
       query_string == "userdocs=all" ->
-        {qs, opts2} = {"", ["author=#{user_id}", "sort=viewed", "limit=20"] ++ opts}
+        {qs, opts2} = {"", ["author=#{user_id}", "limit=#{search_limit()}"] ++ opts}
       String.contains? query_string, "docs=any" ->
         qs = remove_command("docs=any", query_string)
-        {qs, opts2} = { qs, [] ++ ["sort=viewed", "limit=20"]}
+        {qs, opts2} = { qs, [] ++ ["user_or_public=#{user_id}", "limit=#{search_limit()}"]}
+        # {qs, opts2} = { qs, [] ++ ["author=#{user_id}", "sort=viewed", "limit=#{search_limit()}"]}
       true ->
-        {qs, opts2} = {query_string, ["author=#{user_id}", "sort=viewed"] ++ opts}
+        {qs, opts2} = {query_string, ["author=#{user_id}", "limit=#{search_limit()}"] ++ opts}
     end
     IO.puts "------------------"
     IO.inspect([qs, opts2])
@@ -90,16 +95,15 @@ defmodule Koko.Web.DocumentController do
   All public documents are listable and searchable.
   """
   def index_public(conn, _params) do
-      IO.puts "INDEX PUBLIC, QS = #{conn.query_string}"
+    IO.puts "(1) INDEX PUBLIC, QS = #{conn.query_string}"
+    query_string = remove_command("publicdocs=all", conn.query_string)
+    IO.puts "(2) INDEX PUBLIC, QS = #{query_string}"
+    master_document_id = get_master_doc_id(query_string)
     cond do
-      conn.query_string =~ ~r/^master=/ ->
-        [_, id] = String.split(conn.query_string, "=")
-        documents = DocManager.list_children(:public, id)
-      conn.query_string == "publicdocs=all" || conn.query_string == "public=yes&limit=30" ->
-        documents = Search.by_query_string("public=yes&limit=30", [] )
-        # DocManager.list_documents(:public)
+      master_document_id > 0 ->
+        documents = DocManager.list_children(:public, master_document_id)
       true ->
-        documents = Search.by_query_string(conn.query_string <> "&public=yes&limit=30", [])
+        documents = Search.by_query_string(query_string, ["public=yes" ,"limit=#{search_limit()}"])
     end
     render(conn, "index.json", documents: documents)
   end

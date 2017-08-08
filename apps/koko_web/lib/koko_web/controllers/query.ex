@@ -5,6 +5,9 @@ defmodule Koko.DocManager.Query do
   # alias Koko.DocManager.QueryMacro
   # alias Koko.DocManager.Document
 
+  alias Koko.Authentication.User
+  alias Koko.Authentication.UserQuery
+  alias Koko.Repo
 
 
   @doc """
@@ -23,9 +26,13 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
 
 
  def by(query, cmd, arg) do
+    IO.puts "QUERY #{cmd}, #{arg}"
     case {cmd, arg} do
       {"author",_} ->
         has_author(query, arg)
+        # for_user_or_public(query, arg)
+      {"authorname",_} ->
+          has_authorname(query, arg)
       {"title", _} ->
         has_title(query, arg)
       {"sort", "created"} ->
@@ -33,7 +40,7 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
       {"sort", "updated"} ->
           sort_by_updated_at(query)
       {"sort", "viewed"} ->
-              sort_by_viewed_at(query)
+          sort_by_viewed_at(query)
       {"sort", "title"} ->
           sort_by_title(query)
       {"text",_} ->
@@ -44,22 +51,49 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
         is_public(query)
       {"public", "no"}  ->
         is_not_public(query)
-      {"limit", arg} ->
+      {"user_or_public", _} ->
+        for_user_or_public(query, arg)
+      {"limit", _} ->
         with_limit(query, arg)
+      {"ident", _} ->
+         has_ident(query, arg)
+      {"id", _} ->
+            has_id(query, arg)
       _ ->
         has_title(query, arg)
     end
  end
 
 
- def with_limit(query, n) do
+  def with_limit(query, n) do
        from d in query,
         limit: ^n
- end
+  end
+
+  def for_user_or_public(query, author_id)  do
+    from d in query,
+      where: (d.author_id == ^author_id) or (fragment("attributes @> '{\"public\": true}'"))
+  end
 
   def has_author(query, author_id) do
     from d in query,
       where: d.author_id == ^author_id
+  end
+
+  def has_authorname(query, author_name) do
+    author = User |> UserQuery.by_username(author_name) |> Repo.one
+    from d in query,
+      where: d.author_id == ^author.id
+  end
+
+  def has_ident(query, identifier) do
+    from d in query,
+      where: ilike(d.identifier, ^"%#{identifier}%")
+  end
+
+  def has_id(query, id) do
+    from d in query,
+      where: d.identifier == ^id
   end
 
   def sort_by_title(query) do

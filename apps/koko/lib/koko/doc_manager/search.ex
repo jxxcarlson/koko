@@ -6,9 +6,9 @@ defmodule Koko.DocManager.Search do
   alias Koko.Utility
 
   def by_command_list(command_list) do
+    IO.puts "ENTER COMMAND_LIST"
     command_list
     |> Enum.reduce(Document, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
-    # |> Query.sort_by_updated_at
     |> Repo.all
   end
 
