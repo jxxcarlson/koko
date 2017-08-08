@@ -32,8 +32,14 @@ defmodule Koko.Web.DocumentController do
     IO.puts "INDEX __, QS = #{conn.query_string}"
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
+        master_id =
+        (Regex.run(~r/master=.*/, conn.query_string ) || ["master=0"])
+          |> hd |> String.split("=")
+          |> Enum.at(1)
+          |> String.to_integer
+
         cond do
-          conn.query_string =~ ~r/^master=/ ->
+          master_id > 0  ->
             [_, id] = String.split(conn.query_string, "=")
             master_document_id = String.to_integer id
             documents = DocManager.list_children(:user, user_id, master_document_id)
