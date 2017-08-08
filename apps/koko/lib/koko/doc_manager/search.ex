@@ -44,7 +44,7 @@ defmodule Koko.DocManager.Search do
     else
       "#{query_string}&sort=title"
     end
-    by_query_string(query_string)
+    by_query_string(query_string, [])
   end
 
 
