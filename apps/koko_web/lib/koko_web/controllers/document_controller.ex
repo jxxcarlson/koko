@@ -24,6 +24,9 @@ defmodule Koko.Web.DocumentController do
 
   action_fallback Koko.Web.FallbackController
 
+
+
+
   @doc """
   List and search for documents owned by the user
   defined in the token.
@@ -40,10 +43,12 @@ defmodule Koko.Web.DocumentController do
           master_document_id > 0  ->
             documents = DocManager.list_children(:user, user_id, master_document_id)
           conn.query_string == "userdocs=all" ->
-            documents = DocManager.list_documents(:user, user_id)
+            documents = Search.by_query_string("author=#{user_id}&sort=viewed&limit=20", [])
+            # "author=#{user_id}"
+            # DocManager.list_documents(:user, user_id)
           String.contains? conn.query_string, "docs=any" ->
             qs = String.replace conn.query_string, "docs=any&", ""
-            documents = Search.by_query_string(qs)
+            documents = Search.by_query_string(qs, [])
           true ->
             documents = Search.by_query_string_for_user(conn.query_string, user_id)
         end
@@ -64,10 +69,10 @@ defmodule Koko.Web.DocumentController do
         [_, id] = String.split(conn.query_string, "=")
         documents = DocManager.list_children(:public, id)
       conn.query_string == "publicdocs=all" || conn.query_string == "public=yes&limit=30" ->
-        documents = Search.by_query_string("public=yes&limit=30" )
+        documents = Search.by_query_string("public=yes&limit=30", [] )
         # DocManager.list_documents(:public)
       true ->
-        documents = Search.by_query_string(conn.query_string <> "&public=yes&limit=30")
+        documents = Search.by_query_string(conn.query_string <> "&public=yes&limit=30", [])
     end
     render(conn, "index.json", documents: documents)
   end

@@ -17,8 +17,13 @@ defmodule Koko.DocManager.Search do
     |> (Enum.map fn(item) -> String.split(item, "=") end)
   end
 
-  def by_query_string(query_string) do
+  def prepend_options(query_string, options) do
+    Enum.reduce(options, query_string, fn(option, query_string) -> "#{option}&#{query_string}" end)
+  end
+
+  def by_query_string(query_string, options) do
     query_string
+    |> prepend_options(options)
     |> parse_query_string
     |> by_command_list
   end
