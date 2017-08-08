@@ -29,12 +29,12 @@ defmodule Koko.Web.DocumentController do
   defined in the token.
   """
   def index(conn, _params) do
-    IO.puts "INDEX __, QS = #{conn.query_string}"
+    IO.puts "INDEX USER, QS = #{conn.query_string}"
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
         target = conn.query_string
         master_document_id =
-        (Regex.run(~r/master=.*/, target ) || ["master=0"]) |> hd |> String.split("=") |> Enum.at(1) |> String.to_integer
+        (Regex.run(~r/master=\d+/, target ) || ["master=0"]) |> hd |> String.split("=") |> Enum.at(1) |> String.to_integer
 
         cond do
           master_document_id > 0  ->
@@ -58,7 +58,7 @@ defmodule Koko.Web.DocumentController do
   All public documents are listable and searchable.
   """
   def index_public(conn, _params) do
-      IO.puts "INDEX PUBLIC"
+      IO.puts "INDEX PUBLIC, QS = #{conn.query_string}"
     cond do
       conn.query_string =~ ~r/^master=/ ->
         [_, id] = String.split(conn.query_string, "=")
@@ -97,6 +97,7 @@ defmodule Koko.Web.DocumentController do
   Display a document if it is owned by the user defined by the token.
   """
   def show(conn, %{"id" => id}) do
+    IO.puts "INDEX PUBLIC, ID = #{id}"
     document = DocManager.get_document!(id)
     with {:ok, user_id} <- Token.user_id_from_header(conn),
       true <- ((document.attributes["public"] == true) || (user_id == document.author_id))
