@@ -25,7 +25,7 @@ defmodule Koko.Web.DocumentController do
   action_fallback Koko.Web.FallbackController
 
   defp search_limit do
-    20
+    25
   end
 
   defp get_master_doc_id(query_string) do
