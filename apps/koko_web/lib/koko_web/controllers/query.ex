@@ -72,7 +72,7 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
 
   def for_user_or_public(query, author_id)  do
     from d in query,
-      where: (fragment("attributes @> '{\"public\": true}'")) or (d.author_id == ^author_id) 
+      where:  (d.author_id == ^author_id) or (fragment("attributes @> '{\"public\": true}'"))
   end
 
   def has_author(query, author_id) do
