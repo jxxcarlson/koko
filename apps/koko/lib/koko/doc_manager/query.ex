@@ -23,6 +23,8 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
 
  def by(query, cmd, arg) do
     case {cmd, arg} do
+      {"user_or_public", _} ->
+        for_user_or_public(query, arg)
       {"author",_} ->
         has_author(query, arg)
       {"authorname",_} ->
@@ -54,6 +56,11 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
       _ ->
         has_title(query, arg)
     end
+ end
+
+ def for_user_or_public(query, author_id)  do
+   from d in query,
+     where:  (d.author_id == ^author_id) or (fragment("attributes @> '{\"public\": true}'"))
  end
 
   def has_author(query, author_id) do

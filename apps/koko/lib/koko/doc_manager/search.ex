@@ -33,6 +33,7 @@ defmodule Koko.DocManager.Search do
     |> parse_query_string
     |> Utility.inspect_pipe("COMMANDS:")
     |> by_command_list
+    |> Utility.inspect_pipe("FINAL QUERY:")
     # |> Utility.inspect_pipe("QUERY:")
   end
 
