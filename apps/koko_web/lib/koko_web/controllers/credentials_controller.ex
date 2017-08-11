@@ -13,6 +13,9 @@ defmodule Koko.Web.CredentialsController do
   end
 
   def send_credentials(conn) do
+    IO.puts "--------- HEADER ----------"
+    IO.inspect get_header(conn, "authorization")
+    IO.puts "--------------------"
     p = conn.params
     credentials = %S3DirectUpload{
         file_name: p["filename"],
