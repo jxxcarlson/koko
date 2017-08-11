@@ -18,7 +18,7 @@ defmodule Koko.Web.AuthenticationController do
       |> put_resp_header("location", authentication_path(conn, :show, "headquarters"))
       |> render("show.json", token: token)
     else
-      _ -> conn |> render("error.json", error: "Incorrect email or password")  
+      _ -> conn |> render("error.json", error: "Incorrect email or password")
     end
   end
 

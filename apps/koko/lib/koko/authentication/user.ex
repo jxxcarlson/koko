@@ -12,6 +12,7 @@ defmodule Koko.Authentication.User do
     field :password_hash, :string
     field :password, :string, virtual: true
     field :username, :string
+    field :public, :boolean, default: true
 
     timestamps()
   end
@@ -19,7 +20,7 @@ defmodule Koko.Authentication.User do
   @doc false
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:name, :username, :email, :password, :password_hash, :admin, :blurb])
+    |> cast(attrs, [:name, :username, :email, :password, :password_hash, :admin, :blurb, :public])
     |> validate_required([:name, :username, :email, :password])
   end
 
