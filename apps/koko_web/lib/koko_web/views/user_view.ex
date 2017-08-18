@@ -14,6 +14,7 @@ defmodule Koko.Web.UserView do
     %{id: user.id,
       name: user.name,
       username: user.username,
+      password: "-",
       email: user.email,
       admin: user.admin,
       blurb: user.blurb}

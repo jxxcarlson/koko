@@ -16,6 +16,11 @@ defmodule Koko.Authentication.UserQuery do
       where: u.email == ^email
   end
 
+  def sort_by_username(query) do
+        from u in query,
+        order_by: [asc: u.username]
+  end
+
   ## GET USER
 
   def get_by_email(email) do
@@ -25,5 +30,7 @@ defmodule Koko.Authentication.UserQuery do
   def get_by_username(username) do
     User |> by_username(username) |> Repo.one
   end
+
+
 
 end

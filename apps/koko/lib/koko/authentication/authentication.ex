@@ -31,7 +31,7 @@ defmodule Koko.Authentication do
 
   """
   def list_users do
-    Repo.all(User)
+    User |> UserQuery.sort_by_username |> Repo.all
   end
 
   @doc """

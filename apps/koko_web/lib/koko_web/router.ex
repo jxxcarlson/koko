@@ -17,7 +17,7 @@ defmodule Koko.Web.Router do
   scope "/api", Koko.Web do
     pipe_through :api
     resources "/documents", DocumentController
-    resources "/users", UserController, except: [:edit]
+    resources "/users", UserController, except: [:edit, :delete]
     resources "/authentication", AuthenticationController
 
     get "/public/documents", DocumentController, :index_public

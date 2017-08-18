@@ -31,7 +31,7 @@
   "poolboy": {:hex, :poolboy, "1.5.1", "6b46163901cfd0a1b43d692657ed9d7e599853b3b21b95ae5ae0a777cf9b6ca8", [:rebar], [], "hexpm"},
   "postgrex": {:hex, :postgrex, "0.13.2", "2b88168fc6a5456a27bfb54ccf0ba4025d274841a7a3af5e5deb1b755d95154e", [:mix], [{:connection, "~> 1.0", [hex: :connection, repo: "hexpm", optional: false]}, {:db_connection, "~> 1.1", [hex: :db_connection, repo: "hexpm", optional: false]}, {:decimal, "~> 1.0", [hex: :decimal, repo: "hexpm", optional: false]}], "hexpm"},
   "ranch": {:hex, :ranch, "1.3.2", "e4965a144dc9fbe70e5c077c65e73c57165416a901bd02ea899cfd95aa890986", [:rebar3], [], "hexpm"},
-  "s3_direct_upload": {:git, "https://github.com/jxxcarlson/s3_direct_upload", "ed9d45290271420063a424bf88fe94124d97533d", []},
+  "s3_direct_upload": {:git, "https://github.com/jxxcarlson/s3_direct_upload_aws4", "796c6191e612cdaf64aa722623a66c836d97999f", []},
   "secure_random": {:hex, :secure_random, "0.5.1", "c5532b37c89d175c328f5196a0c2a5680b15ebce3e654da37129a9fe40ebf51b", [:mix], [], "hexpm"},
   "sigaws": {:hex, :sigaws, "0.7.0", "119d51c6bfda34d88ee61707708024d2c106a1ce4ca408c8c2dd19be74c761c4", [], [], "hexpm"},
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.1", "28a4d65b7f59893bc2c7de786dec1e1555bd742d336043fe644ae956c3497fbe", [:make, :rebar], [], "hexpm"},
