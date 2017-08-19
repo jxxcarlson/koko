@@ -10,7 +10,11 @@ defmodule Koko.Web.UserController do
   action_fallback Koko.Web.FallbackController
 
   def index(conn, _params) do
-    users = Authentication.list_users()
+    if conn.query_string == "public=yes" do
+      users = Authentication.list_public_users()
+    else
+      users = Authentication.list_users()
+    end
     render(conn, "index.json", users: users)
   end
 

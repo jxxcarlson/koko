@@ -34,6 +34,12 @@ defmodule Koko.Authentication do
     User |> UserQuery.sort_by_username |> Repo.all
   end
 
+  ##  List users whose home page is public
+  ##
+  def list_public_users do
+    User |> UserQuery.is_public |> UserQuery.sort_by_username |> Repo.all
+  end
+
   @doc """
   Gets a single user.
 

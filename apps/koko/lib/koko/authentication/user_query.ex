@@ -6,6 +6,11 @@ defmodule Koko.Authentication.UserQuery do
 
   ## QUERIES
 
+  def is_public(query) do
+    from u in query,
+      where: u.public == ^true
+  end
+
   def by_username(query, username) do
     from u in query,
       where: u.username == ^username
@@ -17,7 +22,7 @@ defmodule Koko.Authentication.UserQuery do
   end
 
   def sort_by_username(query) do
-        from u in query,
+      from u in query,
         order_by: [asc: u.username]
   end
 
