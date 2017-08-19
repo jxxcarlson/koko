@@ -72,11 +72,11 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
 
   def get_user(query, name) do
     from u in query,
-      where: u.username == ^name
+      where: ilike(u.username, ^"%#{name}%")
   end
 
   def has_author_name(query, author_name) do
-    author = User |> get_user(author_name) |> Repo.one
+    author = User |> get_user(author_name) |> Repo.all
     from d in query,
       where: d.author_id == ^author.id
   end
