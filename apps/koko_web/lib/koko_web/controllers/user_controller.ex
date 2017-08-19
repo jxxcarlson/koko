@@ -6,15 +6,15 @@ defmodule Koko.Web.UserController do
   alias Koko.Authentication
   alias Koko.Authentication.User
   alias Koko.DocManager
+  alias Koko.DocManager.Search
+
 
   action_fallback Koko.Web.FallbackController
 
   def index(conn, _params) do
-    if conn.query_string == "public=yes" do
-      users = Authentication.list_public_users()
-    else
-      users = Authentication.list_users()
-    end
+    IO.puts "User controller, index, query_string = " <> conn.query_string
+    # users = Authentication.list_users(conn.query_string)
+    users = Search.by_query_string(:user, conn.query_string, ["sort=user"])
     render(conn, "index.json", users: users)
   end
 

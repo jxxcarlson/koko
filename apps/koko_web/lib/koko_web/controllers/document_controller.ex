@@ -67,7 +67,7 @@ defmodule Koko.Web.DocumentController do
     IO.puts "------------------"
     IO.inspect([qs, opts2])
     IO.puts "------------------"
-    Search.by_query_string(qs, opts2)
+    Search.by_query_string(:document, qs, opts2)
   end
 
   @doc """
@@ -103,7 +103,7 @@ defmodule Koko.Web.DocumentController do
       master_document_id > 0 ->
         documents = DocManager.list_children(:public, master_document_id)
       true ->
-        documents = Search.by_query_string(query_string, ["public=yes" ,"limit=#{search_limit()}"])
+        documents = Search.by_query_string(:document, query_string, ["public=yes" ,"limit=#{search_limit()}"])
     end
     render(conn, "index.json", documents: documents)
   end

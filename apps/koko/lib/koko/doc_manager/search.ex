@@ -4,13 +4,22 @@ defmodule Koko.DocManager.Search do
   alias Koko.DocManager.Query
   alias Koko.Repo
   alias Koko.Utility
+  alias Koko.Authentication.User
 
-  def by_command_list(command_list) do
-    IO.puts "ENTER COMMAND_LIST"
+  def by_command_list(command_list, :document) do
+    IO.puts "ENTER DOCUMENT COMMAND_LIST"
     command_list
     |> Enum.reduce(Document, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
     |> Repo.all
   end
+
+  def by_command_list(command_list, :user) do
+    IO.puts "ENTER USER COMMAND_LIST"
+    command_list
+    |> Enum.reduce(User, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
+    |> Repo.all
+  end
+
 
   defp parse_query_string(str) do
     str
@@ -26,13 +35,14 @@ defmodule Koko.DocManager.Search do
     end
   end
 
-  def by_query_string(query_string, options) do
+  def by_query_string(domain, query_string, options) do
+    IO.inspect domain, label: "by_query_string, domain"
     query_string
     |> prepend_options(options)
     |> Utility.inspect_pipe("QS:")
     |> parse_query_string
     |> Utility.inspect_pipe("COMMANDS:")
-    |> by_command_list
+    |> by_command_list(domain)
     |> Utility.inspect_pipe("FINAL QUERY:")
     # |> Utility.inspect_pipe("QUERY:")
   end
@@ -53,10 +63,7 @@ defmodule Koko.DocManager.Search do
     else
       "#{query_string}&sort=title"
     end
-    by_query_string(query_string, [])
+    by_query_string(:document, query_string, [])
   end
-
-
-
 
 end

@@ -47,6 +47,12 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
         is_public(query)
       {"public", "no"}  ->
         is_not_public(query)
+      {"public_user", "yes"} ->
+        is_public_user(query)
+      {"is_user", _} ->
+        is_user(query, arg)
+      {"sort", "user"} ->
+          sort_by_user(query)
       {"id", _} ->
         has_id(query, arg)
       {"ident", _} ->
@@ -68,17 +74,33 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
       where: d.author_id == ^author_id
   end
 
-  # alias Koko.Authentication.User; alias Koko.Repo; alias Koko.DocManager.Query
+  ###################### USER QUERIES ##########################
 
-  def get_user(query, name) do
+  def is_user(query, name) do
     from u in query,
       where: ilike(u.username, ^"%#{name}%")
   end
 
+  def sort_by_user(query) do
+        from u in query,
+        order_by: [asc: u.username]
+  end
+
+  def is_public_user(query) do
+    from u in query,
+      where: u.public == ^true
+  end
+
+  #############################################################
+
   def has_author_name(query, author_name) do
-    author = User |> get_user(author_name) |> Repo.all
-    from d in query,
-      where: d.author_id == ^author.id
+    author = User |> is_user(author_name) |> Repo.one
+    if author != nil do
+      from d in query,
+        where: d.author_id == ^author.id
+     else
+       query
+     end
   end
 
   def sort_by_title(query) do

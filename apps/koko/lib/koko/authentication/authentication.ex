@@ -30,7 +30,7 @@ defmodule Koko.Authentication do
       [%User{}, ...]
 
   """
-  def list_users do
+  def list_users(query_string) do
     User |> UserQuery.sort_by_username |> Repo.all
   end
 
@@ -39,6 +39,8 @@ defmodule Koko.Authentication do
   def list_public_users do
     User |> UserQuery.is_public |> UserQuery.sort_by_username |> Repo.all
   end
+
+
 
   @doc """
   Gets a single user.
