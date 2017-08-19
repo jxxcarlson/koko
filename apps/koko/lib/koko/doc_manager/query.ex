@@ -76,9 +76,9 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
 
   ###################### USER QUERIES ##########################
 
-  def is_user(query, name) do
+  def is_user(query, term) do
     from u in query,
-      where: ilike(u.username, ^"%#{name}%")
+      where: ilike(u.username, ^"%#{term}%") or ilike(u.blurb, ^"%#{term}%")
   end
 
   def sort_by_user(query) do
