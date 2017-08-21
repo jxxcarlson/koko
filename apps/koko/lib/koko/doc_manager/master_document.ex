@@ -155,12 +155,16 @@ defmodule Koko.DocManager.MasterDocument do
     ["child", child_id_str] = child_command # error handling
     child_id = String.to_integer(child_id_str)
     child_document = Repo.get(Document, child_id)
+    IO.puts "Child document: #{child_document.id} (#{child_document.title})"
 
-    new_child = %Child{doc_id: child_id, level: 2,
+    level = 2
+
+    new_child = %Child{doc_id: child_id, level: level,
       title: child_document.title, doc_identifier: child_document.identifier,
       comment: "comment"}
 
     Document.set_parent(Document.child_document(new_child), document.id)
+    Document.set_level(child_document, level)
 
     children = case position do
       "at-top" ->
@@ -179,9 +183,12 @@ defmodule Koko.DocManager.MasterDocument do
         document.children
     end
 
+    IO.inspect children, label: "Children"
+
     doc = Document.update_children(document, children)
     new_content = updated_text(doc)
     cs = Document.changeset(doc, %{content: new_content})
+    |> set_children(document)
     Repo.update!(cs)
   end
 
