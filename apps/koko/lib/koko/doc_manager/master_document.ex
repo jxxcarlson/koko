@@ -166,28 +166,23 @@ defmodule Koko.DocManager.MasterDocument do
       title: child_document.title, doc_identifier: child_document.identifier,
       comment: "comment"}
 
-    Document.set_parent(Document.child_document(new_child), document.id)    
+    Document.set_parent(Document.child_document(new_child), document.id)
 
     children = case position do
       "at-top" ->
         [new_child] ++ document.children
       "at-bottom" ->
         document.children ++ [new_child]
+      "above" ->
+        ["current", current_id] = (hd remaining_commands)
+        k = index_of_child_with_id(document.children, String.to_integer(current_id))
+        insert_before(new_child, k, document.children)
+      "below" ->
+        ["current", current_id] = (hd remaining_commands)
+        k = index_of_child_with_id(document.children, String.to_integer(current_id))
+        insert_after(new_child, k, document.children)
       _ ->
         document.children
-    end
-
-    children = if Enum.member?(["above", "below"], position) do
-      ["current", current_id] = (hd remaining_commands)
-       k = index_of_child_with_id(document.children, String.to_integer(current_id))
-      case position do
-        "above" ->
-          insert_before(new_child, k, document.children)
-        "below" ->
-          insert_after(new_child, k, document.children)
-        _ ->
-          document.children
-      end
     end
 
     doc = Document.update_children(document, children)
