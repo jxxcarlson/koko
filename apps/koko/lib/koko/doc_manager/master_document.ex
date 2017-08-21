@@ -71,7 +71,6 @@ defmodule Koko.DocManager.MasterDocument do
     {line, line_number} = item
     words = line |> String.split(" ")
       |> Enum.filter fn(word) -> word != "" end
-    IO.inspect words
     cond do
       length(words) == 0 ->
         {:blank, line_number, ""}
@@ -110,7 +109,6 @@ defmodule Koko.DocManager.MasterDocument do
   end
 
   defp parse_item(words, line_number, line) do
-    IO.inspect([line_number, line])
     [firstWord|tail] = words
     level = String.length firstWord
 
@@ -153,10 +151,6 @@ defmodule Koko.DocManager.MasterDocument do
 
   def attach(document, position, remaining_commands) do
 
-    IO.puts "Enter attach with position = #{position}, title = #{document.title}"
-    IO.inspect(remaining_commands)
-    IO.puts("===========")
-
     [child_command|remaining_commands] = remaining_commands
     ["child", child_id_str] = child_command # error handling
     child_id = String.to_integer(child_id_str)
@@ -187,7 +181,6 @@ defmodule Koko.DocManager.MasterDocument do
 
     doc = Document.update_children(document, children)
     new_content = updated_text(doc)
-    IO.puts(new_content)
     cs = Document.changeset(doc, %{content: new_content})
     Repo.update!(cs)
   end
