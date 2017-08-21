@@ -10,7 +10,8 @@ defmodule Koko.DocManager.MasterDocument do
 
 
   def parse(document) do
-    parse_string(document.content)
+    result = parse_string(document.content)
+    IO.inspect result, label: "parsed document"
   end
 
 
@@ -19,7 +20,11 @@ defmodule Koko.DocManager.MasterDocument do
       children = parse(document)
         |> Enum.filter(fn(item) -> is_valid(item) end)
         |> Enum.map(fn(item) -> get_item(item) end)
-      Ecto.Changeset.put_embed(changeset, :children, children)
+      if children != []  do
+        changeset = Ecto.Changeset.put_embed(changeset, :children, children)
+      end
+      IO.inspect children, label: "parse doc and set_children"
+      changeset
     else
       changeset
     end
@@ -137,9 +142,17 @@ defmodule Koko.DocManager.MasterDocument do
   end
 
   def updated_text(document) do
-    [text1, _] = String.split(document.content, "TOC:\n")
-    text2 = Enum.reduce(document.children, "", fn(child, acc) -> acc <> stringOfChild(child) end)
-    text1 <> "\nTOC:\n" <> text2
+    full_content = document.content
+    if !(String.contains? document.content, "TOC:\n")  do
+      full_content = full_content <> "TOC:\nabc\n"
+    end
+    content = String.split(full_content, "TOC:\n") |> hd
+    toc_text = get_toc_text(document)
+    content <> "\nTOC:\n" <> toc_text
+  end
+
+  def get_toc_text(document) do
+    Enum.reduce(document.children, "", fn(child, acc) -> acc <> stringOfChild(child) end)
   end
 
   ############
@@ -187,8 +200,9 @@ defmodule Koko.DocManager.MasterDocument do
 
     doc = Document.update_children(document, children)
     new_content = updated_text(doc)
+    IO.puts "NEW CONTENT (from attach): \n" <> new_content
     cs = Document.changeset(doc, %{content: new_content})
-    |> set_children(document)
+    # |> set_children(document)
     Repo.update!(cs)
   end
 

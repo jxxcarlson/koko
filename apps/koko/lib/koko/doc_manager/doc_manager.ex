@@ -171,6 +171,8 @@ defmodule Koko.DocManager do
 
   """
   def update_document(%Document{} = document, attrs, query_string) do
+    IO.puts "update_document, query string: " <> query_string
+    IO.inspect attrs, label: "update_document, attrs"
     default_attrs = %{ "attributes" => Document.default_attributes }
     attrs =
       Map.merge(default_attrs, attrs)
