@@ -16,6 +16,11 @@ defmodule Koko.Authentication.UserQuery do
       where: u.username == ^username
   end
 
+  def by_id(query, id) do
+    from u in query,
+      where: u.id == ^id
+  end
+
   def by_email(query, email) do
     from u in query,
       where: u.email == ^email
@@ -36,6 +41,9 @@ defmodule Koko.Authentication.UserQuery do
     User |> by_username(username) |> Repo.one
   end
 
+  def get(id) do
+    User |> by_id(id) |> Repo.one
+  end
 
 
 end

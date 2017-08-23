@@ -10,6 +10,7 @@ defmodule Koko.DocManager do
   alias Koko.DocManager.MasterDocument
   alias Koko.DocManager.Search
   alias Koko.DocManager.Query
+  alias Koko.Authentication.UserQuery
 
   @doc """
   Returns the list of documents.
@@ -125,7 +126,8 @@ defmodule Koko.DocManager do
 
   """
   def create_document(attrs, author_id) do
-    attributes = Document.default_attributes
+    author = UserQuery.get(author_id)
+    attributes = Document.default_attributes()
       |> Map.merge attrs["attributes"]
     IO.puts "attributes\n-------"
     IO.inspect attributes
@@ -133,7 +135,7 @@ defmodule Koko.DocManager do
 
     tags = attrs["tags"] || []
     doc_attrs =
-      Map.merge(attrs, %{"author_id" => author_id, "parent_id" => 0})
+      Map.merge(attrs, %{"author_id" => author_id, "parent_id" => 0, "author_name" => author.username})
       |> Map.merge(%{ "attributes" => attributes })
       |> Map.merge(%{ "tags" => tags })
 

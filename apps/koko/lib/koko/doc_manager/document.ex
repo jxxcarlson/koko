@@ -5,6 +5,7 @@ defmodule Koko.DocManager.Document do
   alias Koko.Repo
 
   alias Koko.Authentication.User
+  alias Koko.Authentication.UserQuery
 
 
   schema "documents" do
@@ -12,6 +13,7 @@ defmodule Koko.DocManager.Document do
     field :rendered_content, :string
     field :title, :string
     field :author_id, :integer
+    field :author_name, :string
     field :attributes, :map
     field :tags, {:array, :string}
     field :identifier, :string
@@ -27,7 +29,9 @@ defmodule Koko.DocManager.Document do
   @doc false
   def changeset(%Document{} = document, attrs) do
     document
-    |> cast(attrs, [:title, :author_id, :content, :rendered_content, :attributes, :tags, :identifier, :parent_id, :viewed_at])
+    |> cast(attrs, [:title, :author_id, :content, :rendered_content,
+      :attributes, :tags, :identifier, :parent_id, :viewed_at,
+      :author_name])
     |> cast_embed(:children)
     |> validate_required([:title, :author_id, :content])
   end
@@ -144,6 +148,12 @@ defmodule Koko.DocManager.Document do
   # return document corresponding to a child
   def child_document(child) do
     Repo.get(Document, child.doc_id )
+  end
+
+  def add_authorname(document) do
+   author = UserQuery.get(document.author_id)
+   cs = changeset(document, %{author_name: author.username})
+   Repo.update(cs)
   end
 
 end
