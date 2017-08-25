@@ -12,6 +12,8 @@ defmodule Koko.DocManager do
   alias Koko.DocManager.Query
   alias Koko.Authentication.UserQuery
 
+  alias Koko.Authentication.User
+
   @doc """
   Returns the list of documents.
 
@@ -286,6 +288,22 @@ defmodule Koko.DocManager do
   """
   def change_document(%Document{} = document) do
     Document.changeset(document, %{})
+  end
+
+  def add_notes_for_user(user_id) do
+    default_attrs = %{ "attributes" => Document.default_attributes }
+    other_attrs = %{
+       "tags" => ["sidebarNotes"],
+       "title" => "Notes",
+       "content" => "Your notes here",
+       "rendered_content" => "Your notes here"
+    }
+    attrs = Map.merge(default_attrs, other_attrs)
+    create_document(attrs, user_id)
+  end
+
+  def add_notes_for_all_users do
+    User |> Repo.all |> Enum.each(fn(user) -> add_notes_for_user(user.id) end)
   end
 
 end

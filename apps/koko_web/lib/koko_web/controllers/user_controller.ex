@@ -51,6 +51,7 @@ defmodule Koko.Web.UserController do
       {:ok, token} = Koko.Authentication.Token.get(user.id, user.username, 86400)
       user = Map.merge(user, %{token: token})
       DocManager.create_document(home_page_params(user), user.id)
+      DocManager.add_notes_for_user(user.id)
       conn
       |> put_status(:created)
       |> put_resp_header("location", user_path(conn, :show, user))

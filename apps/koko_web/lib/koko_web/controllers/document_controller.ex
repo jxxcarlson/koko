@@ -87,7 +87,7 @@ defmodule Koko.Web.DocumentController do
         end
         render(conn, "index.json", documents: documents)
       else
-        _ -> IO.puts "Error getting documents; "; {:error, "Not authorized"}
+        _ -> IO.puts "Error getting documents (not authorized) "; {:error, "Not authorized"}
       end
   end
 
