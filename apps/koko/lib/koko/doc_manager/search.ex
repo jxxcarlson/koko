@@ -20,6 +20,24 @@ defmodule Koko.DocManager.Search do
     |> Repo.all
   end
 
+  ################
+    # https://stackoverflow.com/questions/27751216/how-to-use-raw-sql-with-ecto-repo
+    # https://hackernoon.com/how-to-query-jsonb-beginner-sheet-cheat-4da3aa5082a3
+
+   def random_public do
+     query1 = """
+ SELECT * FROM documents WHERE attributes @> '{"public": true}' OFFSET floor(random()*176) LIMIT 20;
+ """
+     query = "SELECT * FROM documents OFFSET floor(random()*176) LIMIT 30;"
+     res = Ecto.Adapters.SQL.query!(Repo, query, [])
+     cols = Enum.map res.columns, &(String.to_atom(&1))
+     Enum.map(res.rows, fn(row) -> struct(Document, Enum.zip(cols, row)) end)
+     |> Enum.filter(fn(item) -> item.attributes["public"] end)
+     |> Enum.take(10)
+
+     #Enum.map(fn(item) -> Repo.get(Document, hd(item)) end)
+   end
+
 
   defp parse_query_string(str) do
     str

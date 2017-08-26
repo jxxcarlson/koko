@@ -3,6 +3,8 @@ defmodule Koko.DocManager.Query do
   import Ecto.Query
   alias Koko.Authentication.User
   alias Koko.Repo
+  alias Koko.DocManager.Document
+
 
 
 
@@ -59,7 +61,6 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
           has_identifier_suffix(query, arg)
       {"limit", _} ->
           has_limit(query, arg)
-      _ ->
         has_title(query, arg)
     end
  end
@@ -166,6 +167,10 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
     from d in query,
       limit: ^limit
  end
+
+
+ 
+
 
 
   # https://hackernoon.com/how-to-query-jsonb-beginner-sheet-cheat-4da3aa5082a3
