@@ -61,7 +61,6 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
           has_identifier_suffix(query, arg)
       {"limit", _} ->
           has_limit(query, arg)
-        has_title(query, arg)
     end
  end
 
@@ -169,7 +168,7 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
  end
 
 
- 
+
 
 
 

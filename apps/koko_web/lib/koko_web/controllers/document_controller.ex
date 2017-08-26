@@ -103,8 +103,10 @@ defmodule Koko.Web.DocumentController do
     cond do
       master_document_id > 0 ->
         documents = DocManager.list_children(:public, master_document_id)
-      query_string == "random=public" ->
+      query_string == "random=public&sort=title" ->
         documents = Search.random_public
+      query_string == "random=all&sort=title" ->
+        documents = Search.random  
       true ->
         documents = Search.by_query_string(:document, query_string, ["public=yes" ,"limit=#{search_limit()}"])
     end

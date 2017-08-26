@@ -25,17 +25,23 @@ defmodule Koko.DocManager.Search do
     # https://hackernoon.com/how-to-query-jsonb-beginner-sheet-cheat-4da3aa5082a3
 
    def random_public do
-     query1 = """
- SELECT * FROM documents WHERE attributes @> '{"public": true}' OFFSET floor(random()*176) LIMIT 20;
- """
+ #     query1 = """
+ # SELECT * FROM documents WHERE attributes @> '{"public": true}' OFFSET floor(random()*176) LIMIT 20;
+ # """
      query = "SELECT * FROM documents OFFSET floor(random()*176) LIMIT 30;"
      res = Ecto.Adapters.SQL.query!(Repo, query, [])
      cols = Enum.map res.columns, &(String.to_atom(&1))
      Enum.map(res.rows, fn(row) -> struct(Document, Enum.zip(cols, row)) end)
      |> Enum.filter(fn(item) -> item.attributes["public"] end)
      |> Enum.take(10)
+   end
 
-     #Enum.map(fn(item) -> Repo.get(Document, hd(item)) end)
+   def random do
+     query = "SELECT * FROM documents OFFSET floor(random()*176) LIMIT 20;"
+     res = Ecto.Adapters.SQL.query!(Repo, query, [])
+     cols = Enum.map res.columns, &(String.to_atom(&1))
+     Enum.map(res.rows, fn(row) -> struct(Document, Enum.zip(cols, row)) end)
+     |> Enum.take(10)
    end
 
 
