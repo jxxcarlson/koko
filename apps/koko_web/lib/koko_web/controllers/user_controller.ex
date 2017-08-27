@@ -12,8 +12,6 @@ defmodule Koko.Web.UserController do
   action_fallback Koko.Web.FallbackController
 
   def index(conn, _params) do
-    IO.puts "User controller, index, query_string = " <> conn.query_string
-    # users = Authentication.list_users(conn.query_string)
     users = Search.by_query_string(:user, conn.query_string, ["sort=user"])
     render(conn, "index.json", users: users)
   end
@@ -30,14 +28,9 @@ defmodule Koko.Web.UserController do
 
 
   def create(conn, %{"user" => payload}) do
-    IO.inspect payload
     username = payload["username"]
     email = payload["email"]
-    IO.puts "username = #{username}, email = #{email}"
     errors = Authentication.user_available username, email
-    IO.puts "ERRORS:"
-    IO.inspect errors
-
     case errors do
       [] -> create(:success, conn, payload)
       _ -> create(:error, conn, errors)

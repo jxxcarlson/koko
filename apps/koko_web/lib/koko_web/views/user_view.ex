@@ -22,6 +22,7 @@ defmodule Koko.Web.UserView do
   end
 
   def render("show_with_token.json", %{user: u}) do
+    output =
      %{id: u.id,
       name: u.name,
       username: u.username,
@@ -29,6 +30,7 @@ defmodule Koko.Web.UserView do
       admin: u.admin,
       blurb: u.blurb,
       token: u.token}
+    %{user: output}
   end
 
   def render("error.json", %{error: error_message}) do
