@@ -81,7 +81,7 @@ defmodule Koko.Web.DocumentController do
           master_document_id = get_master_doc_id(conn.query_string)
           cond do
             conn.query_string == "docs=any&random=all&sort=title" ->
-              ocuments = Search.random
+              documents = Search.random
             master_document_id > 0 ->
               documents = DocManager.list_children(:user, user_id, master_document_id)
             true ->
