@@ -78,14 +78,17 @@ defmodule Koko.Web.DocumentController do
     IO.puts "INDEX USER, QS = #{conn.query_string}"
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
-        master_document_id = get_master_doc_id(conn.query_string)
-        if master_document_id > 0 do
-          documents = DocManager.list_children(:user, user_id, master_document_id)
-        else
-          documents = get_documents_for_user(user_id, conn.query_string, [])
-          IO.puts "NUMBER OF DOCS FOUND: #{length(documents)}"
-        end
-        render(conn, "index.json", documents: documents)
+          master_document_id = get_master_doc_id(conn.query_string)
+          cond do
+            conn.query_string == "docs=any&random=all&sort=title" ->
+              ocuments = Search.random
+            master_document_id > 0 ->
+              documents = DocManager.list_children(:user, user_id, master_document_id)
+            true ->
+              documents = get_documents_for_user(user_id, conn.query_string, [])
+           end
+           IO.puts "NUMBER OF DOCS FOUND: #{length(documents)}"
+           render(conn, "index.json", documents: documents)
       else
         _ -> IO.puts "Error getting documents (not authorized) "; {:error, "Not authorized"}
       end
@@ -106,7 +109,7 @@ defmodule Koko.Web.DocumentController do
       query_string == "random=public&sort=title" ->
         documents = Search.random_public
       query_string == "random=all&sort=title" ->
-        documents = Search.random  
+        documents = Search.random
       true ->
         documents = Search.by_query_string(:document, query_string, ["public=yes" ,"limit=#{search_limit()}"])
     end
