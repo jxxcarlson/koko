@@ -109,8 +109,20 @@ defmodule Koko.Authentication do
 
   """
   def update_user(%User{} = user, attrs) do
+    IO.inspect user, label: "UDATE USER, USER"
+    IO.inspect attrs, label: "UDATE USER, USER, attrs"
+
     user
     |> User.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def minimal_update_user(%User{} = user, attrs) do
+    IO.inspect user, label: "UDATE USER, USER"
+    IO.inspect attrs, label: "UDATE USER, USER, attrs"
+
+    user
+    |> User.minimal_changeset(attrs)
     |> Repo.update()
   end
 

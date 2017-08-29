@@ -24,6 +24,11 @@ defmodule Koko.Authentication.User do
     |> validate_required([:name, :username, :email, :password])
   end
 
+  def minimal_changeset(%User{} = user, attrs) do
+    user
+    |> cast(attrs, [:blurb])
+  end
+
   def registration_changeset(%User{} = user, params \\ :empty) do
       user
       |> changeset(params)
