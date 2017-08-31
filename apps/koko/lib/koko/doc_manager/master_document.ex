@@ -9,8 +9,8 @@ defmodule Koko.DocManager.MasterDocument do
   # alias Koko.DocManager.MasterDocument; MasterDocument.parse_line({"== 1", 33})
 
 
-  def parse(document) do
-    result = parse_string(document.content)
+  def parse(content) do
+    result = parse_string(content)
     IO.inspect result, label: "parsed document"
   end
 
@@ -25,17 +25,20 @@ defmodule Koko.DocManager.MasterDocument do
     changeset
   end
 
-  def set_children(changeset, document) do
+  # XXX: Last change
+  def set_children(changeset, document, content) do
+    IO.puts "Enter: set_children"
     if document.attributes["doc_type"] == "master" do
-      children = parse(document)
+      IO.puts "ENTERED IF CLAUSE"
+      children = parse(content)
         |> Enum.filter(fn(item) -> is_valid(item) end)
         |> Enum.map(fn(item) -> get_item(item) end)
+      IO.inspect children, label: "Children (in set_children)"
       if children != []  do
-        changeset = Ecto.Changeset.put_embed(changeset, :children, children)
+        Ecto.Changeset.put_embed(changeset, :children, children)
       end
-      IO.inspect children, label: "parse doc and set_children"
-      changeset
     else
+      IO.puts "ENTERED ELSE CLAUSE"
       changeset
     end
   end
@@ -161,7 +164,9 @@ defmodule Koko.DocManager.MasterDocument do
     end
     top_content = String.split(content, table_of_contents_separator()) |> hd
     toc_text = toc_from_children(children)
-    top_content <> table_of_contents_separator() <> toc_text
+    updated_text = top_content <> table_of_contents_separator() <> toc_text
+    IO.puts "UPDATED SOURCE TEXT: " <> updated_text
+    updated_text
   end
 
   def update_text(changeset, document, content) do

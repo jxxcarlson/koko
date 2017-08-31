@@ -186,7 +186,7 @@ defmodule Koko.DocManager do
       # |> render(document)
       |> Document.update_identifier(document)
       |> Document.update_viewed_at
-      |> MasterDocument.set_children(document)
+      |> MasterDocument.set_children(document, attrs["content"])
       |> MasterDocument.update_text(document, attrs["content"])
       |> Repo.update()
     if document.attributes["doc_type"] == "master" do
