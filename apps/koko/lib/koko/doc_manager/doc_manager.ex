@@ -187,9 +187,9 @@ defmodule Koko.DocManager do
       |> Document.update_identifier(document)
       |> Document.update_viewed_at
       |> MasterDocument.set_children(document)
+      |> MasterDocument.update_text(document, attrs["content"])
       |> Repo.update()
     if document.attributes["doc_type"] == "master" do
-      IO.puts "I AM GOING TO SET LEVEL OF CHILDREN ..."
       update_child_levels(document)
       IO.puts "AND NOW I WILL UPDATE THE SOURCE TEXT ... (well, not yet)"
     end
@@ -223,7 +223,7 @@ defmodule Koko.DocManager do
   end
 
   def render(:master, changeset, document) do
-    [rendered_content|_] = String.split(document.content, "TOC:\n")
+    [rendered_content|_] = String.split(document.content, MasterDocument.table_of_contents_separator())
     IO.puts "RC: #{rendered_content}"
     Ecto.Changeset.put_change(changeset, :rendered_content, rendered_content)
   end

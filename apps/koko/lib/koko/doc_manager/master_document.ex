@@ -14,6 +14,16 @@ defmodule Koko.DocManager.MasterDocument do
     IO.inspect result, label: "parsed document"
   end
 
+  def set_defaults(changeset, document) do
+    # if document.attributes["doc_type"] == "master" do
+    #   if !String.contains?(document.content, table_of_contents_separator()) do
+    #     Document.changeset(document, %{content: document.content <> "\n" <> table_of_contents_separator()})
+    #   end
+    # else
+    #   changeset
+    # end
+    changeset
+  end
 
   def set_children(changeset, document) do
     if document.attributes["doc_type"] == "master" do
@@ -58,8 +68,12 @@ defmodule Koko.DocManager.MasterDocument do
     end
   end
 
+  def table_of_contents_separator do
+    "++ Table of Contents\n"
+  end
+
   def parse_string(input) do
-    [a|b] = String.split(input, "TOC:\n")
+    [a|b] = String.split(input, table_of_contents_separator())
     if b == [] do
       str = a
     else
@@ -142,12 +156,20 @@ defmodule Koko.DocManager.MasterDocument do
   end
 
   def updated_text(content, children) do
-    if !(String.contains? content, "TOC:\n")  do
-      content = content <> "TOC:\nabc\n"
+    if !(String.contains? content, table_of_contents_separator())  do
+      content = content <> table_of_contents_separator() <> "\n"
     end
-    content = String.split(content, "TOC:\n") |> hd
+    top_content = String.split(content, table_of_contents_separator()) |> hd
     toc_text = toc_from_children(children)
-    content <> "\nTOC:\n" <> toc_text
+    top_content <> table_of_contents_separator() <> toc_text
+  end
+
+  def update_text(changeset, document, content) do
+    if document.attributes["doc_type"] == "master" do
+      Ecto.Changeset.put_change(changeset, :content, updated_text(content, document.children))
+    else
+      changeset
+    end
   end
 
   def toc_from_children(children) do
@@ -201,7 +223,6 @@ defmodule Koko.DocManager.MasterDocument do
     updated_text = updated_text(document.content, children)
     IO.puts "NEW CONTENT (from attach): \n" <> updated_text
     cs = Document.changeset(doc, %{content: updated_text})
-    # |> set_children(document)
     Repo.update!(cs)
   end
 
