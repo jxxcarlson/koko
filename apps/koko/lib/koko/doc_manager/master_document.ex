@@ -141,18 +141,17 @@ defmodule Koko.DocManager.MasterDocument do
     "#{string_of_level(child.level)} #{child.doc_id} #{child.title} // #{child.comment}\n"
   end
 
-  def updated_text(document) do
-    full_content = document.content
-    if !(String.contains? document.content, "TOC:\n")  do
-      full_content = full_content <> "TOC:\nabc\n"
+  def updated_text(content, children) do
+    if !(String.contains? content, "TOC:\n")  do
+      content = content <> "TOC:\nabc\n"
     end
-    content = String.split(full_content, "TOC:\n") |> hd
-    toc_text = get_toc_text(document)
+    content = String.split(content, "TOC:\n") |> hd
+    toc_text = toc_from_children(children)
     content <> "\nTOC:\n" <> toc_text
   end
 
-  def get_toc_text(document) do
-    Enum.reduce(document.children, "", fn(child, acc) -> acc <> stringOfChild(child) end)
+  def toc_from_children(children) do
+    Enum.reduce(children, "", fn(child, acc) -> acc <> stringOfChild(child) end)
   end
 
   ############
@@ -199,9 +198,9 @@ defmodule Koko.DocManager.MasterDocument do
     IO.inspect children, label: "Children"
 
     doc = Document.update_children(document, children)
-    new_content = updated_text(doc)
-    IO.puts "NEW CONTENT (from attach): \n" <> new_content
-    cs = Document.changeset(doc, %{content: new_content})
+    updated_text = updated_text(document.content, children)
+    IO.puts "NEW CONTENT (from attach): \n" <> updated_text
+    cs = Document.changeset(doc, %{content: updated_text})
     # |> set_children(document)
     Repo.update!(cs)
   end
@@ -211,10 +210,16 @@ defmodule Koko.DocManager.MasterDocument do
   end
 
   def insert_before(item, position, items) do
+    IO.inspect item, label: "INSERT BEFORE, item"
+    IO.inspect position, label: "INSERT BEFORE, position"
+    IO.inspect items, label: "INSERT BEFORE, item"
     Enum.take(items, position) ++ [item] ++ Enum.drop(items, position)
   end
 
   def insert_after(item, position, items) do
+    IO.inspect item, label: "INSERT AFTER, item"
+    IO.inspect position, label: "INSERT AFTER, position"
+    IO.inspect items, label: "INSERT AFTER, item"
     Enum.take(items, position+1) ++ [item] ++ Enum.drop(items, position+1)
   end
 

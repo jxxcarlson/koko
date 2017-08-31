@@ -67,6 +67,7 @@ defmodule Koko.Web.UserController do
     IO.inspect payload, label: "PAYLOAD"
     IO.inspect user_params, label: "user_params"
 
+    # NOTE: XXX?
     user = Authentication.get_user!(id)
 
     IO.inspect user, label: "User"

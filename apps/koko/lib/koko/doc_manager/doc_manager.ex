@@ -191,6 +191,7 @@ defmodule Koko.DocManager do
     if document.attributes["doc_type"] == "master" do
       IO.puts "I AM GOING TO SET LEVEL OF CHILDREN ..."
       update_child_levels(document)
+      IO.puts "AND NOW I WILL UPDATE THE SOURCE TEXT ... (well, not yet)"
     end
     if query_string != "" do
       execute_query_string_commands(document, query_string)
@@ -209,7 +210,7 @@ defmodule Koko.DocManager do
       "adopt_children" ->
          MasterDocument.adopt_children(document)
       "attach" ->
-         MasterDocument.attach(document, arg, remaining_commands)
+         children = MasterDocument.attach(document, arg, remaining_commands)
       _ ->
         IO.puts "query string #{query_string} for #{document.id} (#{document.title}) not recognized"
     end
