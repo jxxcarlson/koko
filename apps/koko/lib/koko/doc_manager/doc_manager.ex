@@ -206,11 +206,13 @@ defmodule Koko.DocManager do
     IO.puts "execute_query_string_commands: #{query_string}"
     [command|remaining_commands] = String.split(query_string, "&") |> Enum.map(fn(item) -> String.split(item, "=") end)
     [cmd, arg] = command
+    IO.puts "cmd = #{cmd}"
+    IO.puts "arg = #{arg}"
     case cmd do
       "adopt_children" ->
          MasterDocument.adopt_children(document)
       "attach" ->
-         children = MasterDocument.attach(document, arg, remaining_commands)
+         MasterDocument.attach(document, arg, remaining_commands)
       _ ->
         IO.puts "query string #{query_string} for #{document.id} (#{document.title}) not recognized"
     end

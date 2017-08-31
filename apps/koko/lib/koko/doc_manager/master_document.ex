@@ -207,10 +207,12 @@ defmodule Koko.DocManager.MasterDocument do
         document.children ++ [new_child]
       "above" ->
         ["current", current_id] = (hd remaining_commands)
+        IO.puts "CURRENT_ID = #{current_id}"
         k = index_of_child_with_id(document.children, String.to_integer(current_id))
         insert_before(new_child, k, document.children)
       "below" ->
         ["current", current_id] = (hd remaining_commands)
+        IO.puts "CURRENT_ID = #{current_id}"
         k = index_of_child_with_id(document.children, String.to_integer(current_id))
         insert_after(new_child, k, document.children)
       _ ->
@@ -233,14 +235,14 @@ defmodule Koko.DocManager.MasterDocument do
   def insert_before(item, position, items) do
     IO.inspect item, label: "INSERT BEFORE, item"
     IO.inspect position, label: "INSERT BEFORE, position"
-    IO.inspect items, label: "INSERT BEFORE, item"
+    IO.inspect items, label: "INSERT BEFORE, ITEMS ..."
     Enum.take(items, position) ++ [item] ++ Enum.drop(items, position)
   end
 
   def insert_after(item, position, items) do
     IO.inspect item, label: "INSERT AFTER, item"
     IO.inspect position, label: "INSERT AFTER, position"
-    IO.inspect items, label: "INSERT AFTER, item"
+    IO.inspect items, label: "INSERT AFTER, ITEMS ..."
     Enum.take(items, position+1) ++ [item] ++ Enum.drop(items, position+1)
   end
 
