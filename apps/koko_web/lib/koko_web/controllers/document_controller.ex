@@ -76,12 +76,17 @@ defmodule Koko.Web.DocumentController do
   """
   def index(conn, _params) do
     IO.puts "INDEX USER, QS = #{conn.query_string}"
+    query_string = conn.query_string
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
           master_document_id = get_master_doc_id(conn.query_string)
           cond do
-            conn.query_string == "docs=any&random=all&sort=title" ->
-              documents = Search.random
+            String.contains? query_string, "random=public" ->
+              documents = Search.random_public query_string
+            String.contains? query_string, "random=all" ->
+              documents = Search.random query_string
+            String.contains? query_string, "random_user" ->
+                documents = Search.random_user query_string
             master_document_id > 0 ->
               documents = DocManager.list_children(:user, user_id, master_document_id)
             true ->
@@ -99,17 +104,20 @@ defmodule Koko.Web.DocumentController do
   """
   def index_public(conn, _params) do
     # IO.puts "In index public, token = " <> Token.user_id_from_header(conn)
-    IO.puts "(1) INDEX PUBLIC, QS = #{conn.query_string}"
-    query_string = remove_command("publicdocs=all", conn.query_string)
+    # IO.puts "(1) INDEX PUBLIC, QS = #{conn.query_string}"
+    # query_string = remove_command("publicdocs=all", conn.query_string)
+    query_string = conn.query_string
     IO.puts "(2) INDEX PUBLIC, QS = #{query_string}"
     master_document_id = get_master_doc_id(query_string)
     cond do
       master_document_id > 0 ->
         documents = DocManager.list_children(:public, master_document_id)
-      query_string == "random=public&sort=title" ->
-        documents = Search.random_public
-      query_string == "random=all&sort=title" ->
-        documents = Search.random
+      String.contains? query_string, "random=public" ->
+        documents = Search.random_public query_string
+      String.contains? query_string, "random=all" ->
+        documents = Search.random query_string
+      String.contains? query_string, "random_user" ->
+          documents = Search.random_user query_string
       true ->
         documents = Search.by_query_string(:document, query_string, ["public=yes" ,"limit=#{search_limit()}"])
     end

@@ -24,31 +24,63 @@ defmodule Koko.DocManager.Search do
     # https://stackoverflow.com/questions/27751216/how-to-use-raw-sql-with-ecto-repo
     # https://hackernoon.com/how-to-query-jsonb-beginner-sheet-cheat-4da3aa5082a3
 
-   def random_public do
+   def random_public query_string do
  #     query1 = """
  # SELECT * FROM documents WHERE attributes @> '{"public": true}' OFFSET floor(random()*176) LIMIT 20;
  # """
-     query = "SELECT * FROM documents OFFSET floor(random()*176) LIMIT 30;"
+     rows = rows_in_table("documents")
+     query = "SELECT * FROM documents OFFSET floor(random()*#{rows}) LIMIT 40;"
+     IO.puts "SQL query = #{query}"
      res = Ecto.Adapters.SQL.query!(Repo, query, [])
      cols = Enum.map res.columns, &(String.to_atom(&1))
      Enum.map(res.rows, fn(row) -> struct(Document, Enum.zip(cols, row)) end)
      |> Enum.filter(fn(item) -> item.attributes["public"] end)
      |> Enum.take(10)
+     |> Enum.sort(fn(x,y) -> x.title < y.title end)
    end
 
-   def random do
-     query = "SELECT * FROM documents OFFSET floor(random()*176) LIMIT 20;"
+   def rows_in_table(table) do
+     countQuery = "SELECT count (*) FROM #{table};"
+     countResponse = Ecto.Adapters.SQL.query!(Repo, countQuery, [])
+     countResponse.rows |> hd |> hd
+   end
+
+   def random_user query_string do
+     rows = rows_in_table("documents")
+
+     user_id_ = parse_query_string(query_string)
+       |> Enum.filter(fn(item) -> hd(item) == "random_user" end)
+       |> hd
+       |> Enum.at(1)
+     IO.puts "XXX, Random search for user #{user_id_}"
+
+     query = "SELECT * FROM documents WHERE author_id=#{user_id_} OFFSET floor(random()*#{rows}) LIMIT 40;"
+     IO.puts "SQL query = #{query}"
      res = Ecto.Adapters.SQL.query!(Repo, query, [])
      cols = Enum.map res.columns, &(String.to_atom(&1))
      Enum.map(res.rows, fn(row) -> struct(Document, Enum.zip(cols, row)) end)
      |> Enum.take(10)
+     |> Enum.sort(fn(x,y) -> x.title < y.title end)
+   end
+
+   def random query_string do
+     rows = rows_in_table("documents")
+     query = "SELECT * FROM documents OFFSET floor(random()*#{rows}) LIMIT 40;"
+     # query = "SELECT * FROM documents ORDER BY title OFFSET floor(random()*#{rows}) LIMIT 40;"
+     IO.puts "SQL query = #{query}"
+     res = Ecto.Adapters.SQL.query!(Repo, query, [])
+     cols = Enum.map res.columns, &(String.to_atom(&1))
+     Enum.map(res.rows, fn(row) -> struct(Document, Enum.zip(cols, row)) end)
+     |> Enum.take(10)
+     |> Enum.sort(fn(x,y) -> x.title < y.title end)
    end
 
 
-  defp parse_query_string(str) do
+  def parse_query_string(str) do
     str
     |> String.split("&")
     |> (Enum.map fn(item) -> String.split(item, "=") end)
+    |> (Enum.filter fn(item) -> length(item) == 2 end)
   end
 
   def prepend_options(query_string, options) do
