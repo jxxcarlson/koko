@@ -45,7 +45,21 @@ defmodule Koko.DocManager.Search do
      countResponse.rows |> hd |> hd
    end
 
+   # REF: https://stackoverflow.com/questions/31220622/get-random-elements-from-a-list
    def random_user query_string do
+     user_id_ = parse_query_string(query_string)
+       |> Enum.filter(fn(item) -> hd(item) == "random_user" end)
+       |> hd
+       |> Enum.at(1)
+     query = "SELECT * FROM documents WHERE author_id=#{user_id_}"
+     res = Ecto.Adapters.SQL.query!(Repo, query, [])
+     cols = Enum.map res.columns, &(String.to_atom(&1))
+     Enum.map(res.rows, fn(row) -> struct(Document, Enum.zip(cols, row)) end)
+     |> Enum.take_random(10)
+     |> Enum.sort(fn(x,y) -> x.title < y.title end)
+   end
+
+   def random_user1 query_string do
      rows = rows_in_table("documents")
 
      user_id_ = parse_query_string(query_string)
