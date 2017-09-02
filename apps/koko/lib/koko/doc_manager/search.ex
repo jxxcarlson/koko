@@ -79,12 +79,19 @@ defmodule Koko.DocManager.Search do
 
    def random query_string do
      rows = rows_in_table("documents")
+
+     user_id = parse_query_string(query_string)
+       |> Enum.filter(fn(item) -> hd(item) == "random_user" end)
+       |> hd
+       |> Enum.at(1)
+
      query = "SELECT * FROM documents OFFSET floor(random()*#{rows}) LIMIT 40;"
      # query = "SELECT * FROM documents ORDER BY title OFFSET floor(random()*#{rows}) LIMIT 40;"
      IO.puts "SQL query = #{query}"
      res = Ecto.Adapters.SQL.query!(Repo, query, [])
      cols = Enum.map res.columns, &(String.to_atom(&1))
      Enum.map(res.rows, fn(row) -> struct(Document, Enum.zip(cols, row)) end)
+     |> Enum.filter(fn(item) -> item.attributes["public"] or item.author_id == user_id end)
      |> Enum.take(10)
      |> Enum.sort(fn(x,y) -> x.title < y.title end)
    end
