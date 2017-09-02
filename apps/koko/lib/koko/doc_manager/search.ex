@@ -82,7 +82,7 @@ defmodule Koko.DocManager.Search do
      IO.puts "IN RANDOM (ALL) query_string = #{query_string}"
 
      user_id = parse_query_string(query_string)
-       |> Enum.filter(fn(item) -> hd(item) == "random_user" end)
+       |> Enum.filter(fn(item) -> hd(item) == "user" end)
        |> hd
        |> Enum.at(1)
 
