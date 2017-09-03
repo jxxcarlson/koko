@@ -27,6 +27,7 @@ defmodule Koko.DocManager.MasterDocument do
 
   # XXX: Last change
   def set_children(changeset, document, content) do
+    IO.inspect changeset, label: "Changeset in set_chidren"
     IO.puts "Enter: set_children"
     if document.attributes["doc_type"] == "master" do
       IO.puts "ENTERED IF CLAUSE"
@@ -36,6 +37,8 @@ defmodule Koko.DocManager.MasterDocument do
       IO.inspect children, label: "Children (in set_children)"
       if children != []  do
         Ecto.Changeset.put_embed(changeset, :children, children)
+      else
+        changeset
       end
     else
       IO.puts "ENTERED ELSE CLAUSE"
@@ -170,7 +173,8 @@ defmodule Koko.DocManager.MasterDocument do
   end
 
   def update_text(changeset, document, content) do
-    if document.attributes["doc_type"] == "master" do
+    IO.inspect changeset, label: "Changeset in MD.update_text"
+    if document.attributes["doc_type"] == "master" && String.contains? content, table_of_contents_separator() do
       Ecto.Changeset.put_change(changeset, :content, updated_text(content, document.children))
     else
       changeset
