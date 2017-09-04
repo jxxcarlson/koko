@@ -26,23 +26,20 @@ defmodule Koko.DocManager.MasterDocument do
   end
 
   # XXX: Last change
-  def set_children(changeset, document, content) do
-    IO.inspect changeset, label: "Changeset in set_chidren"
-    IO.puts "Enter: set_children"
+  def set_children_from_content(changeset, document, content) do
+    IO.puts "Enter: set_children_from_content"
     if document.attributes["doc_type"] == "master" do
-      IO.puts "ENTERED IF CLAUSE"
       children = parse(content)
         |> Enum.filter(fn(item) -> is_valid(item) end)
         |> Enum.map(fn(item) -> get_item(item) end)
-      IO.inspect children, label: "Children (in set_children)"
+      IO.inspect children, label: "Children (in set_children_from_content)"
       if children != []  do
-        Ecto.Changeset.put_embed(changeset, :children, children)
+        {children, Ecto.Changeset.put_embed(changeset, :children, children)}
       else
-        changeset
+        {[], changeset}
       end
     else
-      IO.puts "ENTERED ELSE CLAUSE"
-      changeset
+      {document.children, changeset}
     end
   end
 
@@ -161,7 +158,7 @@ defmodule Koko.DocManager.MasterDocument do
     "#{string_of_level(child.level)} #{child.doc_id} #{child.title} // #{child.comment}\n"
   end
 
-  def updated_text(content, children) do
+  def updated_text_from_children(content, children) do
     if !(String.contains? content, table_of_contents_separator())  do
       content = content <> table_of_contents_separator() <> "\n"
     end
@@ -172,10 +169,9 @@ defmodule Koko.DocManager.MasterDocument do
     updated_text
   end
 
-  def update_text(changeset, document, content) do
-    IO.inspect changeset, label: "Changeset in MD.update_text"
+  def update_text_from_children({children, changeset}, document, content) do
     if document.attributes["doc_type"] == "master" && String.contains? content, table_of_contents_separator() do
-      Ecto.Changeset.put_change(changeset, :content, updated_text(content, document.children))
+      Ecto.Changeset.put_change(changeset, :content, updated_text_from_children(content, children))
     else
       changeset
     end
@@ -193,6 +189,9 @@ defmodule Koko.DocManager.MasterDocument do
   end
 
   def attach(document, position, remaining_commands) do
+
+    IO.puts "ATTACH to doc #{document.id} at #{position}"
+    IO.inspect remaining_commands, label: "ATTACH, remaining commands"
 
     [child_command|remaining_commands] = remaining_commands
     ["child", child_id_str] = child_command # error handling
@@ -231,7 +230,7 @@ defmodule Koko.DocManager.MasterDocument do
     IO.inspect children, label: "Children"
 
     doc = Document.update_children(document, children)
-    updated_text = updated_text(document.content, children)
+    updated_text = updated_text_from_children(document.content, children)
     IO.puts "NEW CONTENT (from attach): \n" <> updated_text
     cs = Document.changeset(doc, %{content: updated_text})
     Repo.update!(cs)
