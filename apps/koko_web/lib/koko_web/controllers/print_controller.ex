@@ -6,10 +6,16 @@ defmodule Koko.Web.PrintController do
   plug :put_layout, false
 
   def fix_html(text, title, author) do
-    IO.puts "ENTER fix_html for #{title}"
-    "== #{title}\n=== by #{author}\n\n++++\n<br><br>\n++++\n\n" <>text
-    |> String.replace("`", "!!aWz!!")
+    title_string = "\n\n== #{title}\n=== by #{author}\n\n++++\n<br><br>\n++++\n\n"
+    toc_and_title_string = ":toc:" <> title_string
+    if String.contains? text, ":toc" do
+              String.replace(text, ":toc:", toc_and_title_string)
+            else
+              title_string <> text
+            end
+    |> String.replace("`", "!!BT!!")
     |> String.replace("\\", "\\\\")
+    |> String.replace("$", "!!DOL!!")
   end
 
   def show(conn, %{"id" => id}) do
