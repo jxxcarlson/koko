@@ -31,15 +31,15 @@ defmodule Koko.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:postgrex, ">= 0.0.0"},
-     {:ecto, "~> 2.1"},
+    [{:postgrex, ">= 0.13.3"},
+     {:ecto, "~> 2.2.1"},
      {:corsica, "~> 0.5"},
      {:comeonin, "~> 2.0"},
-     {:json, "~> 1.0"},
+     {:json, "~> 1.0.2"},
      {:joken, "~> 1.1"},
      {:secure_random, "~> 0.2"},
      {:arc, "~> 0.8.0"},
-     {:ex_aws, "~> 1.1"},
+     {:ex_aws, "~> 1.1.4"},
      {:hackney,"~> 1.6"},
      {:poison, "~> 3.1"},
      {:sweet_xml, "~> 0.6"},
