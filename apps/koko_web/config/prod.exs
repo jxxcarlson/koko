@@ -15,7 +15,7 @@ use Mix.Config
 # which you typically run after static files are built.
 config :koko_web, Koko.Web.Endpoint,
   # on_init: {Koko.Web.Endpoint, :load_from_system_env, []},
-  load_from_system_env: true
+  load_from_system_env: true,
   url: [scheme: "https", host: "mysterious-forest-36511.herokuapp.com", port: 443],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   cache_static_manifest: "priv/static/cache_manifest.json",
