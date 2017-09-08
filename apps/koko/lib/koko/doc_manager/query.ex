@@ -163,9 +163,10 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
   end
 
   def has_limit(query, limit) do
-    from d in query,
-      limit: ^limit
- end
+    # from d in query,
+    #   limit: ^limit
+    query
+  end
 
 
 
