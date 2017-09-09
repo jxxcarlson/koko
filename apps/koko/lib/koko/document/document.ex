@@ -1,8 +1,10 @@
-defmodule Koko.DocManager.Document do
+defmodule Koko.Document.Document do
+
   use Ecto.Schema
   import Ecto.Changeset
-  alias Koko.DocManager.Document
+
   alias Koko.Repo
+  alias Koko.Document.Document
 
 
   schema "documents" do
@@ -153,8 +155,8 @@ defmodule Koko.DocManager.Document do
    Repo.update(cs)
   end
 
-end
 
+end
 
 
 # alias Koko.Repo; alias Koko.DocManager.Document

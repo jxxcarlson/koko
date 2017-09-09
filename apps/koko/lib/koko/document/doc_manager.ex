@@ -1,4 +1,4 @@
-defmodule Koko.DocManager do
+defmodule Koko.Document.DocManager do
   @moduledoc """
   The boundary for the DocManager system.
   """
@@ -6,10 +6,10 @@ defmodule Koko.DocManager do
   import Ecto.Query, warn: false
   alias Koko.Repo
 
-  alias Koko.DocManager.Document
-  alias Koko.DocManager.MasterDocument
-  alias Koko.DocManager.Search
-  alias Koko.DocManager.Query
+  alias Koko.Document.Document
+  alias Koko.Document.MasterDocument
+  alias Koko.Document.Search
+  alias Koko.Document.Query
   alias Koko.User.User
 
   @doc """

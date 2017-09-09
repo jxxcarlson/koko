@@ -1,10 +1,10 @@
-defmodule Koko.DocManager.Search do
+defmodule Koko.Document.Search do
 
-  alias Koko.DocManager.Document
-  alias Koko.DocManager.Query
+  alias Koko.Document.Document
+  alias Koko.Document.Query
   alias Koko.Repo
   alias Koko.Utility
-  alias Koko.Authentication.User
+  alias Koko.User.User
 
   def by_command_list(command_list, :document) do
     IO.puts "ENTER DOCUMENT COMMAND_LIST"

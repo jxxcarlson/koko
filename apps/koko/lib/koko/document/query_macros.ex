@@ -1,4 +1,4 @@
-defmodule Koko.DocManager.QueryMacro do
+defmodule Koko.Document.QueryMacro do
 
   defmacro has_attribute(field, key, value) do
     quote do

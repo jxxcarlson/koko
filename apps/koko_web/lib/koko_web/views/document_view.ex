@@ -1,7 +1,7 @@
 defmodule Koko.Web.DocumentView do
   use Koko.Web, :view
   alias Koko.Web.DocumentView
-  alias Koko.DocManager.Document
+  alias Koko.Document.Document
 
   def render("index.json", %{documents: documents}) do
     %{documents: render_many(documents, DocumentView, "document.json")}

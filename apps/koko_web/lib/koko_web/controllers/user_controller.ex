@@ -6,8 +6,8 @@ defmodule Koko.Web.UserController do
   alias Koko.User.Authentication
   alias Koko.User.Token
   alias Koko.User.User
-  alias Koko.DocManager
-  alias Koko.DocManager.Search
+  alias Koko.Document.DocManager
+  alias Koko.Document.Search
 
 
   action_fallback Koko.Web.FallbackController

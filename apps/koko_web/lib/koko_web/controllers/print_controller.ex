@@ -1,7 +1,7 @@
 defmodule Koko.Web.PrintController do
   use Koko.Web, :controller
   alias Koko.Repo
-  alias Koko.DocManager.Document
+  alias Koko.Document.Document
 
   plug :put_layout, false
 

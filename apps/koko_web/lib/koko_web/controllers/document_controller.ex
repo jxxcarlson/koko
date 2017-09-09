@@ -16,10 +16,10 @@ defmodule Koko.Web.DocumentController do
   route, body) as well as the form of the reply.
   """
 
-  alias Koko.DocManager
-  alias Koko.DocManager.Document
+  alias Koko.Document.DocManager
+  alias Koko.Document.Document
   alias Koko.User.Token
-  alias Koko.DocManager.Search
+  alias Koko.Document.Search
   alias Koko.Repo
 
   action_fallback Koko.Web.FallbackController

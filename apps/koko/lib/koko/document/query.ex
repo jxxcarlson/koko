@@ -1,9 +1,9 @@
-defmodule Koko.DocManager.Query do
+defmodule Koko.Document.Query do
 
   import Ecto.Query
-  alias Koko.Authentication.User
+  alias Koko.User.User
   alias Koko.Repo
-  alias Koko.DocManager.Document
+  # alias Koko.Document.Document
 
 
 

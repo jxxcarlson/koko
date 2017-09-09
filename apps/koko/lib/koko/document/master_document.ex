@@ -1,9 +1,9 @@
 
 # alias Koko.DocManager.MasterDocument; MasterDocument.parse_line("This is   a test")
-defmodule Koko.DocManager.MasterDocument do
+defmodule Koko.Document.MasterDocument do
 
   alias Koko.Repo
-  alias Koko.DocManager.Document
+  alias Koko.Document.Document
 
   # alias Koko.Repo; alias Koko.DocManager.Document
   # alias Koko.DocManager.MasterDocument; MasterDocument.parse_line({"== 1", 33})
