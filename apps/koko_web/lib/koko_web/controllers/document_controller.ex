@@ -53,21 +53,15 @@ defmodule Koko.Web.DocumentController do
   end
 
   def get_documents_for_user(user_id, query_string, opts) do
-    IO.puts "-------- gdfu ----------"
-    IO.inspect([user_id, query_string, opts])
     cond do
       query_string == "userdocs=all" ->
         {qs, opts2} = {"", ["author=#{user_id}", "limit=#{search_limit()}"] ++ opts}
       String.contains? query_string, "docs=any" ->
         qs = remove_command("docs=any", query_string)
         {qs, opts2} = { qs, [] ++ ["user_or_public=#{user_id}", "limit=#{search_limit()}"]}
-        # {qs, opts2} = { qs, [] ++ ["author=#{user_id}", "sort=viewed", "limit=#{search_limit()}"]}
       true ->
         {qs, opts2} = {query_string, ["author=#{user_id}", "limit=#{search_limit()}"] ++ opts}
     end
-    IO.puts "------------------"
-    IO.inspect([qs, opts2])
-    IO.puts "------------------"
     Search.by_query_string(:document, qs, opts2)
   end
 
@@ -133,8 +127,6 @@ defmodule Koko.Web.DocumentController do
   information in that token is used to define ownership of the document.
   """
   def create(conn, %{"document" => payload}) do
-    IO.puts "Create Document"
-    IO.inspect payload, label: "Create document payload"
     document_params = Koko.Utility.project2map(payload)
     with  {:ok, user_id} <- Token.user_id_from_header(conn),
       {:ok, %Document{} = document} <- DocManager.create_document(document_params, user_id)
@@ -152,7 +144,6 @@ defmodule Koko.Web.DocumentController do
   Display a document if it is owned by the user defined by the token.
   """
   def show(conn, %{"id" => id}) do
-    IO.puts "INDEX PUBLIC, ID = #{id}"
     document = DocManager.get_document!(id)
     with {:ok, user_id} <- Token.user_id_from_header(conn),
       true <- ((document.attributes["public"] == true) || (user_id == document.author_id))
@@ -160,7 +151,6 @@ defmodule Koko.Web.DocumentController do
       cs = Document.changeset(document, %{})
       |> Document.update_viewed_at
       Repo.update(cs)
-      IO.puts "XXXXX: #{document.title} viewed at #{DateTime.utc_now()}"
       render(conn, "show.json", document: document)
       else
       {:error, error} -> {:error, error}
@@ -174,7 +164,6 @@ defmodule Koko.Web.DocumentController do
     document = DocManager.get_document!(id)
     if document.attributes["public"] == true do
       cs = Document.changeset(document, %{viewed_at: DateTime.utc_now()})
-      IO.puts "#{document.title} viewed at #{DateTime.utc_now()}"
       Repo.update(cs)
       render(conn, "show.json", document: document)
     else
