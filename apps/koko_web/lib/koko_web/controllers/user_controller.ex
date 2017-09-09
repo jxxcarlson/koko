@@ -65,14 +65,7 @@ defmodule Koko.Web.UserController do
 
   def update(conn, %{"id" => id, "user" => payload}) do
     user_params = Koko.Utility.project2map(payload)
-    IO.inspect payload, label: "PAYLOAD"
-    IO.inspect user_params, label: "user_params"
-
-    # NOTE: XXX?
     user = Authentication.get_user!(id)
-
-    IO.inspect user, label: "User"
-
     with {:ok, %User{} = user} <- Authentication.minimal_update_user(user, user_params) do
       render(conn, "show.json", user: user)
     end

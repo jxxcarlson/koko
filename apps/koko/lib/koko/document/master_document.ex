@@ -77,10 +77,10 @@ defmodule Koko.Document.MasterDocument do
 
   def parse_string(input) do
     [a|b] = String.split(input, table_of_contents_separator())
-    if b == [] do
-      str = a
+    str = if b == [] do
+      a
     else
-      str = b |> hd
+      b |> hd
     end
 
     String.split(str, ["\n", "\r", "\r\n"])
@@ -135,10 +135,10 @@ defmodule Koko.Document.MasterDocument do
     level = String.length firstWord
 
     [_|tail2] = String.split(line, "//")
-    if tail2 == [] do
-      comment = ""
+    comment = if tail2 == [] do
+      ""
     else
-      comment = tail2 |> hd |> String.trim
+      tail2 |> hd |> String.trim
     end
 
     with {:ok, id} <- get_id(tail),
@@ -159,8 +159,10 @@ defmodule Koko.Document.MasterDocument do
   end
 
   def updated_text_from_children(content, children) do
-    if !(String.contains? content, table_of_contents_separator())  do
-      content = content <> table_of_contents_separator() <> "\n"
+    content = if !(String.contains? content, table_of_contents_separator())  do
+      content <> table_of_contents_separator() <> "\n"
+    else
+      content
     end
     top_content = String.split(content, table_of_contents_separator()) |> hd
     toc_text = toc_from_children(children)

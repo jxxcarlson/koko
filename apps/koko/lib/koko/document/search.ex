@@ -114,14 +114,14 @@ defmodule Koko.Document.Search do
   end
 
   def by_query_string(domain, query_string, options) do
-    IO.inspect domain, label: "by_query_string, domain"
+    # IO.inspect domain, label: "by_query_string, domain"
     query_string
     |> prepend_options(options)
-    |> Utility.inspect_pipe("QS:")
+    # |> Utility.inspect_pipe("QS:")
     |> parse_query_string
-    |> Utility.inspect_pipe("COMMANDS:")
+    # |> Utility.inspect_pipe("COMMANDS:")
     |> by_command_list(domain)
-    |> Utility.inspect_pipe("FINAL QUERY:")
+    # |> Utility.inspect_pipe("FINAL QUERY:")
     # |> Utility.inspect_pipe("QUERY:")
   end
 

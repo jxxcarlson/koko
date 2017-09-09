@@ -132,7 +132,11 @@ defmodule Koko.Document.Document do
   end
 
   def parent(document) do
-    Repo.get(Document, document.parent_id)
+    if document.parent_id == nil do
+      nil
+    else
+      Repo.get(Document, document.parent_id)
+    end
   end
 
   # Needs test

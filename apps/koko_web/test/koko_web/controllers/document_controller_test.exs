@@ -1,11 +1,11 @@
 defmodule Koko.Web.DocumentControllerTest do
   use Koko.Web.ConnCase
 
-  alias Koko.DocManager
-  alias Koko.Authentication
-  alias Koko.DocManager.Search
-  alias Koko.DocManager.Query
-  alias Koko.DocManager.Document
+  alias Koko.Document.DocManager
+  alias Koko.User.Authentication
+  alias Koko.Document.Search
+  alias Koko.Document.Query
+  alias Koko.Document.Document
   alias Koko.Repo
 
   # https://hexdocs.pm/phoenix/Phoenix.ConnTest.html
@@ -56,8 +56,11 @@ defmodule Koko.Web.DocumentControllerTest do
 
     n = Document |> Query.is_public |> Repo.all |> length
 
+    IO.puts "n = #{n}"
+
     conn = get conn, document_path(conn, :index_public)
     response = json_response(conn, 200)
+
     assert n == (response["documents"] |> length)
   end
 
@@ -117,13 +120,17 @@ defmodule Koko.Web.DocumentControllerTest do
     response =  json_response(conn, 200)["document"]
      |> Map.delete("id") |> Map.delete("author_id")
 
-    assert response == %{
-      "content" => "some updated content",
-       "title" => "some updated title",
-      "attributes" => %{"public" => false, "doc_type" => "standard", "text_type" => "adoc"},
-      "identifier" => "jxxcarlson.some_updated_title.2017.777a",
+    assert response ==  %{"content" => "some updated content",
       "rendered_content" => "some updated rendered_content",
-      "tags" => nil}
+      "tags" => nil, "title" =>
+      "some updated title",
+      "attributes" => %{"doc_type" => "standard", "public" => false,
+         "text_type" => "adoc", "level" => 0},
+         "identifier" => "jxxcarlson.some_title.2017.777a",
+         "author_name" => nil, "children" => [],
+         "parent_id" => 0, "parent_title" => ""
+       }
+
   end
 
   test "does not update chosen document when not authorized" do

@@ -29,7 +29,8 @@ defmodule Koko.Web.DocumentController do
   end
 
   defp get_master_doc_id(query_string) do
-    (Regex.run(~r/master=\d+/, query_string) || ["master=0"])
+    qs = query_string || ""
+    (Regex.run(~r/master=\d+/, qs) || ["master=0"])
     |> hd
     |> String.split("=")
     |> Enum.at(1)
@@ -75,8 +76,8 @@ defmodule Koko.Web.DocumentController do
   defined in the token.
   """
   def index(conn, _params) do
+    query_string = conn.query_string || ""
     IO.puts "INDEX USER, QS = #{conn.query_string}"
-    query_string = conn.query_string
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
           master_document_id = get_master_doc_id(conn.query_string)
@@ -106,7 +107,7 @@ defmodule Koko.Web.DocumentController do
     # IO.puts "In index public, token = " <> Token.user_id_from_header(conn)
     # IO.puts "(1) INDEX PUBLIC, QS = #{conn.query_string}"
     # query_string = remove_command("publicdocs=all", conn.query_string)
-    query_string = conn.query_string
+    query_string = conn.query_string || ""
     IO.puts "(2) INDEX PUBLIC, QS = #{query_string}"
     master_document_id = get_master_doc_id(query_string)
     cond do
