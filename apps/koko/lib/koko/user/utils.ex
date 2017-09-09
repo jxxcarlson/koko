@@ -1,4 +1,4 @@
-defmodule Koko.Authentication.Utils do
+defmodule Koko.User.Utils do
 
 
   @moduledoc false
@@ -79,8 +79,6 @@ defmodule Koko.Authentication.Utils do
     |> :calendar.gregorian_seconds_to_datetime
     |> iso_format
   end
-end
-
 
   def uri_encode(url) do
     url

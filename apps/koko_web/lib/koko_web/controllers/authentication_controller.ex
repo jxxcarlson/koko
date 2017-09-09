@@ -2,7 +2,7 @@ defmodule Koko.Web.AuthenticationController do
   use Koko.Web, :controller
   import Plug.Conn
 
-  alias Koko.Authentication
+  alias Koko.User.Authentication
 
   # plug :scrub_params, "user" when action in [:create]
   # plug :actionP

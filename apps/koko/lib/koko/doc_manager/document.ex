@@ -4,9 +4,6 @@ defmodule Koko.DocManager.Document do
   alias Koko.DocManager.Document
   alias Koko.Repo
 
-  alias Koko.Authentication.User
-  alias Koko.Authentication.UserQuery
-
 
   schema "documents" do
     field :content, :string
@@ -151,7 +148,7 @@ defmodule Koko.DocManager.Document do
   end
 
   def add_authorname(document) do
-   author = UserQuery.get(document.author_id)
+   author = Koko.User.Query.get(document.author_id)
    cs = changeset(document, %{author_name: author.username})
    Repo.update(cs)
   end

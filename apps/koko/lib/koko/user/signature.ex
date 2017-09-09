@@ -1,6 +1,6 @@
-defmodule Koko.Authentication.Signature do
+defmodule Koko.User.Signature do
 
-  import Koko.Authentication.Utils, only: [hmac_sha256: 2, date: 1, bytes_to_hex: 1, utc_now: 1]
+  import Koko.User.Utils, only: [hmac_sha256: 2, date: 1, bytes_to_hex: 1, utc_now: 1]
 
 
   def config(secret_access_key, region) do

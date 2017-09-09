@@ -1,7 +1,7 @@
 defmodule Koko.Web.CredentialsController do
   use Koko.Web, :controller
 
-  alias Koko.Authentication.Token
+  alias Koko.User.Token
   # alias Koko.Authentication
 
   def get_header(conn, name) do

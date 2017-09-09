@@ -10,9 +10,7 @@ defmodule Koko.DocManager do
   alias Koko.DocManager.MasterDocument
   alias Koko.DocManager.Search
   alias Koko.DocManager.Query
-  alias Koko.Authentication.UserQuery
-
-  alias Koko.Authentication.User
+  alias Koko.User.User
 
   @doc """
   Returns the list of documents.
@@ -118,7 +116,7 @@ defmodule Koko.DocManager do
   @doc """
   Creates a document.
 
-  ## Examples
+  # Examples
 
       iex> create_document(%{field: value})
       {:ok, %Document{}}
@@ -129,9 +127,8 @@ defmodule Koko.DocManager do
   """
   def create_document(attrs, author_id) do
     IO.puts "Enter create document"
-    author = UserQuery.get(author_id)
-    attributes = Document.default_attributes()
-      |> Map.merge attrs["attributes"]
+    author = Koko.User.Query.get(author_id)
+    attributes = Document.default_attributes() |> Map.merge(attrs["attributes"])
     IO.puts "attributes\n-------"
     IO.inspect attributes
     IO.puts "-------"
@@ -151,7 +148,7 @@ defmodule Koko.DocManager do
     case result  do
       {:ok, doc} ->
         Document.set_identifier(doc)
-      {:error, error} ->
+      {:error, _} ->
         IO.puts "Could not create document"
     end
   end

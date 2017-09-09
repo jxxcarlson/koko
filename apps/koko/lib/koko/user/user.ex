@@ -1,7 +1,7 @@
-defmodule Koko.Authentication.User do
+defmodule Koko.User.User do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Koko.Authentication.User
+  alias Koko.User.User
 
 
   schema "authentication_users" do

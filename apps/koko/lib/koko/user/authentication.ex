@@ -1,4 +1,4 @@
-defmodule Koko.Authentication do
+defmodule Koko.User.Authentication do
   @moduledoc """
   The boundary for the Authentication system. It manages
   user registration and authentication: a registered user
@@ -18,8 +18,8 @@ defmodule Koko.Authentication do
   import Comeonin.Bcrypt, only: [checkpw: 2]
 
   alias Koko.Repo
-  alias Koko.Authentication.User
-  alias Koko.Authentication.UserQuery
+  alias Koko.User.User
+  alias Koko.User.Query
 
   @doc """
   Returns the list of users.
@@ -30,14 +30,14 @@ defmodule Koko.Authentication do
       [%User{}, ...]
 
   """
-  def list_users(query_string) do
-    User |> UserQuery.sort_by_username |> Repo.all
+  def list_users(_query_string) do
+    User |> Query.sort_by_username |> Repo.all
   end
 
   ##  List users whose home page is public
   ##
   def list_public_users do
-    User |> UserQuery.is_public |> UserQuery.sort_by_username |> Repo.all
+    User |> Query.is_public |>Query.sort_by_username |> Repo.all
   end
 
 
@@ -63,19 +63,18 @@ defmodule Koko.Authentication do
     username = username || ""
     email = email || ""
     errors = []
-    if String.length(username) < 4 do
-      errors = errors ++ ["Username must have at least four characters"]
+    cond do
+      String.length(username) < 4 ->
+          errors ++ ["Username must have at least four characters"]
+      not (String.contains? email, "@") ->
+          errors ++ ["Email is invalid"]
+      Query.get_by_email(email) != nil ->
+          errors ++ ["That email is taken"]
+      Query.get_by_username(username) != nil ->
+          errors ++ ["That username is taken"]
+      true ->
+          errors
     end
-    if not (String.contains? email, "@") do
-      errors = errors ++ ["Email is invalid"]
-    end
-    if UserQuery.get_by_email(email) != nil do
-      errors = errors ++ ["That email is taken"]
-    end
-    if UserQuery.get_by_username(username) != nil do
-      errors = errors ++ ["That username is taken"]
-    end
-    errors
   end
 
   @doc """
@@ -170,7 +169,7 @@ defmodule Koko.Authentication do
     IO.inspect params, label: "get_token params"
     with  {:ok, user} <- get_user(params["email"]),
           {:ok, _} <- checkpw2(params["password"], user.password_hash),
-          {:ok, token} <- Koko.Authentication.Token.get(user.id, user.username)
+          {:ok, token} <- Koko.User.Token.get(user.id, user.username)
     do
       {:ok, token, user.username}
     else

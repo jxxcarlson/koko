@@ -1,6 +1,9 @@
 defmodule  Koko.Upload.S3Direct do
 
-  alias Koko.Authentication.Signature
+  alias Koko.User.Signature
+
+  @expiration Application.get_env(:s3_direct_upload, :expiration_api, S3DirectUpload.Expiration)
+
   @moduledoc """
 
   Pre-signed S3 upload helper for client-side multipart POSTs.
@@ -48,7 +51,7 @@ defmodule  Koko.Upload.S3Direct do
     bucket: Application.get_env(:s3_direct_upload, :aws_s3_bucket)
 
   def presigned(%S3DirectUpload{} = upload) do
-      date = Koko.Authentication.Utils.iso_8601_now   # utc_now()
+      date = Koko.User.Utils.iso_8601_now   # utc_now()
       %{
         url: "https://#{upload.bucket}.s3.amazonaws.com",
         credentials: %{

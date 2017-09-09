@@ -1,7 +1,7 @@
-defmodule Koko.Authentication.UserQuery do
+defmodule Koko.User.Query do
 
   import Ecto.Query
-  alias Koko.Authentication.User
+  alias Koko.User.User
   alias Koko.Repo
 
   ## QUERIES

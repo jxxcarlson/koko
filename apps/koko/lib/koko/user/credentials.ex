@@ -1,4 +1,4 @@
-defmodule Koko.Authentication.Credentials do
+defmodule Koko.User.Credentials do
 
   def signing_key(region, secret_access_key) do
     {:ok, signing_key_from_sigaws} = Sigaws.Util.signing_key(

@@ -1,4 +1,4 @@
-defmodule Koko.Authentication.Token do
+defmodule Koko.User.Token do
 
   @moduledoc """
   This module carries the functions used to generate tokens,
