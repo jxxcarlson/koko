@@ -52,12 +52,22 @@ defmodule Koko.Document.Document do
     document.tags |> Enum.join(", ")
   end
 
+  @doc"""
+    iex> Koko.Document.Document.normalize_string("Foo bar#$!1234")
+    "Foo_bar1234"
+  """
   def normalize_string(str) do
     Regex.replace(~r/[^A-Za-z0-9_.: ]/, str, "") |> String.replace(" ", "_")
   end
 
- # alias Koko.DocManager.Document; alias Koko.Repo; alias Koko.Authentication.User;
-   # u = Repo.get(User, 1); d = Repo.get(Document, 1)
+  """
+  Example:
+  > d = %Document{id: 1, title: "Foo & Bar", author_id: 1, inserted_at: ~N[2017-08-22 01:21:07.712814]}
+  > Document.make_identifier(d)
+  "jxxcarlson.foo__bar.2017-8-22@1-21-7.2183ee"
+
+  Note that a database lookup is require for this example
+  """
   def make_identifier(document) do
     user = Repo.get(User, document.author_id)
     part0 = user.username

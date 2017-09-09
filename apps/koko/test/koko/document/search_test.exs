@@ -8,4 +8,9 @@ defmodule Koko.DocManagerSearchTest do
       assert hd(docs).title =~ "Elm"
    end
 
+   test "random" do
+     n = Search.random("user_id=1") |> length
+     assert n == 10
+   end
+
 end
