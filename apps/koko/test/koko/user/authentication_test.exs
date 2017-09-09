@@ -2,7 +2,7 @@ defmodule Koko.AuthenticationTest do
   use Koko.DataCase
 
   alias Koko.User.User
-
+  alias Koko.User.Authentication
 
 
   # setup_all do
@@ -29,7 +29,7 @@ defmodule Koko.AuthenticationTest do
       {:ok, user} =
         attrs
         |> Enum.into(@valid_user_attrs)
-        |> User.create_user()
+        |> Authentication.create_user()
       user
     end
 
@@ -37,21 +37,21 @@ defmodule Koko.AuthenticationTest do
     @invalid_attrs %{"admin" => nil, "blurb" => nil, "email" =>  nil, "name" => nil, "password_hash" =>  nil, "username" => nil}
 
     test "list_users/0 returns all users" do
-      n = User.list_users() |> length
+      n = Authentication.list_users("") |> length
       user = user_fixture()
       assert user.email == "yada@foo.io"
-      assert (User.list_users() |> length) == n + 1
+      assert (Authentication.list_users("") |> length) == n + 1
     end
 
     test "get_user!/1 returns the user with given id" do
       user = user_fixture()
-      found_user = User.get_user!(user.id)
+      found_user = Authentication.get_user!(user.id)
       assert found_user.email == user.email
       assert found_user.username == user.username
     end
 
     test "create_user/1 with valid data creates a user" do
-      {:ok, %User{} = user} = User.create_user(@valid_user_attrs)
+      {:ok, %User{} = user} = Authentication.create_user(@valid_user_attrs)
       assert user.admin == true
       assert user.blurb == "BLURB!"
       assert user.email == "yada@foo.io"
@@ -61,12 +61,12 @@ defmodule Koko.AuthenticationTest do
     end
 
     test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = User.create_user(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Authentication.create_user(@invalid_attrs)
     end
 
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
-      assert {:ok, user} = User.update_user(user, @update_attrs)
+      assert {:ok, user} = Authentication.update_user(user, @update_attrs)
       assert %User{} = user
       assert user.admin == false
       assert user.blurb == "whatever"
@@ -78,19 +78,19 @@ defmodule Koko.AuthenticationTest do
 
     test "update_user/2 with invalid data returns error changeset" do
       user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = User.update_user(user, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Authentication.update_user(user, @invalid_attrs)
       # assert user == Authentication.get_user!(user.id)
     end
 
     test "delete_user/1 deletes the user" do
       user = user_fixture()
-      assert {:ok, %User{}} = User.delete_user(user)
-      assert_raise Ecto.NoResultsError, fn -> User.get_user!(user.id) end
+      assert {:ok, %User{}} = Authentication.delete_user(user)
+      assert_raise Ecto.NoResultsError, fn -> Authentication.get_user!(user.id) end
     end
 
     test "change_user/1 returns a user changeset" do
       user = user_fixture()
-      assert %Ecto.Changeset{} = User.change_user(user)
+      assert %Ecto.Changeset{} = Authentication.change_user(user)
     end
   end
 

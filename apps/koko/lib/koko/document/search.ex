@@ -6,8 +6,20 @@ defmodule Koko.Document.Search do
   alias Koko.Utility
   alias Koko.User.User
 
+  @doc ~S"""
+  ### Example
+    # iex> cl = [["author", "1"], ["title", "elm"], ["sort", "title"]]
+    # iex> Search.by_command_list(cl, :document) |> length
+    6
+
+    # iex> cl = [["author", "1"], ["title", "elmmm"], ["sort", "title"]]
+    # iex> Search.by_command_list(cl, :document) |> length
+    2
+  """
+
   def by_command_list(command_list, :document) do
     IO.puts "ENTER DOCUMENT COMMAND_LIST"
+    IO.inspect command_list, label: "Command list"
     command_list
     |> Enum.reduce(Document, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
     |> Repo.all
@@ -15,6 +27,7 @@ defmodule Koko.Document.Search do
 
   def by_command_list(command_list, :user) do
     IO.puts "ENTER USER COMMAND_LIST"
+    IO.inspect command_list, label: "Command list"
     command_list
     |> Enum.reduce(User, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
     |> Repo.all

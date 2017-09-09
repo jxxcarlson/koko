@@ -1,7 +1,7 @@
 defmodule AuthTest do
   use ExUnit.Case
 
-  alias Auth.Signature
+  alias Koko.User.Signature
 
   # NOTE: The code is Auth.Signature is lightly adapted from
   # https://github.com/CargoSense/ex_aws/ (@copyright CargoSense, MIT License)
@@ -48,7 +48,7 @@ defmodule AuthTest do
 
   test "signature" do
 
-    signature = Signature.generate_signature_v4("s3", test_config(), {{2015, 12, 29}, {0, 0, 0}}, @string_to_sign)
+    signature = Signature.generate_v4("s3", test_config(), {{2015, 12, 29}, {0, 0, 0}}, @string_to_sign)
 
     {:ok, signing_key_from_sigaws} = Sigaws.Util.signing_key(
         {2015, 12, 29} |> Date.from_erl!(),

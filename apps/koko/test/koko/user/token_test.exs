@@ -1,7 +1,7 @@
 defmodule Koko.Authentication.TokenTest do
   use Koko.DataCase
 
-  alias Koko.Authentication.Token
+  alias Koko.User.Token
 
   describe "token" do
 
