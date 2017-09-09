@@ -128,6 +128,7 @@ defmodule Koko.Document.DocManager do
   def create_document(attrs, author_id) do
     IO.puts "Enter create document"
     author = Koko.User.Query.get(author_id)
+    IO.puts "YADA!!!"
     attributes = Document.default_attributes() |> Map.merge(attrs["attributes"])
     IO.puts "attributes\n-------"
     IO.inspect attributes

@@ -5,6 +5,7 @@ defmodule Koko.Document.Document do
 
   alias Koko.Repo
   alias Koko.Document.Document
+  alias Koko.User.User
 
 
   schema "documents" do
