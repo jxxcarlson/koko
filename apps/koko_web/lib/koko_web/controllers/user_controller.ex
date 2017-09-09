@@ -3,8 +3,9 @@ defmodule Koko.Web.UserController do
 
   plug :scrub_params, "user" when action in [:create]
 
-  alias Koko.Authentication
-  alias Koko.Authentication.User
+  alias Koko.User.Authentication
+  alias Koko.User.Token
+  alias Koko.User.User
   alias Koko.DocManager
   alias Koko.DocManager.Search
 
@@ -41,7 +42,7 @@ defmodule Koko.Web.UserController do
   def create(:success, conn, payload) do
     user_params = Koko.Utility.project2map(payload)
     with {:ok, %User{} = user} <- Authentication.create_user(user_params) do
-      {:ok, token} = Koko.Authentication.Token.get(user.id, user.username, 86400)
+      {:ok, token} = Token.get(user.id, user.username, 86400)
       user = Map.merge(user, %{token: token})
       DocManager.create_document(home_page_params(user), user.id)
       DocManager.add_notes_for_user(user.id)

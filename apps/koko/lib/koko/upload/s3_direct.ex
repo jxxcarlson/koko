@@ -51,7 +51,7 @@ defmodule  Koko.Upload.S3Direct do
     bucket: Application.get_env(:s3_direct_upload, :aws_s3_bucket)
 
   def presigned(%S3DirectUpload{} = upload) do
-      date = Koko.User.Utils.iso_8601_now   # utc_now()
+      date = S3DirectUpload.Expiration.iso_8601_now   # utc_now()
       %{
         url: "https://#{upload.bucket}.s3.amazonaws.com",
         credentials: %{

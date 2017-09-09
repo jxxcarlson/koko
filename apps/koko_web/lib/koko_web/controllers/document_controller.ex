@@ -18,7 +18,7 @@ defmodule Koko.Web.DocumentController do
 
   alias Koko.DocManager
   alias Koko.DocManager.Document
-  alias Koko.Authentication.Token
+  alias Koko.User.Token
   alias Koko.DocManager.Search
   alias Koko.Repo
 
