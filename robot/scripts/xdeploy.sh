@@ -7,3 +7,7 @@ echo "Push to Heroku"
 git push heroku refactor:master
 
 echo
+echo "Restart local server"
+sh run.sh
+
+echo

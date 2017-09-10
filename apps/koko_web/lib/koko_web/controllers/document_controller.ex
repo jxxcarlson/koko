@@ -18,52 +18,12 @@ defmodule Koko.Web.DocumentController do
 
   alias Koko.Document.DocManager
   alias Koko.Document.Document
+  alias Koko.Document.MasterDocument
   alias Koko.User.Token
   alias Koko.Document.Search
   alias Koko.Repo
 
   action_fallback Koko.Web.FallbackController
-
-  defp search_limit do
-    20
-  end
-
-  defp get_master_doc_id(query_string) do
-    qs = query_string || ""
-    (Regex.run(~r/master=\d+/, qs) || ["master=0"])
-    |> hd
-    |> String.split("=")
-    |> Enum.at(1)
-    |> String.to_integer
-  end
-
-  defp remove_command(command, query_string) do
-    query_string
-    |> String.split("&")
-    |> Enum.filter(fn(c) -> c != command end)
-    |> Enum.join("&")
-  end
-
-  defp prepend_command(command, query_string) do
-    if query_string == "" do
-      command
-    else
-      "#{command}&#{query_string}"
-    end
-  end
-
-  def get_documents_for_user(user_id, query_string, opts) do
-    cond do
-      query_string == "userdocs=all" ->
-        {qs, opts2} = {"", ["author=#{user_id}", "limit=#{search_limit()}"] ++ opts}
-      String.contains? query_string, "docs=any" ->
-        qs = remove_command("docs=any", query_string)
-        {qs, opts2} = { qs, [] ++ ["user_or_public=#{user_id}", "limit=#{search_limit()}"]}
-      true ->
-        {qs, opts2} = {query_string, ["author=#{user_id}", "limit=#{search_limit()}"] ++ opts}
-    end
-    Search.by_query_string(:document, qs, opts2)
-  end
 
   @doc """
   List and search for documents owned by the user
@@ -74,7 +34,7 @@ defmodule Koko.Web.DocumentController do
     IO.puts "INDEX USER, QS = #{conn.query_string}"
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
-          master_document_id = get_master_doc_id(conn.query_string)
+          master_document_id = MasterDocument.get_master_doc_id(conn.query_string)
           cond do
             String.contains? query_string, "random=public" ->
               documents = Search.random_public query_string
@@ -85,7 +45,7 @@ defmodule Koko.Web.DocumentController do
             master_document_id > 0 ->
               documents = DocManager.list_children(:user, user_id, master_document_id)
             true ->
-              documents = get_documents_for_user(user_id, conn.query_string, [])
+              documents = Search.get_documents_for_user(user_id, conn.query_string, [])
            end
            IO.puts "NUMBER OF DOCS FOUND: #{length(documents)}"
            render(conn, "index.json", documents: documents)
@@ -94,30 +54,7 @@ defmodule Koko.Web.DocumentController do
       end
   end
 
-  @doc """
-  All public documents are listable and searchable.
-  """
-  def index_public(conn, _params) do
-    # IO.puts "In index public, token = " <> Token.user_id_from_header(conn)
-    # IO.puts "(1) INDEX PUBLIC, QS = #{conn.query_string}"
-    # query_string = remove_command("publicdocs=all", conn.query_string)
-    query_string = conn.query_string || ""
-    IO.puts "(2) INDEX PUBLIC, QS = #{query_string}"
-    master_document_id = get_master_doc_id(query_string)
-    cond do
-      master_document_id > 0 ->
-        documents = DocManager.list_children(:public, master_document_id)
-      String.contains? query_string, "random=public" ->
-        documents = Search.random_public query_string
-      String.contains? query_string, "random=all" ->
-        documents = Search.random query_string
-      String.contains? query_string, "random_user" ->
-          documents = Search.random_user query_string
-      true ->
-        documents = Search.by_query_string(:document, query_string, ["public=yes" ,"limit=#{search_limit()}"])
-    end
-    render(conn, "index.json", documents: documents)
-  end
+
 
 
   # {:ok, user_id} <- Token.get_user_id_from_header(conn),
@@ -157,19 +94,7 @@ defmodule Koko.Web.DocumentController do
     end
   end
 
-  @doc """
-  All public documents are readable/displayble.
-  """
-  def show_public(conn, %{"id" => id}) do
-    document = DocManager.get_document!(id)
-    if document.attributes["public"] == true do
-      cs = Document.changeset(document, %{viewed_at: DateTime.utc_now()})
-      Repo.update(cs)
-      render(conn, "show.json", document: document)
-    else
-      {:error, "Cannot display document"}
-    end
-  end
+
 
   defp match_integers(a, b, success_message, failure_message) do
     if a == b do

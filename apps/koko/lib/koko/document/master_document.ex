@@ -9,6 +9,16 @@ defmodule Koko.Document.MasterDocument do
   # alias Koko.DocManager.MasterDocument; MasterDocument.parse_line({"== 1", 33})
 
 
+  def get_master_doc_id(query_string) do
+    qs = query_string || ""
+    (Regex.run(~r/master=\d+/, qs) || ["master=0"])
+    |> hd
+    |> String.split("=")
+    |> Enum.at(1)
+    |> String.to_integer
+  end
+
+
   def parse(content) do
     result = parse_string(content)
     IO.inspect result, label: "parsed document"

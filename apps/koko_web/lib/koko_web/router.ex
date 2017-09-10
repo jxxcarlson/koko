@@ -20,8 +20,8 @@ defmodule Koko.Web.Router do
     resources "/users", UserController, except: [:edit, :delete]
     resources "/authentication", AuthenticationController
 
-    get "/public/documents", DocumentController, :index_public
-    get "/public/documents/:id", DocumentController, :show_public
+    get "/public/documents", PublicDocumentController, :index
+    get "/public/documents/:id", PublicDocumentController, :show
 
     get "/hello", StatusController, :hello
     get "/credentials", CredentialsController, :presigned
