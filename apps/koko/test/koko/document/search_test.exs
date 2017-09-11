@@ -10,7 +10,7 @@ defmodule Koko.DocManagerSearchTest do
 
    test "random" do
      n = Search.random("user_id=1") |> length
-     assert n == 10
+     assert n > 5
    end
 
 end

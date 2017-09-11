@@ -10,8 +10,25 @@ defmodule Koko.Document.Search do
     20
   end
 
+  @doc"""
+  # Sort command list by priority
+
+    iex> cl = [["key", "foo"], ["title", "elm"]]
+    [["key", "foo"], ["title", "elm"]]
+    iex> Koko.Document.Search.sort_commands cl
+    [["title", "elm"], ["key", "foo"]]
+
   """
-  Example
+  def sort_commands(command_list) do
+    command_list
+    |> Enum.sort fn(x, y) -> Query.is_greater(hd(x), hd(y)) end
+  end
+
+
+
+  """
+  # Example
+
     > cl = [["author", "1"], ["title", "elm"], ["sort", "title"]]
     > Koko.Document.Search.by_command_list(cl, :document) |> length
     6
@@ -26,6 +43,7 @@ defmodule Koko.Document.Search do
     IO.puts "ENTER DOCUMENT COMMAND_LIST"
     IO.inspect command_list, label: "Command list"
     command_list
+    |> sort_commands
     |> Enum.reduce(Document, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
     |> Repo.all
   end
@@ -34,6 +52,7 @@ defmodule Koko.Document.Search do
     IO.puts "ENTER USER COMMAND_LIST"
     IO.inspect command_list, label: "Command list"
     command_list
+    |> sort_commands
     |> Enum.reduce(User, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
     |> Repo.all
   end

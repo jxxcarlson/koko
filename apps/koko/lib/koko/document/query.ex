@@ -14,13 +14,54 @@ defmodule Koko.Document.Query do
 
   Generic example for using these queries:
 
-    iex> Document |> Query.has_title("math") |> Query.has_author(2) |> Repo.all
+  #  iex> Document |> Query.has_title("math") |> Query.has_author(2) |> Repo.all
 
 alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; alias Koko.DocManager
 
     Document |> Query.is_public |> Repo.all
 
   """
+
+
+ def priority_table do
+   %{
+     "id" => 7,
+     "ident" => 7,
+     "is_user" => 7,
+     "title" => 6,
+     "key" => 5,
+     "author" => 4,
+     "authorname" => 4,
+     "public_user" => 4,
+     "text" => 3,
+     "public" => 2,
+     "sort" => 1,
+     "limit"  => 0
+   }
+ end
+
+ @doc"""
+ # Query.priority returns the priority of a search command
+
+    iex> Koko.Document.Query.priority("title")
+    6
+
+    iex> Koko.Document.Query.priority("foo")
+    -1
+ """
+ def priority(command) do
+   priority_table[command] || -1
+ end
+
+ @doc"""
+ # Compare priorities of search commands
+
+    iex> Koko.Document.Query.is_greater "title", "sort"
+    true
+ """
+ def is_greater(command1, command2) do
+   priority(command1) > priority(command2)
+ end
 
 
  def by(query, cmd, arg) do
