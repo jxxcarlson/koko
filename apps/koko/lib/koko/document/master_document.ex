@@ -166,6 +166,7 @@ defmodule Koko.Document.MasterDocument do
   end
 
   def updated_text_from_children(content, children) do
+    content = if String.ends_with? content, "\n" do content else content <> "\n" end
     content = if !(String.contains? content, table_of_contents_separator())  do
       content <> table_of_contents_separator() <> "\n"
     else
@@ -197,7 +198,8 @@ defmodule Koko.Document.MasterDocument do
   end
 
   def attach(document, position, remaining_commands) do
-
+    IO.inspect position, label: "position"
+    IO.inspect remaining_commands, label: "remaining_commands"
     [child_command|remaining_commands] = remaining_commands
     ["child", child_id_str] = child_command # error handling
     child_id = String.to_integer(child_id_str)
@@ -231,15 +233,21 @@ defmodule Koko.Document.MasterDocument do
 
     doc = Document.update_children(document, children)
     updated_text = updated_text_from_children(document.content, children)
+    [doc, updated_text]
+  end
+
+  def attach!(document, position, remaining_commands) do
+    [doc, updated_text] = attach(document, position, remaining_commands)
     cs = Document.changeset(doc, %{content: updated_text})
     Repo.update!(cs)
   end
 
   def index_of_child_with_id(children, id) do
-    Enum.find_index(children, fn(child) -> child.doc_id == id end)
+    Enum.find_index(children, fn(child) -> child.doc_id == id end) || 0
   end
 
   def insert_before(item, position, items) do
+    IO.inspect position, label: "insert_before, position"
     Enum.take(items, position) ++ [item] ++ Enum.drop(items, position)
   end
 

@@ -35,6 +35,7 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
      "public_user" => 4,
      "text" => 3,
      "public" => 2,
+     "is_master" => 3,
      "sort" => 1,
      "limit"  => 0
    }
@@ -102,6 +103,8 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
           has_identifier_suffix(query, arg)
       {"limit", _} ->
           has_limit(query, arg)
+      {"is_master","yes"} ->
+         is_master(query)
     end
  end
 
@@ -142,6 +145,13 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
      else
        query
      end
+  end
+
+  # Search.by_query_string(:document,"has_children=yes", []) |> length
+  def is_master(query) do
+    from d in query,
+      where: fragment("attributes @> '{\"doc_type\": \"master\"}'")
+    query
   end
 
   def sort_by_title(query) do

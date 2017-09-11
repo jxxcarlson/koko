@@ -4,12 +4,11 @@ defmodule Koko.Web.DocumentControllerTest do
   alias Koko.Document.DocManager
   alias Koko.User.Authentication
   alias Koko.Document.Search
-  alias Koko.User.User
 
   # https://hexdocs.pm/phoenix/Phoenix.ConnTest.html
 
   @create_attrs %{content: "some content", rendered_content: "some rendered_content", title: "Introductory Magick",
-     attributes: %{public: true}, identifier: "jxxcarlson.some_title.2017.777a"}
+     attributes: %{public: false}, identifier: "jxxcarlson.some_title.2017.777a"}
   @update_attrs %{content: "some updated content", rendered_content: "some updated rendered_content", title: "Bio 101"}
   @invalid_attrs %{content: "uuu"}
   @user_attrs %{"admin" => false, "blurb" => "BLURB!", "email" => "yozo@foo.io", "name" => "Yo T. Zo",
@@ -64,7 +63,7 @@ defmodule Koko.Web.DocumentControllerTest do
     end
 
     test "find documents for user with title 'Introductory Magick'" do
-      [user, token, _] = set_values()
+      [_, token, _] = set_values()
       conn = build_conn()
       |> put_req_header("accept", "application/json")
       |> put_req_header("authorization", "Bearer #{token}")
@@ -75,7 +74,6 @@ defmodule Koko.Web.DocumentControllerTest do
     end
 
     test "find children of master document" do
-      user = Authentication.get_user!(1)
       password = System.get_env("KOKO_PASSWORD")
       email = System.get_env("KOKO_EMAIL")
       {:ok, token, _username} = Authentication.get_token %{"email" => email, "password" => password}
@@ -89,7 +87,7 @@ defmodule Koko.Web.DocumentControllerTest do
     end
 
     test "find random public documents" do
-      [user, token, _] = set_values()
+      [_, token, _] = set_values()
       conn = build_conn()
       |> put_req_header("accept", "application/json")
       |> put_req_header("authorization", "Bearer #{token}")
@@ -100,7 +98,7 @@ defmodule Koko.Web.DocumentControllerTest do
     end
 
     test "find random documents" do
-      [user, token, _] = set_values()
+      [_, token, _] = set_values()
       conn = build_conn()
       |> put_req_header("accept", "application/json")
       |> put_req_header("authorization", "Bearer #{token}")
@@ -111,7 +109,7 @@ defmodule Koko.Web.DocumentControllerTest do
     end
 
     test "find random documents for user" do
-      [user, token, _] = set_values()
+      [_, token, _] = set_values()
       conn = build_conn()
       |> put_req_header("accept", "application/json")
       |> put_req_header("authorization", "Bearer #{token}")
@@ -145,7 +143,6 @@ defmodule Koko.Web.DocumentControllerTest do
     end
 
     test "does not create document and renders errors when request is not authorized" do
-      [_, _, _] = set_values()
 
       token =  "aaa.bbb.ccc"
 

@@ -31,7 +31,6 @@ defmodule Koko.Web.DocumentController do
   """
   def index(conn, _params) do
     query_string = conn.query_string || ""
-    IO.puts "query string = #{query_string}"
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
           master_document_id = MasterDocument.get_master_doc_id(conn.query_string)

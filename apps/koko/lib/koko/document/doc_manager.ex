@@ -183,7 +183,7 @@ defmodule Koko.Document.DocManager do
       "adopt_children" ->
          MasterDocument.adopt_children(document)
       "attach" ->
-         MasterDocument.attach(document, arg, remaining_commands)
+         MasterDocument.attach!(document, arg, remaining_commands)
       _ ->
         IO.puts "query string #{query_string} for #{document.id} (#{document.title}) not recognized"
     end
