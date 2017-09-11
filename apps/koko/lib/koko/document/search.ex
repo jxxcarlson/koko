@@ -37,7 +37,12 @@ defmodule Koko.Document.Search do
     > Koko.Document.Search.by_command_list(cl, :document) |> length
     2
 
-    Note: not a pure function, so can't do a doctest.
+    Notes
+      (1): not a pure function, so can't do a doctest.
+      (2): the search commands are automatically rearranged by
+           the function 'sort_commands' as follows:
+
+           [["title", "elm"], ["author", "1"], ["sort", "title"]]
   """
   def by_command_list(command_list, :document) do
     IO.puts "ENTER DOCUMENT COMMAND_LIST"
@@ -54,7 +59,7 @@ defmodule Koko.Document.Search do
     IO.inspect command_list, label: "Command list"
     command_list
     |> sort_commands
-    > Utility.inspect_pipe("SORTED COMMANDS")
+    |> Utility.inspect_pipe("SORTED COMMANDS")
     |> Enum.reduce(User, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
     |> Repo.all
   end

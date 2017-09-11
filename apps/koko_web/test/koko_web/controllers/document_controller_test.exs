@@ -48,21 +48,7 @@ defmodule Koko.Web.DocumentControllerTest do
       |> put_req_header("authorization", "Bearer #{token}")
   end
 
-  test "lists all PUBLIC entries on index", %{conn: conn} do
-    user = fixture :user
-
-    document_attributes = Map.merge(@create_attrs, %{author_id:  user.id})
-    fixture :document, document_attributes
-
-    n = Document |> Query.is_public |> Repo.all |> length
-
-    IO.puts "n = #{n}"
-
-    conn = get conn, document_path(conn, :index_public)
-    response = json_response(conn, 200)
-
-    assert n == (response["documents"] |> length)
-  end
+  
 
 
   test "lists all USER entries on index" do
