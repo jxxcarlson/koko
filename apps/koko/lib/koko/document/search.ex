@@ -6,7 +6,7 @@ defmodule Koko.Document.Search do
   alias Koko.Utility
   alias Koko.User.User
 
-  defp search_limit do
+  def search_limit do
     20
   end
 
