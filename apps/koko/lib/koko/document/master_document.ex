@@ -21,7 +21,6 @@ defmodule Koko.Document.MasterDocument do
 
   def parse(content) do
     result = parse_string(content)
-    IO.inspect result, label: "parsed document"
   end
 
   def set_defaults(changeset, document) do
@@ -37,12 +36,10 @@ defmodule Koko.Document.MasterDocument do
 
   # XXX: Last change
   def set_children_from_content(changeset, document, content) do
-    IO.puts "Enter: set_children_from_content"
     if document.attributes["doc_type"] == "master" do
       children = parse(content)
         |> Enum.filter(fn(item) -> is_valid(item) end)
         |> Enum.map(fn(item) -> get_item(item) end)
-      IO.inspect children, label: "Children (in set_children_from_content)"
       if children != []  do
         {children, Ecto.Changeset.put_embed(changeset, :children, children)}
       else
@@ -177,7 +174,6 @@ defmodule Koko.Document.MasterDocument do
     top_content = String.split(content, table_of_contents_separator()) |> hd
     toc_text = toc_from_children(children)
     updated_text = top_content <> table_of_contents_separator() <> toc_text
-    IO.puts "UPDATED SOURCE TEXT: " <> updated_text
     updated_text
   end
 
@@ -202,14 +198,10 @@ defmodule Koko.Document.MasterDocument do
 
   def attach(document, position, remaining_commands) do
 
-    IO.puts "ATTACH to doc #{document.id} at #{position}"
-    IO.inspect remaining_commands, label: "ATTACH, remaining commands"
-
     [child_command|remaining_commands] = remaining_commands
     ["child", child_id_str] = child_command # error handling
     child_id = String.to_integer(child_id_str)
     child_document = Repo.get(Document, child_id)
-    IO.puts "Child document: #{child_document.id} (#{child_document.title})"
 
     level = 2
 
@@ -227,23 +219,18 @@ defmodule Koko.Document.MasterDocument do
         document.children ++ [new_child]
       "above" ->
         ["current", current_id] = (hd remaining_commands)
-        IO.puts "CURRENT_ID = #{current_id}"
         k = index_of_child_with_id(document.children, String.to_integer(current_id))
         insert_before(new_child, k, document.children)
       "below" ->
         ["current", current_id] = (hd remaining_commands)
-        IO.puts "CURRENT_ID = #{current_id}"
         k = index_of_child_with_id(document.children, String.to_integer(current_id))
         insert_after(new_child, k, document.children)
       _ ->
         document.children
     end
 
-    IO.inspect children, label: "Children"
-
     doc = Document.update_children(document, children)
     updated_text = updated_text_from_children(document.content, children)
-    IO.puts "NEW CONTENT (from attach): \n" <> updated_text
     cs = Document.changeset(doc, %{content: updated_text})
     Repo.update!(cs)
   end
@@ -253,16 +240,10 @@ defmodule Koko.Document.MasterDocument do
   end
 
   def insert_before(item, position, items) do
-    IO.inspect item, label: "INSERT BEFORE, item"
-    IO.inspect position, label: "INSERT BEFORE, position"
-    IO.inspect items, label: "INSERT BEFORE, ITEMS ..."
     Enum.take(items, position) ++ [item] ++ Enum.drop(items, position)
   end
 
   def insert_after(item, position, items) do
-    IO.inspect item, label: "INSERT AFTER, item"
-    IO.inspect position, label: "INSERT AFTER, position"
-    IO.inspect items, label: "INSERT AFTER, ITEMS ..."
     Enum.take(items, position+1) ++ [item] ++ Enum.drop(items, position+1)
   end
 

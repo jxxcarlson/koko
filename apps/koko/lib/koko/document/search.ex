@@ -45,21 +45,15 @@ defmodule Koko.Document.Search do
            [["title", "elm"], ["author", "1"], ["sort", "title"]]
   """
   def by_command_list(command_list, :document) do
-    IO.puts "ENTER DOCUMENT COMMAND_LIST"
-    IO.inspect command_list, label: "Command list"
     command_list
     |> sort_commands
-    |> Utility.inspect_pipe("SORTED COMMANDS")
     |> Enum.reduce(Document, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
     |> Repo.all
   end
 
   def by_command_list(command_list, :user) do
-    IO.puts "ENTER USER COMMAND_LIST"
-    IO.inspect command_list, label: "Command list"
     command_list
     |> sort_commands
-    |> Utility.inspect_pipe("SORTED COMMANDS")
     |> Enum.reduce(User, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
     |> Repo.all
   end
@@ -74,7 +68,6 @@ defmodule Koko.Document.Search do
  # """
      rows = rows_in_table("documents")
      query = "SELECT * FROM documents OFFSET floor(random()*#{rows}) LIMIT 40;"
-     IO.puts "SQL query = #{query}"
      res = Ecto.Adapters.SQL.query!(Repo, query, [])
      cols = Enum.map res.columns, &(String.to_atom(&1))
      Enum.map(res.rows, fn(row) -> struct(Document, Enum.zip(cols, row)) end)
@@ -202,7 +195,6 @@ defmodule Koko.Document.Search do
   to "by_query_string"
   """
   def by_query_string_for_user(query_string, user_id) do
-    IO.puts "QS (for USER)): #{query_string}"
     query_string = query_string || ""
     # prepend author query
     query_string = if query_string == "" do

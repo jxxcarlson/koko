@@ -29,10 +29,7 @@ defmodule Koko.Web.PublicDocumentController do
   All public documents are listable and searchable.
   """
   def index(conn, _params) do
-    # IO.puts "In index public, token = " <> Token.user_id_from_header(conn)
-    # IO.puts "(1) INDEX PUBLIC, QS = #{conn.query_string}"
     query_string = conn.query_string || ""
-    IO.puts "(2) INDEX PUBLIC, QS = #{query_string}"
     master_document_id = MasterDocument.get_master_doc_id(query_string)
     cond do
       master_document_id > 0 ->

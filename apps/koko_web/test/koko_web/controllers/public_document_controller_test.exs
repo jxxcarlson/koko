@@ -3,15 +3,12 @@ defmodule Koko.Web.PublicDocumentControllerTest do
 
   alias Koko.Document.DocManager
   alias Koko.User.Authentication
-  alias Koko.Document.Search
   alias Koko.Document.Query
   alias Koko.Document.Document
   alias Koko.Repo
 
   @create_attrs %{content: "some content", rendered_content: "some rendered_content", title: "some title",
      attributes: %{public: true}, identifier: "jxxcarlson.some_title.2017.777a"}
-  @update_attrs %{content: "some updated content", rendered_content: "some updated rendered_content", title: "some updated title"}
-  @invalid_attrs %{content: "uuu"}
   @user_attrs %{"admin" => false, "blurb" => "BLURB!", "email" => "yozo@foo.io", "name" => "Yo T. Zo",
      "username" => "yozo", "password" => "yujo&$123"}
 
@@ -54,8 +51,6 @@ defmodule Koko.Web.PublicDocumentControllerTest do
     fixture :document, document_attributes
 
     n = Document |> Query.is_public |> Repo.all |> length
-
-    IO.puts "n = #{n}"
 
     conn = get conn, public_document_path(conn, :index)
     response = json_response(conn, 200)

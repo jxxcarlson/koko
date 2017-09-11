@@ -30,16 +30,11 @@ defmodule Koko.Document.DocManager do
   end
 
   def list_documents(:user, user_id) do
-    docs = Search.by_query_string(:document, "author=#{user_id}", [])
-    IO.puts "#{length docs} User docs found"
-    docs
+    Search.by_query_string(:document, "author=#{user_id}", [])
   end
 
   def list_children(:public, id) do
-    IO.puts "list_children, :public"
-    IO.puts "Master: #{id}"
     master_document = Repo.get(Document, id)
-    IO.puts "Master: #{master_document.title}"
     cond do
       master_document == nil ->
         []
@@ -50,9 +45,7 @@ defmodule Koko.Document.DocManager do
   end
 
   def list_children(:user, user_id, id) do
-    IO.puts "list_children, :user, id = #{id}, user_id = #{user_id}"
     master_document = Repo.get(Document, id)
-    IO.puts "master = #{master_document.id}"
     cond do
       master_document == nil ->
         []
@@ -70,16 +63,13 @@ defmodule Koko.Document.DocManager do
   end
 
   defp list_children_aux(:user, master_document) do
-    IO.puts "list_children, :user, aux, master = #{master_document.id}"
     Enum.reduce master_document.children,
       [master_document],
       fn(child, acc) -> acc ++ getChild(:private, child) end
   end
 
   defp getChild(:public, child) do
-    IO.puts "getChild, :public, #{child.doc_id}, title: #{child.title}"
     doc = Repo.get(Document, child.doc_id)
-    IO.puts "public: #{doc.attributes["public"]}"
     cond do
       doc == nil -> []
       doc.attributes["public"] == false -> []
@@ -88,7 +78,6 @@ defmodule Koko.Document.DocManager do
   end
 
   defp getChild(:private, child) do
-    IO.puts "getChild, :private, #{child.doc_id}, title: #{child.title}"
     doc = Repo.get(Document, child.doc_id)
     cond do
       doc == nil -> []
@@ -164,8 +153,6 @@ defmodule Koko.Document.DocManager do
 
   """
   def update_document(%Document{} = document, attrs, query_string) do
-    IO.puts "update_document, query string: " <> query_string
-    IO.inspect attrs, label: "update_document, attrs"
     default_attrs = %{ "attributes" => Document.default_attributes }
     attrs =
       Map.merge(default_attrs, attrs)
@@ -179,7 +166,6 @@ defmodule Koko.Document.DocManager do
       |> Repo.update()
     if document.attributes["doc_type"] == "master" do
       update_child_levels(document)
-      IO.puts "AND NOW I WILL UPDATE THE SOURCE TEXT ... (well, not yet)"
     end
     if query_string != "" do
       execute_query_string_commands(document, query_string)
@@ -191,11 +177,8 @@ defmodule Koko.Document.DocManager do
   end
 
   def execute_query_string_commands(document, query_string) do
-    IO.puts "execute_query_string_commands: #{query_string}"
     [command|remaining_commands] = String.split(query_string, "&") |> Enum.map(fn(item) -> String.split(item, "=") end)
     [cmd, arg] = command
-    IO.puts "cmd = #{cmd}"
-    IO.puts "arg = #{arg}"
     case cmd do
       "adopt_children" ->
          MasterDocument.adopt_children(document)
@@ -207,14 +190,12 @@ defmodule Koko.Document.DocManager do
   end
 
   def update_child_levels(document) do
-    IO.puts "... SETTING LEVEL OF CHILDREN"
     document.children
     |> Enum.map(fn(child) -> Document.set_level_of_child(child) end)
   end
 
   def render(:master, changeset, document) do
     [rendered_content|_] = String.split(document.content, MasterDocument.table_of_contents_separator())
-    IO.puts "RC: #{rendered_content}"
     Ecto.Changeset.put_change(changeset, :rendered_content, rendered_content)
   end
 
@@ -223,13 +204,11 @@ defmodule Koko.Document.DocManager do
       # String.split(document.content, ["\n", "\r", "\r\n"])
       # |> Enum.filter(fn(line) -> !(line =~ ~r/^%.*/) end)
       # |> Enum.join("\n")
-    IO.puts "\n==========\nLATEX CONTENT: #{rendered_content}\n==========\n"
     Ecto.Changeset.put_change(changeset, :rendered_content, rendered_content)
   end
 
   def render(changeset, document) do
     dt = document.attributes["doc_type"]
-    IO.puts "render, doc_type = #{dt}"
     cond do
       document.attributes["doc_type"] == "master"  ->
         render(:master, changeset, document)
