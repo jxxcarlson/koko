@@ -83,7 +83,7 @@ defmodule Koko.Web.DocumentControllerTest do
       |> get("/api/documents?master=365")
 
       number_of_documents_found = json_response(conn, 200)["documents"] |> length
-      assert number_of_documents_found  == 23
+      assert number_of_documents_found  == 24
     end
 
     test "find random public documents" do

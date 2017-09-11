@@ -20,10 +20,10 @@ defmodule Koko.Document.MasterDocument do
 
 
   def parse(content) do
-    result = parse_string(content)
+    parse_string(content)
   end
 
-  def set_defaults(changeset, document) do
+  def set_defaults(changeset, _document) do
     # if document.attributes["doc_type"] == "master" do
     #   if !String.contains?(document.content, table_of_contents_separator()) do
     #     Document.changeset(document, %{content: document.content <> "\n" <> table_of_contents_separator()})
@@ -99,7 +99,7 @@ defmodule Koko.Document.MasterDocument do
   defp parse_line(item) do
     {line, line_number} = item
     words = line |> String.split(" ")
-      |> Enum.filter fn(word) -> word != "" end
+      |> Enum.filter(fn(word) -> word != "" end)
     cond do
       length(words) == 0 ->
         {:blank, line_number, ""}
@@ -198,8 +198,6 @@ defmodule Koko.Document.MasterDocument do
   end
 
   def attach(document, position, remaining_commands) do
-    IO.inspect position, label: "position"
-    IO.inspect remaining_commands, label: "remaining_commands"
     [child_command|remaining_commands] = remaining_commands
     ["child", child_id_str] = child_command # error handling
     child_id = String.to_integer(child_id_str)
@@ -247,7 +245,6 @@ defmodule Koko.Document.MasterDocument do
   end
 
   def insert_before(item, position, items) do
-    IO.inspect position, label: "insert_before, position"
     Enum.take(items, position) ++ [item] ++ Enum.drop(items, position)
   end
 

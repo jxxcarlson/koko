@@ -29,7 +29,7 @@ defmodule Koko.MasterDocumentTest do
       children: [],
       content: "CHILD B",
       id: 22, identifier: "jxxcarlson.child_a.2017-8-22@2-26-12.67dceb",
-      parent_id: 365,
+      parent_id: 0,
       rendered_content: "CHILD B",
       title: "Child B"
     }
@@ -75,19 +75,21 @@ defmodule Koko.MasterDocumentTest do
       assert expected_toc == MasterDocument.toc_from_children(master.children)
     end
 
-  end
+    test "Generation of updated content for master from children" do
+      # Note that the data in `chidren` takes precedence over the
+      # data in the "above the line" text.
+      master = @master
+      updated_content = MasterDocument.updated_text_from_children(master.content, master.children)
+      expected_content = """
+  THIS IS MASTER
+  ++ Table of Contents
+  == 21 Painting // Yada yada!
+  """
+      assert updated_content == expected_content
 
-  test "Generation of updated content for master from children" do
-    # Note that the data in `chidren` takes precedence over the
-    # data in the "above the line" text.
-    master = @master
-    updated_content = MasterDocument.updated_text_from_children(master.content, master.children)
-    expected_content = """
-THIS IS MASTER
-++ Table of Contents
-== 21 Painting // Yada yada!
-"""
-    assert updated_content == expected_content
+    end
+
+
 
   end
 
@@ -100,7 +102,16 @@ THIS IS MASTER
       position = "above"
       remaining_commands = [["child", "#{new_child.id}"], ["current", "#{child.id}"]]
 
-      [doc, updated_text] = MasterDocument.attach(master, position, remaining_commands)
+      [_, updated_text] = MasterDocument.attach(master, position, remaining_commands)
+      expected_text = """
+THIS IS MASTER
+++ Table of Contents
+== 22 Child B // comment
+== 21 Painting // Yada yada!
+"""
+      assert expected_text == updated_text
+      new_child = Repo.get(Document, new_child.id)
+      assert new_child.parent_id == master.id
     end
 
     test "attach document below" do
@@ -110,15 +121,57 @@ THIS IS MASTER
       position = "below"
       remaining_commands = [["child", "#{new_child.id}"], ["current", "#{child.id}"]]
 
-      [doc, updated_text] = MasterDocument.attach(master, position, remaining_commands)
+      [_, updated_text] = MasterDocument.attach(master, position, remaining_commands)
       expected_text = """
   THIS IS MASTER
   ++ Table of Contents
   == 21 Painting // Yada yada!
   == 22 Child B // comment
   """
-      assert expected_text = updated_text
+      assert expected_text == updated_text
+      new_child = Repo.get(Document, new_child.id)
+      assert new_child.parent_id == master.id
     end
+
+    test "attach document at top" do
+      master = @master
+      Repo.insert!(@child_A)
+      new_child = Repo.insert!(@child_B)
+      position = "at-top"
+      remaining_commands = [["child", "#{new_child.id}"]]
+
+      [_, updated_text] = MasterDocument.attach(master, position, remaining_commands)
+      expected_text = """
+THIS IS MASTER
+++ Table of Contents
+== 22 Child B // comment
+== 21 Painting // Yada yada!
+"""
+      assert expected_text == updated_text
+      new_child = Repo.get(Document, new_child.id)
+      assert new_child.parent_id == master.id
+
+    end
+
+    test "attach document at bottom" do
+      master = @master
+      Repo.insert!(@child_A)
+      new_child = Repo.insert!(@child_B)
+      position = "at-bottom"
+      remaining_commands = [["child", "#{new_child.id}"]]
+
+      [_, updated_text] = MasterDocument.attach(master, position, remaining_commands)
+      expected_text = """
+THIS IS MASTER
+++ Table of Contents
+== 21 Painting // Yada yada!
+== 22 Child B // comment
+"""
+      assert expected_text == updated_text
+      new_child = Repo.get(Document, new_child.id)
+      assert new_child.parent_id == master.id
+    end
+
 
   end
 
@@ -129,14 +182,16 @@ THIS IS MASTER
     position = "above"
     remaining_commands = [["child", "#{new_child.id}"], ["current", "#{child.id}"]]
 
-    [doc, updated_text] = MasterDocument.attach(master, position, remaining_commands)
+    [_, updated_text] = MasterDocument.attach(master, position, remaining_commands)
     expected_text = """
 THIS IS MASTER
 ++ Table of Contents
 == 22 Child B // comment
 == 21 Painting // Yada yada!
 """
-    assert expected_text = updated_text
+    assert expected_text == updated_text
+    new_child = Repo.get(Document, new_child.id)
+    assert new_child.parent_id == master.id
   end
 
 
