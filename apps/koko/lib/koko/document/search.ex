@@ -44,7 +44,7 @@ defmodule Koko.Document.Search do
     IO.inspect command_list, label: "Command list"
     command_list
     |> sort_commands
-    |> IO.inspect_pipe("SORTED COMMANDS")
+    |> Utility.inspect_pipe("SORTED COMMANDS")
     |> Enum.reduce(Document, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
     |> Repo.all
   end
@@ -54,7 +54,7 @@ defmodule Koko.Document.Search do
     IO.inspect command_list, label: "Command list"
     command_list
     |> sort_commands
-    |> IO.inspect_pipe("SORTED COMMANDS")
+    > Utility.inspect_pipe("SORTED COMMANDS")
     |> Enum.reduce(User, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
     |> Repo.all
   end
