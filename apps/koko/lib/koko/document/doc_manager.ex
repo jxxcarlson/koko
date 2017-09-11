@@ -139,6 +139,7 @@ defmodule Koko.Document.DocManager do
     |> Repo.insert()
   end
 
+ ## image::https://s-media-cache-ak0.pinimg.com/originals/d1/a1/30/d1a13095ebb82938328de77468ef1c29.jpg[width=100%]
 
   @doc """
   Updates a document.
@@ -156,6 +157,7 @@ defmodule Koko.Document.DocManager do
     default_attrs = %{ "attributes" => Document.default_attributes }
     attrs =
       Map.merge(default_attrs, attrs)
+
     document
       |> Document.changeset(attrs)
       # |> render(document)
@@ -167,6 +169,7 @@ defmodule Koko.Document.DocManager do
     if document.attributes["doc_type"] == "master" do
       update_child_levels(document)
     end
+    
     if query_string != "" do
       execute_query_string_commands(document, query_string)
     end

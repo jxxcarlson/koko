@@ -89,8 +89,6 @@ defmodule Koko.MasterDocumentTest do
 
     end
 
-
-
   end
 
   describe "attach document" do
@@ -172,27 +170,26 @@ THIS IS MASTER
       assert new_child.parent_id == master.id
     end
 
+    test "attach document above" do
+      master = @master
+      child = Repo.insert!(@child_A)
+      new_child = Repo.insert!(@child_B)
+      position = "above"
+      remaining_commands = [["child", "#{new_child.id}"], ["current", "#{child.id}"]]
 
-  end
-
-  test "attach document above" do
-    master = @master
-    child = Repo.insert!(@child_A)
-    new_child = Repo.insert!(@child_B)
-    position = "above"
-    remaining_commands = [["child", "#{new_child.id}"], ["current", "#{child.id}"]]
-
-    [_, updated_text] = MasterDocument.attach(master, position, remaining_commands)
-    expected_text = """
+      [_, updated_text] = MasterDocument.attach(master, position, remaining_commands)
+      expected_text = """
 THIS IS MASTER
 ++ Table of Contents
 == 22 Child B // comment
 == 21 Painting // Yada yada!
 """
-    assert expected_text == updated_text
-    new_child = Repo.get(Document, new_child.id)
-    assert new_child.parent_id == master.id
-  end
+      assert expected_text == updated_text
+      new_child = Repo.get(Document, new_child.id)
+      assert new_child.parent_id == master.id
+    end
+
+  end ## describe attach document
 
 
 
