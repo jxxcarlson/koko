@@ -36,16 +36,16 @@ defmodule Koko.Document.MasterDocument do
 
   # XXX: Last change
   def set_children_from_content(changeset, document, content) do
+    IO.puts "In set_children_from_content, doc_type = #{document.attributes["doc_type"]}"
+    IO.inspect changeset, label: "INITIAL CHANGESET"
     if document.attributes["doc_type"] == "master" do
+      IO.puts "MAIN BRANCH ..."
       children = parse(content)
         |> Enum.filter(fn(item) -> is_valid(item) end)
         |> Enum.map(fn(item) -> get_item(item) end)
-      if children != []  do
-        {children, Ecto.Changeset.put_embed(changeset, :children, children)}
-      else
-        {[], changeset}
-      end
+      {children, Ecto.Changeset.put_embed(changeset, :children, children)}
     else
+      IO.puts "ALT BRANCH ..."
       {document.children, changeset}
     end
   end
@@ -91,12 +91,12 @@ defmodule Koko.Document.MasterDocument do
     end
 
     String.split(str, ["\n", "\r", "\r\n"])
-      |> Enum.map(fn(line) -> String.trim(line) end)
-      |> Enum.with_index(1)
+      |> Enum.map(fn(line) -> String.trim(line) end) # trim line
+      |> Enum.with_index(1)                          # map line to {line, line_number}
       |> Enum.map(fn(item) -> parse_line(item) end)
   end
 
-  defp parse_line(item) do
+  def parse_line(item) do
     {line, line_number} = item
     words = line |> String.split(" ")
       |> Enum.filter(fn(word) -> word != "" end)
@@ -174,8 +174,7 @@ defmodule Koko.Document.MasterDocument do
     end
     top_content = String.split(content, table_of_contents_separator()) |> hd
     toc_text = toc_from_children(children)
-    updated_text = top_content <> table_of_contents_separator() <> toc_text
-    updated_text
+    top_content <> table_of_contents_separator() <> toc_text
   end
 
   def update_text_from_children({children, changeset}, document, content) do

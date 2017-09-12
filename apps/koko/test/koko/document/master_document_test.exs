@@ -12,6 +12,14 @@ defmodule Koko.MasterDocumentTest do
     assert n > 0
   end
 
+  @content_A """
+THIS IS MASTER
+++ Table of Contents
+== 21 Painting // Yada yada!
+== 22 Child B // comment
+
+  """
+
   @child_A %Koko.Document.Document{
      attributes: %{"doc_type" => "standard", "level" => 2, "public" => true,
        "text_type" => "adoc"}, author_id: 1, author_name: "jxxcarlson",
@@ -47,6 +55,11 @@ defmodule Koko.MasterDocumentTest do
      rendered_content: "THIS IS MASTER",
      title: "Master"
   }
+
+  def setup_children do
+    Repo.insert!(@child_A)
+    Repo.insert!(@child_B)
+  end
 
   describe "Initial data" do
 
@@ -170,26 +183,101 @@ THIS IS MASTER
       assert new_child.parent_id == master.id
     end
 
-    test "attach document above" do
-      master = @master
-      child = Repo.insert!(@child_A)
-      new_child = Repo.insert!(@child_B)
-      position = "above"
-      remaining_commands = [["child", "#{new_child.id}"], ["current", "#{child.id}"]]
-
-      [_, updated_text] = MasterDocument.attach(master, position, remaining_commands)
-      expected_text = """
-THIS IS MASTER
-++ Table of Contents
-== 22 Child B // comment
-== 21 Painting // Yada yada!
-"""
-      assert expected_text == updated_text
-      new_child = Repo.get(Document, new_child.id)
-      assert new_child.parent_id == master.id
-    end
+#     test "attach document above" do
+#       master = @master
+#       child = Repo.insert!(@child_A)
+#       new_child = Repo.insert!(@child_B)
+#       position = "above"
+#       remaining_commands = [["child", "#{new_child.id}"], ["current", "#{child.id}"]]
+#
+#       [_, updated_text] = MasterDocument.attach(master, position, remaining_commands)
+#       expected_text = """
+# THIS IS MASTER
+# ++ Table of Contents
+# == 22 Child B // comment
+# == 21 Painting // Yada yada!
+# """
+#       assert expected_text == updated_text
+#       new_child = Repo.get(Document, new_child.id)
+#       assert new_child.parent_id == master.id
+#     end
 
   end ## describe attach document
+
+  describe "Text parser" do
+
+    test "parse_string" do
+      setup_children()
+
+      content = @content_A
+      expected_parsed_content = [
+        {:item, 1,
+          %Child{comment: "Yada yada!", doc_id: 21,
+           doc_identifier: "jxxcarlson.child_a.2017-8-22@2-26-12.67dceb", level: 2,
+           title: "Child A"}},
+        {:item, 2,
+          %Child{comment: "comment", doc_id: 22,
+           doc_identifier: "jxxcarlson.child_a.2017-8-22@2-26-12.67dceb", level: 2,
+           title: "Child B"}},
+        {:blank, 3, ""},
+        {:blank, 4, ""}
+      ]
+
+      parsed_content = MasterDocument.parse_string content
+      assert parsed_content == expected_parsed_content
+    end
+
+    test "parse_line" do
+      setup_children()
+      item = {"== 21 Painting", 1}
+
+      expected_child =  %Child{
+        comment: "", doc_id: 21,
+        doc_identifier: "jxxcarlson.child_a.2017-8-22@2-26-12.67dceb",
+        level: 2,
+        title: "Child A"
+      }
+      expected_item = {:item, 1, expected_child}
+
+      parsed_item = MasterDocument.parse_line item
+      assert expected_item == parsed_item
+    end
+
+  end
+
+  describe "foo" do
+
+
+    test "set_children_from_content, updating comments & ignoring titles in content" do
+      master = @master
+      setup_children()
+      new_content = """
+THIS IS MASTER
+++ Table of Contents
+== 21 Oil Painting // Alpha
+=== 22 Acrylic Painting // Beta
+"""
+
+     expected_children = [
+          %Child{
+              comment: "Alpha", doc_id: 21,
+              doc_identifier: "jxxcarlson.child_a.2017-8-22@2-26-12.67dceb",
+              level: 2,
+              title: "Child A"},
+          %Child{
+            comment: "Beta",
+            doc_id: 22,
+            doc_identifier: "jxxcarlson.child_a.2017-8-22@2-26-12.67dceb",
+            level: 3,
+            title: "Child B"},
+      ]
+      changeset = Document.changeset(master, %{})
+      {children, changeset} = MasterDocument.set_children_from_content changeset, master, new_content
+      IO.inspect changeset, label: "XX, CHANGESET"
+      assert children == expected_children
+    end
+
+  end
 
 
 
