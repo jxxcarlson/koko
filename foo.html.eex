@@ -30,12 +30,12 @@
 
           MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 
-          function typesetNow2(){
+          function typesetNow(){
             console.log("II.  calling MathJax.Hub.Queue ... ")
             MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
           }
 
-          typesetNow2()
+          typesetNow()
       </script>
 
     <!-- IMAGE -->
