@@ -4,6 +4,7 @@ defmodule Koko.Document.MasterDocument do
 
   alias Koko.Repo
   alias Koko.Document.Document
+  alias Koko.Document.DocManager
 
   # alias Koko.Repo; alias Koko.DocManager.Document
   # alias Koko.DocManager.MasterDocument; MasterDocument.parse_line({"== 1", 33})
@@ -38,6 +39,7 @@ defmodule Koko.Document.MasterDocument do
   def set_children_from_content(changeset, document, content) do
     IO.puts "In set_children_from_content, doc_type = #{document.attributes["doc_type"]}"
     IO.inspect changeset, label: "INITIAL CHANGESET"
+    old_children = document.children
     if document.attributes["doc_type"] == "master" do
       IO.puts "MAIN BRANCH ..."
       children = parse(content)
@@ -47,6 +49,34 @@ defmodule Koko.Document.MasterDocument do
     else
       IO.puts "ALT BRANCH ..."
       {document.children, changeset}
+    end
+  end
+
+  def levels_equal({child1, child2}) do
+    child1.level == child2.level
+  end
+
+  def levels_changed(children1, children2) do
+    pairs = List.zip [children1, children2]
+    Enum.filter pairs, fn(pair) -> not levels_equal(pair) end
+  end
+
+  # DocManager.do_level_change {c,c}
+  def do_level_change({old_child, new_child}) do
+    id = new_child.doc_id
+    level = new_child.level
+    doc = DocManager.get_document! id
+    IO.puts "*** Setting level of #{doc.title} to #{level}"
+    Document.set_level(doc, level)
+  end
+
+  def update_levels(old_children, new_children) do
+    IO.puts "length of old children = #{length(old_children)}"
+    IO.puts "length of new children = #{length(new_children)}"
+    if length(old_children) == length(new_children) do
+      IO.puts "*** UPDATING LEVELS .."
+      levels_changed(old_children, new_children)
+      |> Enum.map(fn pair -> do_level_change(pair) end)
     end
   end
 

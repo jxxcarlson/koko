@@ -7,6 +7,7 @@ defmodule Koko.Document.DocManager do
   alias Koko.Repo
 
   alias Koko.Document.Document
+  alias Koko.Document.DocManager
   alias Koko.Document.MasterDocument
   alias Koko.Document.Search
   alias Koko.Document.Query
@@ -154,6 +155,7 @@ defmodule Koko.Document.DocManager do
 
   """
   def update_document(%Document{} = document, attrs, query_string) do
+    IO.puts "*** Enter update_document, query_string = #{query_string}"
     default_attrs = %{ "attributes" => Document.default_attributes }
     attrs =
       Map.merge(default_attrs, attrs)
@@ -168,6 +170,9 @@ defmodule Koko.Document.DocManager do
       |> Repo.update()
     if document.attributes["doc_type"] == "master" do
       update_child_levels(document)
+      MasterDocument.adopt_children(document)
+      new_document = DocManager.get_document!(document.id)
+      MasterDocument.update_levels(document.children, new_document.children)
     end
 
     if query_string != "" do
