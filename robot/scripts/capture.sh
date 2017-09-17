@@ -2,7 +2,7 @@ color=`tput setaf 48`
 reset=`tput setaf 7`
 
 echo
-echo "${color}Remove latest dump and capturing database at Heroku${reset}"
+echo "${color}Removing latest dump and capturing database at Heroku${reset}"
 rm latest.dump
 heroku pg:backups:capture
 
@@ -15,3 +15,4 @@ echo "${color}Loading backup into local database${reset}"
 pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgres -d koko_dev latest.dump
 
 echo
+echo "${color}Done${reset}"

@@ -30,6 +30,7 @@ defmodule Koko.Web.DocumentController do
   defined in the token.
   """
   def index(conn, _params) do
+    IO.puts "In INDEX, QS = #{conn.query_string}"
     query_string = conn.query_string || ""
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
