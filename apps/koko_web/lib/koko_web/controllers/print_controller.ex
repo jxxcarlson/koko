@@ -31,7 +31,7 @@ defmodule Koko.Web.PrintController do
       "adoc_latex" ->
           conn |> render("asciidoc.html", text: fix_html(document.content, title, author ))
       "latex" ->
-        conn |> render("latex.html", text: document.content)
+        conn |> render("latex.html", text: document.rendered_content)
       _ ->
         conn |> render("asciidoc.html", text: fix_html(document.content, title, author))
     end
