@@ -6,13 +6,25 @@ defmodule Koko.Web.ExportController do
 
   plug :put_layout, false
 
-  def export_latex text do
+  def export_latex(text, texmacros) do
     text2 = Parser.transform_images(text)
-    prefix <> text2 <> suffix
+    prefix <> "\n\n" <> texmacros <> "\n\n" <> text2 <> suffix
   end
 
   def show(conn, %{"id" => id}) do
     document = Repo.get(Document, String.to_integer(id))
+    author = Koko.User.Authentication.get_user!(document.author_id)
+    IO.puts "author name: #{author.name }"
+    results = Koko.Document.Search.by_query_string_for_user("title=texmacros", author.id)
+    IO.puts "texmacro files found: #{length results}"
+    texmacro_document = hd results
+    texmacros = if texmacro_document != nil do
+                   texmacro_document.content |> String.replace("$$", "")
+                else
+                   ""
+    end
+
+
     text_type = document.attributes["text_type"]
     title = document.title
     author = document.author_name
@@ -24,7 +36,7 @@ defmodule Koko.Web.ExportController do
       "adoc_latex" ->
           conn |> render("asciidoc.html", text: document.content)
       "latex" ->
-        conn |> render("latex.html", text: document.content |> export_latex )
+        conn |> render("latex.html", text: document.content |> export_latex(texmacros) )
       _ ->
         conn |> render("asciidoc.html", text: document.content)
     end
@@ -87,10 +99,15 @@ def prefix() do
 \\newcommand{\\subheading}[1]{{\\bf #1}\\par}
 \\newcommand{\\xlinkPublic}[2]{\\href{{http://www.knode.io/\\#@public#1}}{#2}}
 
-
-%%The http://www.knode.io/@public
+\\newcommand{\\bibhref}[3]{[#3]\ \\href{#1}{#2}}
 
 \\newtheorem{theorem}{Theorem}
+\\newtheorem{lemma}{Lemma}
+\\newtheorem{proposition}{Proposition}
+\\newtheorem{corollary}{Corollary}
+\\newtheorem{definition}{Definition}
+
+
 
 \\parindent0pt
 \\parskip10pt
