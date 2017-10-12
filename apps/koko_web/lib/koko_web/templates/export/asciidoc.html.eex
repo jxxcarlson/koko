@@ -1,0 +1,19 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Noteshare</title>
+
+  </head>
+
+  <body>
+
+
+    <div class="plain_text">
+       <%= Phoenix.HTML.raw @text %>
+    </div>
+
+  </body>
+
+</html>

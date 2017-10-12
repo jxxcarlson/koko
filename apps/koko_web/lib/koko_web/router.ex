@@ -32,6 +32,11 @@ defmodule Koko.Web.Router do
     get "/documents/:id", PrintController, :show
   end
 
+  scope "/export", Koko.Web do
+    pipe_through :browser
+    get "/documents/:id", ExportController, :show
+  end
+
 
 
 end
