@@ -88,6 +88,19 @@ defmodule Koko.LatesParserTest do
       assert output == @expected_output2
     end
 
+    test "image list" do
+      output = Parser.list_images(@test_string)
+      expected_output = [%{filename: "three_circles.png", title: "3 circles",
+         url: "noteimages/foo/three_circles.png"},
+       %{filename: "four_circles.png", title: "4 circles",
+         url: "noteimages/foo/four_circles.png"}]
+      assert output == expected_output
+    end
+
+    test "image links" do
+      output = Parser.image_links(@test_string)
+      IO.puts "IMAGE LINKS: #{output}"
+    end
 
 
 end

@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <style>
+      body { font-family: sans-serif; padding-left: 30px; padding-top: 10px }
+      h1  {font-sie: 14pt;}
+      .imgageitem{ margin-top: 60px;}
+      p { margin-top: 0;}
+    </style>
+</head>
+
+<body>
+
+
+
+
+
+    <h1><%= @title %>: Image Catalogue</h1>
+    <p> Click on image to download it.</p>
+    <br><br>
+    <div id="latex">
+       <%= Phoenix.HTML.raw @text %>
+    </div>
+  </body>
+
+</html>

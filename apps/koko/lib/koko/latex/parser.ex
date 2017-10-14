@@ -7,6 +7,29 @@ defmodule Koko.Latex.Parser do
       |> Enum.reduce str, (fn(image_match, acc) -> transform_image(image_match, acc) end)
   end
 
+  def list_images(str) do
+    imageScan(str)
+      |> Enum.reduce [], (fn(image_match, acc) -> acc ++ [image_record(image_match)] end)
+  end
+
+  def image_link(image_record) do
+    title = if image_record.title == "" do
+              "UNTITLED"
+            else
+              image_record.title
+            end
+    "<div style=\"margin-bottom:30px; margin-right: 15px; display: inline-block\"><a href=\"http://#{image_record.url}\" download>
+      <img border=\"0\" src=\"http://#{image_record.url}\" height=\"100\">
+    </a>
+    <p>#{title}</p></div>"
+  end
+
+  def image_links(str) do
+    str
+      |> list_images
+      |> Enum.reduce "", (fn(item, acc) -> acc <> "\n#{image_link(item)}\n" end )
+  end
+
   def transform_image(image_match, str) do
     parsed_image = parse_image image_match
     rendered_image = render_image parsed_image
@@ -52,6 +75,12 @@ defmodule Koko.Latex.Parser do
      attribute_list = parseAttributes attribute_string
      attributes = make_map attribute_list
      %{target: target, title: title, filename: filename, url: url, attributes: attributes}
+  end
+
+  def image_record(item) do
+    [target, url, title, attribute_string] = item
+    filename = url |> String.split("/") |> Enum.reverse |> hd
+    %{ title: title, filename: filename, url: url}
   end
 
   def render_image(image) do

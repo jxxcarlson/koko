@@ -37,6 +37,11 @@ defmodule Koko.Web.Router do
     get "/documents/:id", ExportController, :show
   end
 
+  scope "/imagecatalogue", Koko.Web do
+    pipe_through :browser
+    get "/documents/:id", ImageCatalogueController, :show
+  end
+
 
 
 end
