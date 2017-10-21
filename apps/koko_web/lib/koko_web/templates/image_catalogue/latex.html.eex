@@ -19,7 +19,7 @@
 
 
     <h1><%= @title %>: Image Catalogue</h1>
-    <p> Click on image to download it.</p>
+    <p> Click on an image to download it.</p>
     <br><br>
     <div id="latex">
        <%= Phoenix.HTML.raw @text %>

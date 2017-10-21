@@ -75,24 +75,26 @@ def prefix() do
 
 \\newcommand{\\imagecenter}[3]{
     \\begin{figure}[h]
-    \\includegraphics[width=7cm]{#1}
+    \\includegraphics[width=0.30\textwidth]{#1}
+    \\caption{#2}
     \\centering
     \\end{figure}
 }
 
 \\newcommand{\\imagefloatright}[3]{
-    \\begin{wrapfigure}{r}{0.25\\textwidth}
-    \\includegraphics[width=3cm]{#1}
-    \\centering
+    \\begin{wrapfigure}{R}{0.30\\textwidth}
+    \\includegraphics[width=0.30\\textwidth]{#1}
+    \\caption{#2}
     \\end{wrapfigure}
 }
 
 \\newcommand{\\imagefloatleft}[3]{
-     \\begin{wrapfigure}{l}{0.25\\textwidth}
-    \\includegraphics[width=7cm]{#1}
-    \\centering
+    \\begin{wrapfigure}{L}{0.3-\\textwidth}
+    \\includegraphics[width=0.30\\textwidth]{#1}
+    \\caption{#2}
     \\end{wrapfigure}
 }
+
 
 \\newcommand{\\italic}[1]{{\\sl #1}}
 \\newcommand{\\strong}[1]{{\\bf #1}}
@@ -102,10 +104,14 @@ def prefix() do
 \\newcommand{\\bibhref}[3]{[#3]\ \\href{#1}{#2}}
 
 \\newtheorem{theorem}{Theorem}
+\\newtheorem{axiom}{Axiom}
 \\newtheorem{lemma}{Lemma}
 \\newtheorem{proposition}{Proposition}
 \\newtheorem{corollary}{Corollary}
 \\newtheorem{definition}{Definition}
+\\newtheorem{example}{Example}
+\\newtheorem{exercise}{Exercise}
+\\newtheorem{problem}{Problem}
 
 
 
