@@ -29,7 +29,7 @@ defmodule Koko.Web.PublicDocumentController do
   All public documents are listable and searchable.
   """
   def index(conn, _params) do
-    query_string = conn.query_string || ""
+    query_string = conn.query_string || "" |> IO.inspect(label: "QUERYSTRING")
     master_document_id = MasterDocument.get_master_doc_id(query_string)
     cond do
       master_document_id > 0 ->
@@ -40,6 +40,8 @@ defmodule Koko.Web.PublicDocumentController do
         documents = Search.random query_string
       String.contains? query_string, "random_user" ->
           documents = Search.random_user query_string
+      String.contains? query_string, "idlist" ->
+          documents = Search.idlist query_string      
       true ->
         documents = Search.by_query_string(:document, query_string, ["public=yes" ,"limit=#{Search.search_limit()}"])
     end

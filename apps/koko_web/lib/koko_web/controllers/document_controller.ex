@@ -31,7 +31,7 @@ defmodule Koko.Web.DocumentController do
   """
   def index(conn, _params) do
     IO.puts "In INDEX, QS = #{conn.query_string}"
-    query_string = conn.query_string || ""
+    query_string = conn.query_string || "" |> IO.inspect(label: "QUERYSTRING")
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
           master_document_id = MasterDocument.get_master_doc_id(conn.query_string)
@@ -42,6 +42,8 @@ defmodule Koko.Web.DocumentController do
               documents = Search.random query_string
             String.contains? query_string, "random_user" ->
                 documents = Search.random_user query_string
+            String.contains? query_string, "idlist" ->
+                documents = Search.idlist query_string    
             master_document_id > 0 ->
               documents = DocManager.list_children(:user, user_id, master_document_id)
             true ->

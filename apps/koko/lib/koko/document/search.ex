@@ -9,6 +9,16 @@ defmodule Koko.Document.Search do
     20
   end
 
+  def idlist(query_string) do
+    IO.puts "idlist: #{query_string}"
+    [cmd, args] = String.split query_string, "="
+    ids = String.split args, ","
+    IO.puts "Cmd = #{cmd}"
+    IO.inspect ids
+    # Repo.get(Document, hd ids )
+    ids |> Enum.reduce [], (fn id, acc -> [Repo.get(Document, id)] ++ acc end)
+  end
+
   @doc"""
   # Sort command list by priority
 
