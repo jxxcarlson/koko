@@ -79,6 +79,11 @@ defmodule Koko.Web.UserController do
     end
   end
 
+  def getuserstate(conn, %{"id" => id}) do
+    user = Authentication.get_user!(id)
+    render(conn, "userstate.json", user: user)
+  end
+
 
 
   def delete(conn, %{"id" => id}) do
