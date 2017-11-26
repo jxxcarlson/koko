@@ -71,6 +71,16 @@ defmodule Koko.Web.UserController do
     end
   end
 
+  def saveuserstate(conn, %{"id" => id, "current_document_id" => current_document_id, "id_list" => id_list}) do
+    user = Authentication.get_user!(id)
+    params = %{"current_document_id" => current_document_id, "document_ids" => id_list}
+    with {:ok, %User{} = user} <- Authentication.update_user_state(user, params) do
+      render(conn, "show.json", user: user)
+    end
+  end
+
+
+
   def delete(conn, %{"id" => id}) do
     user = Authentication.get_user!(id)
     with {:ok, %User{}} <- Authentication.delete_user(user) do

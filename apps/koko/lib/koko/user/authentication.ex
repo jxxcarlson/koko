@@ -119,6 +119,14 @@ defmodule Koko.User.Authentication do
     |> Repo.update()
   end
 
+  def update_user_state(%User{} = user, attrs) do
+    user
+    |> User.user_state_changeset(attrs)
+    |> Repo.update()
+  end
+
+
+
   @doc """
   Deletes a User.
 

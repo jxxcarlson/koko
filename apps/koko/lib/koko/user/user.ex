@@ -31,6 +31,11 @@ defmodule Koko.User.User do
     |> cast(attrs, [:blurb])
   end
 
+  def user_state_changeset(%User{} = user, attrs) do
+    user
+    |> cast(attrs, [:current_document_id, :document_ids])
+  end
+
   def registration_changeset(%User{} = user, params \\ :empty) do
       user
       |> changeset(params)
