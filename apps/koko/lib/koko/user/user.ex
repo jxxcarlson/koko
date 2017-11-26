@@ -13,9 +13,11 @@ defmodule Koko.User.User do
     field :password, :string, virtual: true
     field :username, :string
     field :public, :boolean, default: true
-
+    field :document_ids, {:array, :integer}
+    field :current_document_id, :integer
     timestamps()
   end
+
 
   @doc false
   def changeset(%User{} = user, attrs) do
