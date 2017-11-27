@@ -21,6 +21,8 @@ defmodule Koko.Web.Router do
     resources "/authentication", AuthenticationController
 
     put "/users/saveuserstate/:id", UserController, :saveuserstate
+    get "/users/getuserstate/:id", UserController, :getuserstate
+
     get "/public/documents", PublicDocumentController, :index
     get "/public/documents/:id", PublicDocumentController, :show
 

@@ -21,6 +21,12 @@ defmodule Koko.Web.UserView do
       blurb: user.blurb}
   end
 
+  def render("userstate.json", %{user: user} ) do
+    output = %{documentStack: user.document_ids, currentDocumentId: user.current_document_id, token: "foo"}
+    IO.inspect output, label: "USERSTATE.JSON"
+    output
+  end
+
   def render("show_with_token.json", %{user: u}) do
     output =
      %{id: u.id,

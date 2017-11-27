@@ -80,7 +80,9 @@ defmodule Koko.Web.UserController do
   end
 
   def getuserstate(conn, %{"id" => id}) do
+    IO.puts "x1x1: in getuserstate, id = #{id}"
     user = Authentication.get_user!(id)
+    IO.inspect user, label: "x1x1: in getuserstate"
     render(conn, "userstate.json", user: user)
   end
 
