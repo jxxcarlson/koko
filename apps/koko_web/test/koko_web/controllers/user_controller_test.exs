@@ -6,7 +6,7 @@ defmodule Koko.Web.UserControllerTest do
   alias Koko.User.User
 
   @create_attrs %{"admin" => true, "blurb" => "BLURB!", "email" => "yozo@foo.io", "name" => "Yo T. Zo",
-     "username" => "yozo", "password" => "yujo&$123"}
+     "username" => "yozo", "password" => "yujo&$123", "document_ids" => [1,2,3], "current_document_id" => 1}
 
   # @create_attrs %{admin: true, blurb: "some blurb", email: "some email", name: "some name", password_hash: "some password_hash", username: "some username"}
   # @update_attrs %{admin: false, blurb: "Superman rocks!", email: "Updated email", name: "Upated updated name = Bimto",
@@ -70,6 +70,15 @@ defmodule Koko.Web.UserControllerTest do
     response2 = json_response(conn, 200)
     assert response2["user"]["username"] == "yozo"
 
+  end
+
+  test "getuserstate works", %{conn: conn} do
+    user = fixture(:user)
+    conn = get conn, user_path(conn, :getuserstate, user, id: user.id)
+    response = json_response(conn, 200)
+    IO.inspect user, label: "user"
+    IO.inspect response, label: "response"
+    assert response["documentStack"]== [1,2,3]
   end
 
   # XXX: work tests below

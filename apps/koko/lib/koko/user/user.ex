@@ -22,7 +22,7 @@ defmodule Koko.User.User do
   @doc false
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:name, :username, :email, :password, :password_hash, :admin, :blurb, :public])
+    |> cast(attrs, [:name, :username, :email, :password, :password_hash, :admin, :blurb, :public, :document_ids, :current_document_id])
     |> validate_required([:name, :username, :email, :password])
   end
 
