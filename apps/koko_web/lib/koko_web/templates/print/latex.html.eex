@@ -13,8 +13,7 @@
 
       <script type="text/x-mathjax-config">
          MathJax.Hub.Config({tex2jax: {
-           inlineMath: [['$','$'], ['\\(','\\)']],
-           processSectionDelay: 0
+           inlineMath: [['$','$'], ['\\(','\\)']]
          }});
 
           MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
