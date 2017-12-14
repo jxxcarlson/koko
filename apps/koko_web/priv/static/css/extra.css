@@ -13,3 +13,42 @@
   white-space: normal;
 
 }
+
+
+#rendered_text2 h1 {margin-bottom: 0.5em; margin-top: 0;}
+#rendered_text2 h2 {margin-bottom: 0.5em; margin-top: 1em;}
+#rendered_text2 h3 {margin-bottom: 0.25em; margin-top: 1em;}
+#rendered_text2 h4 {margin-bottom: 0.25em; margin-top: 1em;}
+#rendered_text2 {line-height: 1.4em}
+#rendered_text2 p {line-height: 1.4em; margin-bottom: 1em; font-size: 1.0em;}
+#rendered_text2 pre { margin-left: 30px; margin-bottom: 20px; }
+
+
+#rendered_text2 .listingblock .content pre {background-color:rgba(253,253,253,1.0)}
+#rendered_text2 p code{background-color:rgba(0,0,255,0.05)!important}
+#rendered_text2 .box {margin-left:20px!important; margin-right: 20px!important;}
+
+#rendered_text2 .code {font-family: "Courier New", Courier, monospace; background-color: #f5f5f5; font-weight: 300;}
+#rendered_text2 .center {margin-left: auto; margin-right: auto;}
+#rendered_text2 .indent {margin-left: 2em!important}
+#rendered_text2 .italic {font-style: oblique!important}
+#rendered_text2 .environment {margin-top: 1em; margin-bottom: 1em;}
+#rendered_text2 .strong {font-weight: bold}
+#rendered_text2 .subheading {margin-top: 0.75em; margin-bottom: 0.5em; font-weight: bold}
+#rendered_text2 .verbatim {margin-top: 1em; margin-bottom: 1em; font-size: 10pt;}
+#rendered_text2 .item1 {margin-bottom: 0.5em}
+
+
+
+#rendered_text2 ul { padding-left: 1em; margin-top: 1em; margin-bottom: 1em; line-height: 1.3em; font-size: 1.0em;}
+#rendered_text2 ol { padding-left: 1em;  margin-top: 1em; margin-bottom: 1em; line-height: 1.2em; font-size: 1.0em;}
+#rendered_text2 li p { margin-bottom: 0.35em; }
+#rendered_text2 .quotation {
+  font-style: italic;
+  font-size: 0.9em;
+  margin-left: 2em;
+}
+
+#rendered_text2 .verse {
+  white-space: pre-line;
+}
