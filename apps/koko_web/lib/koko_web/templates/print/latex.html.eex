@@ -27,12 +27,6 @@
     
           MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 
-          function typesetNow(){
-            console.log("Calling MathJax.Hub.Queue from nshost print server (latex.html)")
-            MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-          }
-
-          typesetNow()
       </script>
 
 
