@@ -170,6 +170,11 @@ defmodule Koko.Document.Document do
    Repo.update(cs)
   end
 
+  # Concatenate the source text of the documents with the given ids.
+  def concatenate_source(id_list) do
+    id_list |> Enum.reduce "", fn(id, acc) -> acc <> "\n\n" <> Repo.get(Document, id).content end
+  end
+
 
 end
 
