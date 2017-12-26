@@ -175,6 +175,20 @@ defmodule Koko.Document.Document do
     id_list |> Enum.reduce "", fn(id, acc) -> acc <> "\n\n" <> Repo.get(Document, id).content end
   end
 
+  # Return id of texmacros if any
+  def texmacros(document) do
+    tags = document.tags |> Enum.filter (fn(tag) -> String.starts_with? tag, "texmacros:" end)
+    if (length tags) == 1 do
+      {:ok, extract_id (hd tags)}
+    else
+      {:error, 0}
+    end
+  end
+
+  defp extract_id tag do
+    [str, id_string] = String.split tag, ":"
+    String.to_integer id_string
+  end
 
 end
 
