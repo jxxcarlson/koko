@@ -281,4 +281,10 @@ defmodule Koko.Document.MasterDocument do
     Enum.take(items, position+1) ++ [item] ++ Enum.drop(items, position+1)
   end
 
+
+  # Return list of ids of master document
+  def id_list(master_document) do
+    master_document.children |> Enum.map fn(child) -> child.doc_id end
+  end
+
 end
