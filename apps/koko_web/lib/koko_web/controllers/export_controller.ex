@@ -22,7 +22,7 @@ defmodule Koko.Web.ExportController do
                    texmacro_document.content |> String.replace("$$", "")
                 else
                    ""
-    end
+                end
 
 
     text_type = document.attributes["text_type"]
