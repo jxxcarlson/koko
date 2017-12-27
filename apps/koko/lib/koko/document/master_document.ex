@@ -291,7 +291,7 @@ defmodule Koko.Document.MasterDocument do
   # to the master document id list and return.  Otherwise, return
   # the master document id list
   def id_list_with_texmacros(master_document) do
-    with {:ok, texmacro_id} <- Document.texmacros master_document
+    with {:ok, texmacro_id} <- Document.texmacro_file_id master_document
     do
       ids = [texmacro_id] ++ id_list(master_document)
     else

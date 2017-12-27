@@ -61,8 +61,12 @@ defmodule Koko.Latex.Parser do
   end
 
   def add_kv(item, map) do
-    [key, value] = item
-    Map.put(map, key, value)
+    if (length item) == 2 do
+      [key, value] = item
+      Map.put(map, key, value)
+    else
+      map
+    end
   end
 
   def make_map(list) do

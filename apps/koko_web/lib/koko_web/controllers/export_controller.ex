@@ -2,6 +2,7 @@ defmodule Koko.Web.ExportController do
   use Koko.Web, :controller
   alias Koko.Repo
   alias Koko.Document.Document
+  alias Koko.Document.MasterDocument
   alias Koko.Latex.Parser
 
   plug :put_layout, false
@@ -13,21 +14,47 @@ defmodule Koko.Web.ExportController do
 
   def show(conn, %{"id" => id}) do
     document = Repo.get(Document, String.to_integer(id))
-    author = Koko.User.Authentication.get_user!(document.author_id)
-    IO.puts "author name: #{author.name }"
-    results = Koko.Document.Search.by_query_string_for_user("title=texmacros", author.id)
-    IO.puts "texmacro files found: #{length results}"
-    texmacro_document = hd results
-    texmacros = if texmacro_document != nil do
-                   texmacro_document.content |> String.replace("$$", "")
-                else
-                   ""
-                end
+    doc_type = document.attributes["doc_type"]
+    if doc_type == "master" do
+      export_master_latex_document(conn, document)
+    else
+      export_standard_document(conn, document)
+    end
 
 
+    # author = Koko.User.Authentication.get_user!(document.author_id)
+    # IO.puts "author name: #{author.name }"
+    # results = Koko.Document.Search.by_query_string_for_user("title=texmacros", author.id)
+    # IO.puts "texmacro files found: #{length results}"
+    # texmacro_document = hd results
+    # texmacros = if texmacro_document != nil do
+    #                texmacro_document.content |> String.replace("$$", "")
+    #             else
+    #                ""
+    #             end
+
+
+    # text_type = document.attributes["text_type"]
+    # # title = document.title
+    # # author = document.author_name
+    # case text_type do
+    #   "plain" ->
+    #     conn |> render("plain.html", text: document.rendered_content)
+    #   "adoc" ->
+    #     conn |> render("asciidoc.html", text: document.content)
+    #   "adoc_latex" ->
+    #       conn |> render("asciidoc.html", text: document.content)
+    #   "latex" ->
+    #     conn |> render("latex.html", text: document.content |> export_latex(Document.texmacros(document)) )
+    #   _ ->
+    #     conn |> render("asciidoc.html", text: document.content)
+    # end
+  end
+
+  def export_standard_document(conn, document) do
     text_type = document.attributes["text_type"]
-    title = document.title
-    author = document.author_name
+    # title = document.title
+    # author = document.author_name
     case text_type do
       "plain" ->
         conn |> render("plain.html", text: document.rendered_content)
@@ -36,12 +63,28 @@ defmodule Koko.Web.ExportController do
       "adoc_latex" ->
           conn |> render("asciidoc.html", text: document.content)
       "latex" ->
-        conn |> render("latex.html", text: document.content |> export_latex(texmacros) )
+        conn |> render("latex.html", text: document.content |> export_latex(Document.texmacros(document)) )
       _ ->
         conn |> render("asciidoc.html", text: document.content)
     end
   end
 
+
+  def export_master_latex_document(conn, document) do
+    text_type = document.attributes["text_type"]
+    texmacro_text = Document.texmacros(document)
+    concatenated_source =
+      document
+        |> MasterDocument.id_list
+        |> Document.concatenate_source
+        |> Parser.transform_images
+        |> enclose(texmacro_text)
+    conn |> render("latex.html", text: concatenated_source )
+  end
+
+  def enclose(text, texmacro_text)  do
+    prefix <> texmacro_text <> text <> suffix
+  end
 
 
 def prefix() do
@@ -73,13 +116,11 @@ def prefix() do
 \\newcommand{\\ellie}[1]{\\href{#1}{Link to Ellie}}
 % \\newcommand{\\image}[3]{\\includegraphics[width=3cm]{#1}}
 
-\\newcommand{\\imagecenter}[3]{
-    \\begin{figure}[h]
-    \\includegraphics[width=0.30\textwidth]{#1}
-    \\caption{#2}
-    \\centering
-    \\end{figure}
-}
+\\newcommand{\\imagecenter}[3]{{
+   \\centering
+    \\includegraphics[width=0.30\\textwidth]{#1}
+    \\vglue-10pt \\par {#2}
+}}
 
 \\newcommand{\\imagefloatright}[3]{
     \\begin{wrapfigure}{R}{0.30\\textwidth}
@@ -112,6 +153,11 @@ def prefix() do
 \\newtheorem{example}{Example}
 \\newtheorem{exercise}{Exercise}
 \\newtheorem{problem}{Problem}
+
+
+%%%
+% \\newcommand{\\term}[1]{{\\sl #1}}
+\\newtheorem{remark}{Remark}
 
 
 

@@ -176,12 +176,29 @@ defmodule Koko.Document.Document do
   end
 
   # Return id of texmacros if any
-  def texmacros(document) do
+  def texmacro_file_id(document) do
     tags = document.tags |> Enum.filter (fn(tag) -> String.starts_with? tag, "texmacros:" end)
     if (length tags) == 1 do
       {:ok, extract_id (hd tags)}
     else
       {:error, 0}
+    end
+  end
+
+
+  # Return the texmacros associated with a document
+  # if there are any. Return the empty string otherwise.
+  def texmacros(document) do
+    with {:ok, tm_id} <- texmacro_file_id document
+    do
+        tm_doc = Repo.get(Document, tm_id)
+        if tm_doc != nil do
+          "\n\n" <> tm_doc.content <> "\n\n" |> String.replace "$$", ""
+        else
+          ""
+        end
+    else
+      err -> ""
     end
   end
 
