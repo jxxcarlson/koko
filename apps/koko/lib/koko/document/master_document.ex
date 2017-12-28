@@ -232,6 +232,14 @@ defmodule Koko.Document.MasterDocument do
     child_id = String.to_integer(child_id_str)
     child_document = Repo.get(Document, child_id)
 
+    tm_id_result = Document.texmacro_file_id(document)
+    tags = case tm_id_result do
+              {:ok, tm_id} -> ["texmacros:#{tm_id}"]
+              {:error, _} -> []
+           end
+
+    Document.set_tags(child_document, tags)
+
     level = 2
 
     new_child = %Child{doc_id: child_id, level: level,

@@ -116,6 +116,11 @@ defmodule Koko.Document.Document do
     Repo.update(cs)
   end
 
+  def set_tags(document, tags) do
+    cs = changeset(document, %{tags:  tags})
+    Repo.update(cs)
+  end
+
   # document -> changeset
   def update_identifier(changeset, document) do
     part = String.split(document.identifier, ".")
