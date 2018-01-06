@@ -30,7 +30,7 @@ defmodule Koko.Web.DocumentController do
   defined in the token.
   """
   def index(conn, _params) do
-    IO.puts "In INDEX, QS = #{conn.query_string}"
+    IO.puts "Koko.Web.DocumentController:: In INDEX, QS = #{conn.query_string}"
     query_string = conn.query_string || "" |> IO.inspect(label: "QUERYSTRING")
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
@@ -43,7 +43,7 @@ defmodule Koko.Web.DocumentController do
             String.contains? query_string, "random_user" ->
                 documents = Search.random_user query_string
             String.contains? query_string, "idlist" ->
-                documents = Search.idlist query_string    
+                documents = Search.idlist query_string
             master_document_id > 0 ->
               documents = DocManager.list_children(:user, user_id, master_document_id)
             true ->

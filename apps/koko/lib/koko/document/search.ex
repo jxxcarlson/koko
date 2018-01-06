@@ -9,14 +9,28 @@ defmodule Koko.Document.Search do
     20
   end
 
+  @doc"""
+  idlist("idlist=631,578,632,316") returns a list of documents
+  with the given ids.
+  """
   def idlist(query_string) do
     IO.puts "idlist: #{query_string}"
     [cmd, args] = String.split query_string, "="
     ids = String.split args, ","
-    IO.puts "Cmd = #{cmd}"
-    IO.inspect ids
-    # Repo.get(Document, hd ids )
-    ids |> Enum.reduce [], (fn id, acc -> [Repo.get(Document, id)] ++ acc end)
+    ids |> Enum.reduce [], (fn id, acc -> add_document(id, acc) end)
+  end
+
+  # prepend document with given id
+  # to list of documents acc if
+  # the document is non-nil;
+  # otherwise return acc
+  defp add_document(id, acc) do
+    doc = Repo.get(Document, id)
+    if doc == nil do
+      acc
+    else
+      [doc] ++ acc
+    end
   end
 
   @doc"""
