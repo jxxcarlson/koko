@@ -110,6 +110,9 @@ defmodule Koko.Latex.Parser do
     "\\imagecenter{image/#{image.filename}}{#{image.title}}{#{width}px}"
   end
 
+  def transform_text(text) do
+    text |> String.replace("#", "\\#")
+  end
 
 
 end
