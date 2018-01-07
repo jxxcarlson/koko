@@ -8,7 +8,7 @@ defmodule Koko.Web.ExportController do
   plug :put_layout, false
 
   def export_latex(text, texmacros) do
-    text2 = Parser.transform_images(text)
+    text2 = Parser.transform_images(text) |> Parser.transform_text
     prefix <> "\n\n" <> texmacros <> "\n\n" <> text2 <> suffix
   end
 
