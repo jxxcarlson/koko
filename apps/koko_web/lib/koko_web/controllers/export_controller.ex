@@ -156,7 +156,7 @@ def prefix() do
 
 
 %%%
-% \\newcommand{\\term}[1]{{\\sl #1}}
+\\newcommand{\\term}[1]{{\\sl #1}}
 \\newtheorem{remark}{Remark}
 
 
