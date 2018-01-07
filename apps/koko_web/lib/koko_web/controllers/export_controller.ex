@@ -153,6 +153,7 @@ def prefix() do
 \\newtheorem{example}{Example}
 \\newtheorem{exercise}{Exercise}
 \\newtheorem{problem}{Problem}
+\\newtheorem{exercises}{Exercises}
 
 
 %%%
