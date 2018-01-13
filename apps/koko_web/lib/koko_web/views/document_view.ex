@@ -4,7 +4,7 @@ defmodule Koko.Web.DocumentView do
   alias Koko.Document.Document
 
   def render("index.json", %{documents: documents}) do
-    %{documents: render_many(documents, DocumentView, "document.json")}
+    %{documents: render_many(documents, DocumentView, "document_loading.json")}
   end
 
   def render("index_loading.json", %{documents: documents}) do
