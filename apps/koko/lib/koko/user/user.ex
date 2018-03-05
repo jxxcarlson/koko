@@ -54,4 +54,13 @@ defmodule Koko.User.User do
       end
     end
 
+    
+    def get_user(id) do
+      result = Koko.Repo.get(User, id)
+      case result do
+        nil -> {:error, "request for user #{id} failed"}
+        _ -> {:ok, result}
+      end
+    end
+
 end

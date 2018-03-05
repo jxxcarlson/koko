@@ -32,8 +32,11 @@ defmodule Koko.Web.Router do
 
   scope "/archive", Koko.Web do
     pipe_through :browser
-    get "/documents/:id", ArchiveController, :index 
+    get "/documents/:id", ArchiveController, :index
     get "/document/:id", ArchiveController, :show
+    get "/new_repository/:user_id/:name", ArchiveController, :foo
+    get "/new_archive/:doc_id", ArchiveController, :foobar
+    post "/yada/:user_id", ArchiveController, :create
   end
 
   scope "/print", Koko.Web do

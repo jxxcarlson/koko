@@ -24,6 +24,14 @@ defmodule Koko.Document.Document do
     timestamps()
   end
 
+  def get_document(id) do
+    document = Koko.Repo.get(Document, id)
+    case document do
+      nil -> {:error, "Could not find document #{id}"}
+      _ -> {:ok, document}
+    end
+  end
+
  #, on_replace: :delete
 
   @doc false
@@ -96,6 +104,53 @@ defmodule Koko.Document.Document do
    attributes = Map.merge(document.attributes, %{level: level})
    cs = changeset(document, %{attributes: attributes})
    Repo.update(cs)
+  end
+
+  def set_archive(document, archive_name) do
+     attributes = Map.merge(document.attributes, %{archive: archive_name})
+     cs = changeset(document, %{attributes: attributes})
+     Repo.update(cs)
+  end
+
+  def get_archive_name(document) do
+    archive_name_ = document.attributes["archive"]
+    if archive_name_ == nil do
+      "default"
+    else
+      archive_name_
+    end
+  end
+
+
+  def set_version(document, version_number) do
+     attributes = Map.merge(document.attributes, %{version: version_number})
+     cs = changeset(document, %{attributes: attributes})
+     Repo.update(cs)
+  end
+
+  def get_version(document) do
+    version_ = document.attributes["version"]
+    if version_ == nil do
+      version = 0
+    else
+      version = version_
+    end
+  end
+
+  def increment_version(document) do
+
+     version_ = document.attributes["version"]
+     version = if version_ == nil do
+       0
+     else
+        version_ + 1
+     end
+
+     IO.puts "NEW VERSION = #{version}"
+
+     attributes = Map.merge(document.attributes, %{version: version})
+     cs = changeset(document, %{attributes: attributes})
+     Repo.update(cs)
   end
 
   def set_level_of_child(child) do
