@@ -3,6 +3,4 @@
   <p>Archive version <%= @version %> created for document
     <i><%= @title %></i> in bucket <i><%= @bucket %></i> (id = <%= @doc_id %>, characters = <%= @characters %>)</p>
 
-
-
 </div>

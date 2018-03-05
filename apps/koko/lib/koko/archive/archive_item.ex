@@ -31,33 +31,11 @@ defmodule Koko.Archive.Item do
     |> validate_required([:doc_id, :archive_id, :author_id,   :url])
   end
 
-  # def get_version(document) do
-  #    version_tag_list = Utility.get_with_prefix(document.tags, "version:")
-  #    if length(version_tag_list) == 0 do
-  #      0
-  #    else
-  #      [_, version_string] = version_tag_list |> hd |> (String.split ":")
-  #      String.to_integer version_string
-  #    end
-  # end
 
   def update_tags(document, version) do
     Utility.remove_item(document.tags, "version:") ++ [ "version:" <> Integer.to_string(version) ]
   end
 
-  # def set_version(document, version) do
-  #   new_tags = update_tags(document, version)
-  #   cs = Document.changeset(document, %{tags: new_tags})
-  #   Repo.update(cs)
-  # end
-
-  # def increment_version!(document) do
-  #   new_version = Document.get_version(document) + 1
-  #   new_tags = update_tags(document, new_version)
-  #   cs = Document.changeset(document, %{tags: new_tags})
-  #   Repo.update(cs)
-  #   new_version
-  # end
 
   def file_extension(document) do
     case document.attributes["text_type"] do
@@ -124,13 +102,8 @@ defmodule Koko.Archive.Item do
 
   def link_for_item(item) do
     [version, length, id] = item
-    url = "http://localhost:4000/archive/document/#{Integer.to_string(id)}"
+    url = "#{Koko.Configuration.host()}/archive/document/#{Integer.to_string(id)}"
     "<li><a href=\"#{url}\">Version #{Integer.to_string(version)}: #{Integer.to_string(length)} characters</a></li>\n"
-  end
-
-  def link_for_item2(item) do
-    [version, length, url] = item
-    "<li><a href=\"#{url}\" Content-Type: text/plain >Version #{Integer.to_string(version)}: #{Integer.to_string(length)} characters</a></li>\n"
   end
 
   def links_for_document(document) do
