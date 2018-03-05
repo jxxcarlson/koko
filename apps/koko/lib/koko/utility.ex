@@ -27,6 +27,17 @@ defmodule Koko.Utility do
   # end
 
 
+  def get_with_prefix(list, prefix) do
+    Enum.filter(list, fn(item) -> String.starts_with? item, prefix end)
+  end
+
+  def remove_item(list, item_to_remove) do
+    Enum.filter(list, fn(item) -> not (String.starts_with? item, item_to_remove) end)
+  end
+
+  def normalize_string(str) do
+    Regex.replace(~r/[^A-Za-z0-9_.: ]/, str, "") |> String.replace(" ", "_")
+  end
 
   def project2map(input) do
     if is_binary(input) do
