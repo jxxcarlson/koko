@@ -65,7 +65,7 @@ defmodule Koko.Web.ArchiveController do
 
     with {:ok, document} <- Document.get_document(doc_id)
     do
-      bucket = Item.new_archive(document, "ok")
+      bucket = Koko.Archive.Item.archive_document(document, "ok")
       version = Document.get_version(document) + 1
       title = document.title
       characters = String.length(document.content)

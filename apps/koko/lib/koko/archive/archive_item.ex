@@ -58,27 +58,27 @@ defmodule Koko.Archive.Item do
     [url, path]
   end
 
-  def archive_document!(bucket, path, document) do
+  def put_document!(bucket, path, document) do
     ExAws.S3.put_object(bucket, path, document.content) |> ExAws.request
   end
 
 
   # http://noteshare-test.s3.amazonaws.com/yada.txt
 
-  def new_archive(document, remarks) do
+  def archive_document(document, remarks) do
     archive_name = Document.get_archive_name(document)
     archive = Archive.get_by_name_and_author(archive_name, document.author_id)
     if archive.author_id == document.author_id do
-      do_new_archive(archive, document, remarks)
+      do_archive_document(archive, document, remarks)
     end
     archive.bucket
   end
 
-  def do_new_archive(archive, document, remarks) do
+  def do_archive_document(archive, document, remarks) do
     {:ok, updated_doc} = Document.increment_version(document)
-    version = Document.get_version(updated_doc)
+    version = Document.get_version(updated_doc) + 1
     [url, path] = archive_data(archive, document, version)
-    archive_document!(archive.bucket, path, document)
+    put_document!(archive.bucket, path, document)
 
     attrs = %{doc_id: document.id,
               archive_id: archive.id,
