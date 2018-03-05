@@ -45,7 +45,7 @@ defmodule Koko.Web.ArchiveController do
   end
 
   # Create an archive (repository)
-  def foo(conn, %{"user_id" => user_id, "name" => name}) do
+  def new_repository(conn, %{"user_id" => user_id, "name" => name}) do
     IO.puts "This is CREATE REPOSITORY for user #{user_id} with name #{name}"
 
     with {:ok, user} <- User.get_user(user_id),
@@ -53,14 +53,14 @@ defmodule Koko.Web.ArchiveController do
     do
       conn
       |> put_status(:created)
-      |> render("create_archive.html", user_id: user_id, username: user.username, name: name)
+      |> render("create_repository.html", user_id: user_id, username: user.username, name: name)
     else
-      {:error, error} -> conn |> render("create_archive_error.html", user_id: user_id)
+      {:error, error} -> conn |> render("create_repository_error.html", user_id: user_id)
     end
   end
 
   # Create an new archive of a document
-  def foobar(conn, %{"doc_id" => doc_id}) do
+  def archive_document(conn, %{"doc_id" => doc_id}) do
     IO.puts "This is CREATE NEW ARCHIVE FOR FILE #{doc_id}"
 
     with {:ok, document} <- Document.get_document(doc_id)
@@ -71,10 +71,10 @@ defmodule Koko.Web.ArchiveController do
       characters = String.length(document.content)
       conn
       |> put_status(:created)
-      |> render("create_new_archive.html", doc_id: doc_id, title: title,
+      |> render("archive_document.html", doc_id: doc_id, title: title,
          version: version, characters: characters, bucket: bucket)
     else
-      {:error, error} -> conn |> render("create_new_archive_error.html",
+      {:error, error} -> conn |> render("archive_document_error.html",
          doc_id: doc_id )
     end
   end

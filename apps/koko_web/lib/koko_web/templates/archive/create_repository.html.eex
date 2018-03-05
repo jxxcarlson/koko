@@ -1,0 +1,5 @@
+<div style="margin:40px;">
+
+  <p>Repository <%= @name %> created for <%= @username %></p>
+
+</div>

@@ -1,6 +1,0 @@
-<div style="margin:40px;">
-
-  <p>There was an error creating an archive for user_id <%= @user_id %></p>
-
-
-</div>
