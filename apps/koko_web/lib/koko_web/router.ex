@@ -30,6 +30,12 @@ defmodule Koko.Web.Router do
     get "/credentials", CredentialsController, :presigned
   end
 
+  scope "/archive", Koko.Web do
+    pipe_through :browser
+    get "/documents/:id", ArchiveController, :index 
+    get "/document/:id", ArchiveController, :show
+  end
+
   scope "/print", Koko.Web do
     pipe_through :browser
     get "/documents/:id", PrintController, :show

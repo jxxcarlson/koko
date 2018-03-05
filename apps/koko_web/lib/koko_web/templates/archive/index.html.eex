@@ -1,0 +1,9 @@
+<div style="margin:40px;">
+  <p>Archived versions of document <i><%= @title %></i></p>
+
+  <ul>
+    <%= Phoenix.HTML.raw @links %>
+  </ul
+
+
+</div>

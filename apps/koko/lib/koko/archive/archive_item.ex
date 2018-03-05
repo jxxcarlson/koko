@@ -4,11 +4,13 @@ defmodule Koko.Archive.Item do
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   alias Koko.Repo
   alias Koko.Document.Document
   alias Koko.Archive.Item
   alias Koko.Utility
+
 
   schema "archive_items" do
     field :archive_id, :integer
@@ -71,7 +73,7 @@ defmodule Koko.Archive.Item do
   end
 
   def archive_data(bucket, archive, document, version) do
-    prefix = bucket <> ".s3.amazonsaws.com"
+    prefix = bucket <> ".s3.amazonaws.com"
     path = archive_path(archive, document, version)
     url = ["http:/", prefix, path] |> Enum.join("/")
     [url, path]
@@ -107,6 +109,38 @@ defmodule Koko.Archive.Item do
     %Item{}
       |> Item.changeset(attrs)
       |> Repo.insert()
+  end
+
+  def items_for_document(document) do
+    query = from item in "archive_items",
+          where: item.doc_id == ^document.id,
+          select: [item.version, item.length,   item.id]
+    Repo.all(query)
+  end
+
+  def link_for_item(item) do
+    [version, length, id] = item
+    url = "http://localhost:4000/archive/document/#{Integer.to_string(id)}"
+    "<li><a href=\"#{url}\">Version #{Integer.to_string(version)}: #{Integer.to_string(length)} characters</a></li>\n"
+  end
+
+  def link_for_item2(item) do
+    [version, length, url] = item
+    "<li><a href=\"#{url}\" Content-Type: text/plain >Version #{Integer.to_string(version)}: #{Integer.to_string(length)} characters</a></li>\n"
+  end
+
+  def links_for_document(document) do
+    items_for_document(document) |> (Enum.reduce "", fn(item, acc) -> (acc <> link_for_item(item)) end)
+  end
+
+  def get_archived_item(bucket, archive, item) do
+    document = Repo.get(Document, item.doc_id)
+    path = archive_path(archive, document, item.version)
+    reply = ExAws.S3.get_object(bucket, path) |> ExAws.request
+    case reply do
+      {:ok, data } -> data.body
+      _ -> "Error retrieving archived file"
+    end
   end
 
 end

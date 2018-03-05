@@ -36,4 +36,5 @@ defmodule Koko.Web.PrintController do
         conn |> render("asciidoc.html", text: fix_html(document.content, title, author))
     end
   end
+  
 end

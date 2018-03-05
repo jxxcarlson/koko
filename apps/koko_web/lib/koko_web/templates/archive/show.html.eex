@@ -1,0 +1,11 @@
+<div style="margin:40px;">
+  <p style="font-size: 24px">Archived version <strong><%= @version %></strong> of <i><%= @title %></i></p>
+
+  <p><strong>Remarks:</strong> <%= @remarks %></p>
+
+  <div style="width: 500px; white-space: pre-line">
+    <%=  @text %>
+  </div>
+
+
+</div>
