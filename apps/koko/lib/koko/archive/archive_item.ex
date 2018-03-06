@@ -71,7 +71,7 @@ defmodule Koko.Archive.Item do
       if archive.author_id == document.author_id do
         do_archive_document(archive, document, remarks)
       end
-      archive.bucket
+      [archive.bucket, archive_name]
   end
 
   def do_archive_document(archive, document, remarks) do

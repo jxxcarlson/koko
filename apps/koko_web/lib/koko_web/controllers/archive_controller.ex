@@ -67,14 +67,14 @@ defmodule Koko.Web.ArchiveController do
 
     with {:ok, document} <- Document.get_document(doc_id)
     do
-      bucket = Koko.Archive.Item.archive_document(document, "ok")
+      [bucket, archive_name] = Koko.Archive.Item.archive_document(document, "ok")
       version = Document.get_version(document) + 1
       title = document.title
       characters = String.length(document.content)
       conn
       |> put_status(:created)
       |> render("archive_document.html", doc_id: doc_id, title: title,
-         version: version, characters: characters, bucket: bucket)
+         version: version, characters: characters, bucket: bucket, archive_name: archive_name)
     else
       {:error, error} -> conn |> render("archive_document_error.html",
          doc_id: doc_id )
