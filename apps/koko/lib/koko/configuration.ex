@@ -6,7 +6,8 @@ defmodule Koko.Configuration do
   end
 
   def bucket do
-    "noteshare-test"
+    # "noteshare-test"
+    "noteshare-archive"
   end
 
 end
