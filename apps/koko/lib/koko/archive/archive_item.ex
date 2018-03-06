@@ -66,7 +66,7 @@ defmodule Koko.Archive.Item do
   # http://noteshare-test.s3.amazonaws.com/yada.txt
 
   def archive_document(document, remarks) do
-    archive_name = Document.get_archive_name!(document)
+      archive_name = Document.get_archive_name!(document)
     archive = Archive.get_by_name_and_author(archive_name, document.author_id)
       if archive.author_id == document.author_id do
       do_archive_document(archive, document, remarks)
