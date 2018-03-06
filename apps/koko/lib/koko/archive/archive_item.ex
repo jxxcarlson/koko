@@ -66,7 +66,8 @@ defmodule Koko.Archive.Item do
   # http://noteshare-test.s3.amazonaws.com/yada.txt
 
   def archive_document(document, remarks) do
-    archive_name = Document.get_archive_name(document)
+    IO.puts "HERE IS archive_document "
+    archive_name = Document.get_archive_name!(document)
     archive = Archive.get_by_name_and_author(archive_name, document.author_id)
     if archive.author_id == document.author_id do
       do_archive_document(archive, document, remarks)
@@ -102,7 +103,7 @@ defmodule Koko.Archive.Item do
 
   def link_for_item(item) do
     [version, length, id] = item
-    url = "#{Koko.Configuration.host()}/archive/document/#{Integer.to_string(id)}"
+    url = "#{Koko.Configuration.host()}/archive/version/#{Integer.to_string(id)}"
     "<li><a href=\"#{url}\">Version #{Integer.to_string(version)}: #{Integer.to_string(length)} characters</a></li>\n"
   end
 

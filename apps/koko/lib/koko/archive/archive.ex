@@ -22,14 +22,14 @@ defmodule Koko.Archive.Archive do
   def changeset(%Archive{} = archive, attrs) do
     archive
     |> cast(attrs, [:name, :bucket, :author_id, :url, :remarks])
-    |> validate_required([:name, :author_id])
+    |> validate_required([:bucket, :name, :author_id])
   end
 
-  def create(name, author_id, remarks) do
+  def create(bucket, name, author_id, remarks) do
 
     attrs = %{name: name,
               author_id: author_id,
-              bucket: "noteshare-" <> name,
+              bucket: bucket,
               remarks: remarks}
 
     %Archive{}

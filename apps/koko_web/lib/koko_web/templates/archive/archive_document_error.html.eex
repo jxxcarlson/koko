@@ -1,6 +1,6 @@
 <div style="margin:40px;">
 
-  <p>There was an error creating a new repository for user_id <%= @user_id %></p>
+  <p>There was an error archiving a new version of document <%= @user_id %></p>
 
 
 </div>

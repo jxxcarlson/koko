@@ -4,4 +4,8 @@ defmodule Koko.Configuration do
     "http://localhost:4000"
   end
 
+  def bucket do
+    "noteshare-test"
+  end
+
 end

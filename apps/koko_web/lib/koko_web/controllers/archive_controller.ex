@@ -20,10 +20,12 @@ defmodule Koko.Web.ArchiveController do
   def show(conn, %{"id" => id}) do
     IO.puts "THIS IS ARCHIVE.SHOW, id = #{id}"
     item = Repo.get(Item, String.to_integer(id))
+    IO.inspect item
     document = Repo.get(Document, item.doc_id)
     version_string = item.version |> Integer.to_string
     archive = Repo.get(Archive, item.archive_id)
-    reply = Koko.Archive.Item.get_archived_item(  archive, item)
+    IO.inspect archive
+    reply = Koko.Archive.Item.get_archived_item(archive, item)
     conn |> render("show.html", text: reply, version: version_string,
              title: document.title, remarks: item.remarks)
   end
@@ -49,7 +51,7 @@ defmodule Koko.Web.ArchiveController do
     IO.puts "This is CREATE REPOSITORY for user #{user_id} with name #{name}"
 
     with {:ok, user} <- User.get_user(user_id),
-    {:ok, archive} <- Archive.create(name, user_id, "OK")
+    {:ok, archive} <- Archive.create(Koko.Configuration.bucket, name, user_id, "OK")
     do
       conn
       |> put_status(:created)

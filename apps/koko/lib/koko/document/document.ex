@@ -106,16 +106,26 @@ defmodule Koko.Document.Document do
    Repo.update(cs)
   end
 
-  def set_archive(document, archive_name) do
+  def set_archive_name(document, archive_name) do
      attributes = Map.merge(document.attributes, %{archive: archive_name})
      cs = changeset(document, %{attributes: attributes})
      Repo.update(cs)
+     archive_name
   end
 
   def get_archive_name(document) do
     archive_name_ = document.attributes["archive"]
     if archive_name_ == nil do
       "default"
+    else
+      archive_name_
+    end
+  end
+
+  def get_archive_name!(document) do
+    archive_name_ = document.attributes["archive"]
+    archive_name = if archive_name_ == nil do
+      set_archive_name(document, "default")
     else
       archive_name_
     end
