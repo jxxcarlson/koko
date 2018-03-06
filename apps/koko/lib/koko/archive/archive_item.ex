@@ -67,7 +67,10 @@ defmodule Koko.Archive.Item do
 
   def archive_document(document, remarks) do
       archive_name = Document.get_archive_name!(document)
-      archive = Archive.get_by_name_and_author(archive_name, document.author_id)
+      archive = Archive.get_safely_by_name_and_author(archive_name, document.author_id)
+      IO.puts "==== Get archive safely ====="
+      IO.inspect archive
+      IO.puts "========="
       if archive.author_id == document.author_id do
         do_archive_document(archive, document, remarks)
       end

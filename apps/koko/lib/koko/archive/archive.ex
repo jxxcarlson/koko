@@ -51,4 +51,16 @@ defmodule Koko.Archive.Archive do
     end
   end
 
+  def get_safely_by_name_and_author(archive_name, author_id) do
+    archive_ = get_by_name_and_author(archive_name, author_id)
+    {:ok, archive} = if archive_ != nil do
+               {:ok, archive_}
+             else
+                create(Koko.Configuration.bucket(), archive_name, author_id, "ok")
+             end
+    archive
+  end
+
+
+
 end
