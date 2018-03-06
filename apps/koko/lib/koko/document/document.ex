@@ -113,18 +113,47 @@ defmodule Koko.Document.Document do
      archive_name
   end
 
-  def get_archive_name(document) do
-    archive_name_ = document.attributes["archive"]
-    if archive_name_ == nil do
-      "default"
+
+  def get_archive_name_safely(document) do
+    name = document.attributes["archive"]
+    if name == nil do
+      {:error, "No archive name for document #{document.id}"}
     else
-      archive_name_
+      {:ok, name}
+    end
+  end
+
+  def get_parent_archive_name_safely(document) do
+
+    parent_document = parent(document)
+
+    parent_archive_name = if parent_document != nil do
+      parent_document.attributes["archive"]
+    else
+      nil
+    end
+
+    if parent_archive_name == nil do
+      {:error, "No parent or parent archive #{document.id}"}
+    else
+      {:ok, parent_archive_name}
+    end
+
+  end
+
+  def get_archive_name(document) do
+    r1 = get_archive_name_safely(document)
+    r2 = get_parent_archive_name_safely(document)
+    cond do
+      elem(r1, 0) == :ok -> elem(r1,1)
+      elem(r2, 0) == :ok -> elem(r2,1)
+      true -> "-"
     end
   end
 
   def get_archive_name!(document) do
-    archive_name_ = document.attributes["archive"]
-    archive_name = if archive_name_ == nil do
+    archive_name_ = get_archive_name(document)
+    archive_name = if archive_name_ == "-" do
       set_archive_name(document, "default")
     else
       archive_name_
@@ -212,7 +241,7 @@ defmodule Koko.Document.Document do
   end
 
   def parent(document) do
-    if document.parent_id == nil do
+    if document.parent_id == nil || document.parent_id == 0 do
       nil
     else
       Repo.get(Document, document.parent_id)
