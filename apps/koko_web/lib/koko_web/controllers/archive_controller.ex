@@ -62,7 +62,7 @@ defmodule Koko.Web.ArchiveController do
   end
 
   # Create an new archive of a document
-  def archive_document(conn, %{"doc_id" => doc_id}) do
+  def new_version(conn, %{"doc_id" => doc_id}) do
     IO.puts "This is CREATE NEW ARCHIVE FOR FILE #{doc_id}"
 
     with {:ok, document} <- Document.get_document(doc_id)

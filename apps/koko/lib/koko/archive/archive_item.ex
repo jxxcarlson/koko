@@ -66,10 +66,9 @@ defmodule Koko.Archive.Item do
   # http://noteshare-test.s3.amazonaws.com/yada.txt
 
   def archive_document(document, remarks) do
-    IO.puts "HERE IS archive_document "
     archive_name = Document.get_archive_name!(document)
     archive = Archive.get_by_name_and_author(archive_name, document.author_id)
-    if archive.author_id == document.author_id do
+      if archive.author_id == document.author_id do
       do_archive_document(archive, document, remarks)
     end
     archive.bucket
@@ -77,7 +76,7 @@ defmodule Koko.Archive.Item do
 
   def do_archive_document(archive, document, remarks) do
     {:ok, updated_doc} = Document.increment_version(document)
-    version = Document.get_version(updated_doc) + 1
+    version = Document.get_version(updated_doc) # + 1
     [url, path] = archive_data(archive, document, version)
     put_document!(archive.bucket, path, document)
 

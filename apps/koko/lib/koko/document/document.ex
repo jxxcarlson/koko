@@ -177,17 +177,13 @@ defmodule Koko.Document.Document do
   end
 
   def increment_version(document) do
-
      version_ = document.attributes["version"]
      version = if version_ == nil do
-       0
+       1
      else
         version_ + 1
      end
-
-     IO.puts "NEW VERSION = #{version}"
-
-     attributes = Map.merge(document.attributes, %{version: version})
+     attributes = Map.merge(document.attributes, %{"version" => version})
      cs = changeset(document, %{attributes: attributes})
      Repo.update(cs)
   end

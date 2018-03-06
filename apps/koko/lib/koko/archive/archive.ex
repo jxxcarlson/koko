@@ -37,7 +37,7 @@ defmodule Koko.Archive.Archive do
       |> Repo.insert()
   end
 
-  def get_by_name_and_author(archive_name, author_id) do
+    def get_by_name_and_author(archive_name, author_id) do
     query = from archive in "archives",
           where: archive.name == ^archive_name,
           select: [archive.id, archive.author_id]

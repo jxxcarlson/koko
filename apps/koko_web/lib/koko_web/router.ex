@@ -35,7 +35,7 @@ defmodule Koko.Web.Router do
     get "/versions/:id", ArchiveController, :index
     get "/version/:id", ArchiveController, :show
     get "/new_repository/:user_id/:name", ArchiveController, :new_repository
-    get "/new_version/:doc_id", ArchiveController, :archive_document
+    get "/new_version/:doc_id", ArchiveController, :new_version
   end
 
   scope "/print", Koko.Web do
