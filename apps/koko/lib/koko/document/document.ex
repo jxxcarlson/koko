@@ -116,10 +116,10 @@ defmodule Koko.Document.Document do
 
   def get_archive_name_safely(document) do
     name = document.attributes["archive"]
-    if name == nil do
-      {:error, "No archive name for document #{document.id}"}
-    else
-      {:ok, name}
+    cond do
+      name == nil -> {:error, "No archive name for document #{document.id}"}
+      name == "default" -> {:error, "Archive name for document #{document.id} is 'default'"}
+      true -> {:ok, name}
     end
   end
 
@@ -133,10 +133,10 @@ defmodule Koko.Document.Document do
       nil
     end
 
-    if parent_archive_name == nil do
-      {:error, "No parent or parent archive #{document.id}"}
-    else
-      {:ok, parent_archive_name}
+    cond do
+      parent_archive_name == nil -> {:error, "No archive name for parent of document #{document.id}"}
+      parent_archive_name == "default" -> {:error, "Archive name for parent of document #{document.id} is 'default'"}
+      true -> {:ok, parent_archive_name}
     end
 
   end
