@@ -96,14 +96,16 @@ defmodule Koko.Archive.Item do
   def items_for_document(document) do
     query = from item in "archive_items",
           where: item.doc_id == ^document.id,
-          select: [item.version, item.length,   item.id]
+          select: [item.version, item.length, item.id, item.inserted_at]
     Repo.all(query)
   end
 
-  def link_for_item(item) do
-    [version, length, id] = item
+  def link_for_item(item_data) do
+    [version, length, id, date_time] = item_data
+    date_time_string = Utility.nice_date_time(item_data )
     url = "#{Koko.Configuration.host()}/archive/version/#{Integer.to_string(id)}"
-    "<li><a href=\"#{url}\">Version #{Integer.to_string(version)}: #{Integer.to_string(length)} characters</a></li>\n"
+    "<li><a href=\"#{url}\">Version #{Integer.to_string(version)}</a>: #{Integer.to_string(length)} characters
+     at #{date_time_string}</li>\n"
   end
 
   def links_for_document(document) do

@@ -62,4 +62,20 @@ defmodule Koko.Utility do
     {:ok, message}
   end
 
+  def nice_date_time(item_info) do
+     info = item_info |> tl |> tl |> tl |> hd
+     ymd = elem(info, 0)
+     hmst = elem(info, 1)
+
+     year = elem(ymd, 0)
+     month = elem(ymd, 1)
+     day = elem(ymd, 2)
+
+     hour = elem(hmst, 0)
+     minute = elem(hmst, 1)
+     second = elem(hmst, 2)
+
+     "UTC #{year}-#{month}-#{day}, #{hour}:#{minute}:#{second}"
+  end
+
 end
