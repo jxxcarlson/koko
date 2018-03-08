@@ -15,6 +15,7 @@ defmodule Koko.Document.Document do
     field :author_id, :integer
     field :author_name, :string
     field :attributes, :map
+    field :access, :map
     field :tags, {:array, :string}
     field :identifier, :string
     embeds_many :children, Child, on_replace: :delete
@@ -38,7 +39,7 @@ defmodule Koko.Document.Document do
   def changeset(%Document{} = document, attrs) do
     document
     |> cast(attrs, [:title, :author_id, :content, :rendered_content,
-      :attributes, :tags, :identifier, :parent_id, :viewed_at,
+      :attributes, :access, :tags, :identifier, :parent_id, :viewed_at,
       :author_name])
     |> cast_embed(:children)
     |> validate_required([:title, :author_id, :content])
@@ -104,6 +105,30 @@ defmodule Koko.Document.Document do
    attributes = Map.merge(document.attributes, %{level: level})
    cs = changeset(document, %{attributes: attributes})
    Repo.update(cs)
+  end
+
+  def set_user_access(document, username, access_type) do
+    valid_access_type = if access_type in ["", "r", "w", "rw"] do
+      access_type
+    else
+      ""
+    end 
+    new_access = if document.access == nil do
+           %{username => valid_access_type}
+        else
+           Map.merge(document.access, %{username => valid_access_type})
+        end
+    cs = changeset(document, %{access: new_access})
+    Repo.update(cs)
+    new_access
+  end
+
+  def get_user_access(document, username) do
+    if document.access == nil do
+       nil
+    else
+       document.access[username]
+    end
   end
 
   def set_archive_name(document, archive_name) do
