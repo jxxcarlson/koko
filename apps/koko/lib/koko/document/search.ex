@@ -4,6 +4,7 @@ defmodule Koko.Document.Search do
   alias Koko.Document.Query
   alias Koko.Repo
   alias Koko.User.User
+  alias Koko.Document.Access
 
   def search_limit do
     20
@@ -68,6 +69,8 @@ defmodule Koko.Document.Search do
            [["title", "elm"], ["author", "1"], ["sort", "title"]]
   """
   def by_command_list(command_list, :document) do
+    IO.puts"CL"
+    IO.inspect command_list
     command_list
     |> sort_commands
     |> Enum.reduce(Document, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
@@ -198,10 +201,44 @@ defmodule Koko.Document.Search do
   1
   """
   def by_query_string(domain, query_string, options) do
+    [preprocess_options, postprocess_options] = prepare_options(options)
+    IO.inspect [preprocess_options, postprocess_options]
+    IO.puts "Query string = #{query_string}"
     query_string
-    |> prepend_options(options)
+    |> prepend_options(preprocess_options)
     |> parse_query_string
     |> by_command_list(domain)
+    |> postprocess(postprocess_options)
+  end
+
+  def postprocess(documents, postprocess_options) do
+    access_option_list = pass_option(postprocess_options, "shared_with=")
+    if length(access_option_list) == 1 do
+      access_string = hd access_option_list
+      [_, userdata] = String.split access_string, "="
+      [user_id, username] = String.split userdata, ","
+      IO.puts "user_id: #{user_id}"
+      IO.puts "username: #{username}"
+      documents |> Enum.filter(fn(document) -> Access.can_read(document, user_id, username) end)
+    else
+      IO.puts "USUAL"
+      documents
+    end
+  end
+
+  def prepare_options(options) do
+    preprocess_options = remove_option(options, "shared")
+    postprocess_options = pass_option(options, "shared")
+    [preprocess_options, postprocess_options]
+  end
+
+  def pass_option(options, option_fragment) do
+    options |> Enum.filter(fn(option) -> String.contains?(option, option_fragment) end)
+  end
+
+
+  def remove_option(options, option_fragment) do
+    options |> Enum.filter(fn(option) -> not String.contains?(option, option_fragment) end)
   end
 
 

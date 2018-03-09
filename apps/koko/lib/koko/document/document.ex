@@ -107,29 +107,7 @@ defmodule Koko.Document.Document do
    Repo.update(cs)
   end
 
-  def set_user_access(document, username, access_type) do
-    valid_access_type = if access_type in ["", "r", "w", "rw"] do
-      access_type
-    else
-      ""
-    end 
-    new_access = if document.access == nil do
-           %{username => valid_access_type}
-        else
-           Map.merge(document.access, %{username => valid_access_type})
-        end
-    cs = changeset(document, %{access: new_access})
-    Repo.update(cs)
-    new_access
-  end
-
-  def get_user_access(document, username) do
-    if document.access == nil do
-       nil
-    else
-       document.access[username]
-    end
-  end
+  
 
   def set_archive_name(document, archive_name) do
      attributes = Map.merge(document.attributes, %{archive: archive_name})

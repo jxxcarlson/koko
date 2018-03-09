@@ -148,6 +148,17 @@ defmodule Koko.User.Token do
       end
     end
 
+    def username_from_header(conn) do
+      with {:ok, token} <- token_from_header(conn),
+           true <- authenticated(token),
+           {:ok, json} <- payload(token)
+      do
+         {:ok, json["username"]}
+      else
+        _ -> {:error, "Could not get verified username"}
+      end
+    end
+
     def user_id_from_header(conn) do
       with {:ok, token} <- token_from_header(conn),
            true <- authenticated(token),

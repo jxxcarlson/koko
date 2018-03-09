@@ -35,6 +35,7 @@ defmodule Koko.Web.DocumentController do
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
           master_document_id = MasterDocument.get_master_doc_id(conn.query_string)
+          {:ok, username} = Token.username_from_header(conn)
           cond do
             String.contains? query_string, "random=public" ->
               documents = Search.random_public query_string
@@ -44,6 +45,8 @@ defmodule Koko.Web.DocumentController do
                 documents = Search.random_user query_string
             String.contains? query_string, "idlist" ->
                 documents = Search.idlist query_string
+            String.contains? query_string, "shared=yes" ->
+                documents = Search.by_query_string(:document, remove_string("&shared=yes", query_string),["shared_with=#{user_id},#{username}" ])
             master_document_id > 0 ->
               documents = DocManager.list_children(:user, user_id, master_document_id)
             true ->
@@ -59,6 +62,10 @@ defmodule Koko.Web.DocumentController do
       end
   end
 
+
+  def remove_string(str, target) do
+      String.replace target, str, ""
+  end
 
 
 
