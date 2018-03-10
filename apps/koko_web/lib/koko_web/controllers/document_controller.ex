@@ -45,8 +45,12 @@ defmodule Koko.Web.DocumentController do
                 documents = Search.random_user query_string
             String.contains? query_string, "idlist" ->
                 documents = Search.idlist query_string
+            String.contains? query_string, "shared_only=yes" ->
+                   documents = Search.by_query_string(:document, remove_string("&shared_only=yes", query_string),
+                      ["shared_only_with=#{user_id},#{username}" ])
             String.contains? query_string, "shared=yes" ->
-                documents = Search.by_query_string(:document, remove_string("&shared=yes", query_string),["shared_with=#{user_id},#{username}" ])
+                documents = Search.by_query_string(:document, remove_string("&shared=yes", query_string),
+                   ["shared_with=#{user_id},#{username}" ])
             master_document_id > 0 ->
               documents = DocManager.list_children(:user, user_id, master_document_id)
             true ->

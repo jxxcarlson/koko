@@ -27,27 +27,33 @@ defmodule Koko.Document.Access do
     end
   end
 
-  def can_read(document, user) do
-    document.author_id == user.id
-    || document.attributes["public"] == true
-    || String.contains? get_user_access(document, user.username), "r"
-  end
-
-  def can_read(document, user_id, username) do
+  defp can_read(document, user_id, username) do
     document.author_id == user_id
     || document.attributes["public"] == true
     || String.contains? get_user_access(document, username), "r"
   end
 
-  def can_write(document, user) do
-    document.author_id == user.id
-    || String.contains? get_user_access(document, user.username),   "w"
+  defp can_read_shared(document, user_id, username) do
+     String.contains? get_user_access(document, username), "r"
   end
 
-  def access_granted(document, user, action) do
+  defp can_write(document, user_id, username) do
+    document.author_id == user_id
+    || String.contains? get_user_access(document, username),   "w"
+  end
+
+  def access_granted(document, user_id, username, action) do
     case action do
-      :read -> can_read(document, user)
-      :write -> can_write(document, user)
+      :read -> can_read(document, user_id, username)
+      :write -> can_write(document, user_id, username)
+      true -> false
+    end
+  end
+
+  def shared_access_granted(document, user_id, username, action) do
+    case action do
+      :read -> can_read_shared(document, user_id, username)
+      :write -> can_write(document, user_id, username)
       true -> false
     end
   end

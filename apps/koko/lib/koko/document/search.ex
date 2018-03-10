@@ -212,14 +212,22 @@ defmodule Koko.Document.Search do
   end
 
   def postprocess(documents, postprocess_options) do
-    access_option_list = pass_option(postprocess_options, "shared_with=")
+    access_option_list = pass_option(postprocess_options, "shared_")
     if length(access_option_list) == 1 do
       access_string = hd access_option_list
-      [_, userdata] = String.split access_string, "="
+      [option, userdata] = String.split access_string, "="
+      IO.puts "OPTION: #{option}"
       [user_id, username] = String.split userdata, ","
       IO.puts "user_id: #{user_id}"
       IO.puts "username: #{username}"
-      documents |> Enum.filter(fn(document) -> Access.can_read(document, user_id, username) end)
+      cond do
+        option == "shared_with" -> documents |> Enum.filter(fn(document) ->
+            Access.access_granted(document, user_id, username, :read) end)
+        option == "shared_only_with" -> documents |> Enum.filter(fn(document) ->
+            Access.shared_access_granted(document, user_id, username, :read) end)
+        true -> []
+      end
+
     else
       IO.puts "USUAL"
       documents
@@ -229,6 +237,7 @@ defmodule Koko.Document.Search do
   def prepare_options(options) do
     preprocess_options = remove_option(options, "shared")
     postprocess_options = pass_option(options, "shared")
+    IO.inspect [preprocess_options, postprocess_options ]
     [preprocess_options, postprocess_options]
   end
 
@@ -289,6 +298,8 @@ defmodule Koko.Document.Search do
       String.contains? query_string, "docs=any" ->
         qs = remove_command("docs=any", query_string)
         { qs, [] ++ ["user_or_public=#{user_id}", "limit=#{search_limit()}"]}
+      String.contains? query_string ,"id=" ->
+        { query_string, []}
       true ->
         {query_string, ["author=#{user_id}", "limit=#{search_limit()}"] ++ opts}
     end
