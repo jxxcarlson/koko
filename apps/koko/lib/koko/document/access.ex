@@ -1,9 +1,10 @@
 defmodule Koko.Document.Access do
 
   alias Koko.Document.Document
+  alias Koko.Repo
 
 
-  def set_user_access(document, username, access_type) do
+    def set_user_access(document, username, access_type) do
     valid_access_type = if access_type in ["", "r", "w", "rw"] do
       access_type
     else
@@ -39,7 +40,7 @@ defmodule Koko.Document.Access do
 
   defp can_write(document, user_id, username) do
     document.author_id == user_id
-    || String.contains? get_user_access(document, username),   "w"
+    || String.contains? get_user_access(document, username), "w"
   end
 
   def access_granted(document, user_id, username, action) do

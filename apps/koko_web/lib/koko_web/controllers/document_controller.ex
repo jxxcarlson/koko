@@ -22,6 +22,7 @@ defmodule Koko.Web.DocumentController do
   alias Koko.User.Token
   alias Koko.Document.Search
   alias Koko.Repo
+  alias Koko.Document.Access 
 
   action_fallback Koko.Web.FallbackController
 
@@ -112,7 +113,7 @@ defmodule Koko.Web.DocumentController do
 
 
 
-  defp match_integers(a, b, success_message, failure_message) do
+  defp match_items(a, b, success_message, failure_message) do
     if a == b do
       {:ok, success_message}
     else
@@ -120,17 +121,23 @@ defmodule Koko.Web.DocumentController do
     end
   end
 
+
   @doc """
   A user can only update the documents he owns.
   """
   def update(conn, %{"id" => id, "document" => payload}) do
 
+    IO.puts "UPDATE, id = #{id}"
     document_params = Koko.Utility.project2map(payload)
     document = DocManager.get_document!(id)
+    IO.inspect document.access
+    IO.inspect Token.username_from_header(conn)
+    IO.puts "----"
     # failure_message = "User id and document author id do not match"
 
     with {:ok, user_id} <- Token.user_id_from_header(conn),
-      {:ok, "match"} <- match_integers(user_id, document.author_id, "match", "couldn't match #{user_id} with #{document.author_id}"),
+      {:ok, username} <- Token.username_from_header(conn),
+      {:ok, _} <- authorize_update(document, user_id, username),
       {:ok, %Document{} = document} <- DocManager.update_document(document, document_params, conn.query_string)
     do
       render(conn, "show.json", document: document)
@@ -138,6 +145,14 @@ defmodule Koko.Web.DocumentController do
       {:error, error} -> {:error, error} #{ }"error: #{error}"
     end
 
+  end
+
+  defp authorize_update(document, user_id, username) do
+    cond do
+      document.id == user_id -> {:ok, "user owns document"}
+      Access.shared_access_granted(document, user_id, username, :write) == true -> {:ok, "document is shared with user"}
+      true -> {:error, "not authorized"}
+    end
   end
 
   @doc """
