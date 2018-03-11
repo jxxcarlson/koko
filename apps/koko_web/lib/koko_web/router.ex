@@ -20,6 +20,8 @@ defmodule Koko.Web.Router do
     resources "/users", UserController, except: [:edit, :delete]
     resources "/authentication", AuthenticationController
 
+    put "/share/:id/:username/:action", DocumentController, :share
+
     put "/users/saveuserstate/:id", UserController, :saveuserstate
     get "/users/getuserstate/:id", UserController, :getuserstate
 

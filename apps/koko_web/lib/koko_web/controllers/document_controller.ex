@@ -22,7 +22,7 @@ defmodule Koko.Web.DocumentController do
   alias Koko.User.Token
   alias Koko.Document.Search
   alias Koko.Repo
-  alias Koko.Document.Access 
+  alias Koko.Document.Access
 
   action_fallback Koko.Web.FallbackController
 
@@ -146,6 +146,19 @@ defmodule Koko.Web.DocumentController do
     end
 
   end
+
+  def share(conn, %{"id" => id, "username" => username, "action" => action}) do
+    document = DocManager.get_document!(id)
+    IO.inspect [id, username, action]
+    with {:ok, user_id} <- Token.user_id_from_header(conn)
+    do
+        Access.set_user_access(document, username, action)
+        render(conn, "show.json", document: document)
+    else
+        {:error, error} -> {:error, error} #{ }"error: #{error}"
+    end
+  end
+
 
   defp authorize_update(document, user_id, username) do
     cond do

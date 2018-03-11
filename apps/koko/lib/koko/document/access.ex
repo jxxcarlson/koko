@@ -5,16 +5,21 @@ defmodule Koko.Document.Access do
 
 
     def set_user_access(document, username, access_type) do
-    valid_access_type = if access_type in ["", "r", "w", "rw"] do
+    valid_access_type = if access_type in ["", "r", "w", "rw", "clear"] do
       access_type
     else
       ""
     end
-    new_access = if document.access == nil do
+    new_access = cond do
+       document.access == nil and valid_access_type in ["r", "w", "rw"] ->
            %{username => valid_access_type}
-        else
+       valid_access_type == "clear" ->
+           Map.delete(document.access, username)
+       valid_access_type == "" ->
+          document.access
+       true ->
            Map.merge(document.access, %{username => valid_access_type})
-        end
+    end
     cs = Document.changeset(document, %{access: new_access})
     Repo.update(cs)
     new_access
