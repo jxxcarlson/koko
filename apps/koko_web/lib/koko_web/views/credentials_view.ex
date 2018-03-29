@@ -17,7 +17,7 @@ def render("credentials.json", %{credentials: credentials}) do
        acl: credentials.credentials.acl,
        "x-amz-credential": credentials.credentials.credential,
        "x-amz-date": credentials.credentials.date,
-       "x-amz-algorithm": "r",
+       "x-amz-algorithm": "AWS4-HMAC-SHA256",
        key: credentials.credentials.key,
        policy: credentials.credentials.policy,
        "x-amz-signature": credentials.credentials.policy,
