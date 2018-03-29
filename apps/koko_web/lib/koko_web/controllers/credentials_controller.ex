@@ -21,11 +21,12 @@ defmodule Koko.Web.CredentialsController do
     filename = p["filename"]
     mimetype = p["mimetype"]
 
-    credentials = %S3DirectUpload{file_name: filename, mimetype: mimetype, path: "/jxx", region: "us-east-1"}
-     |> S3DirectUpload.presigned
+    credentials = %S3DirectUpload{file_name: filename, mimetype: mimetype, path: "/jxx"}
+       |> S3DirectUpload.presigned
     IO.inspect(credentials, label: "CREDENTIALS !!!")
     render(conn, "credentials.json", credentials: credentials)
   end
+
 
   def send_error(conn) do
     IO.puts "Error authenticating token"

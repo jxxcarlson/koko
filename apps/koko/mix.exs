@@ -45,10 +45,11 @@ defmodule Koko.Mixfile do
      {:poison, "~> 3.1"},
      {:sweet_xml, "~> 0.6"},
      {:arc_ecto, "~> 0.7.0"},
-     {:s3_direct_upload, git: "https://github.com/jxxcarlson/s3_direct_upload_aws4"},
+     {:s3_direct_upload, "~> 0.1.3"},
      {:sigaws, "~> 0.7"},
      { :uuid, "~> 1.1" }]
   end
+
 
 
   # {:s3_direct_upload, git: "https://github.com/jxxcarlson/s3_direct_upload"},
