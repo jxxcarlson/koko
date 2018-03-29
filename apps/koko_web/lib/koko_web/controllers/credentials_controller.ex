@@ -1,6 +1,7 @@
 defmodule Koko.Web.CredentialsController do
   use Koko.Web, :controller
 
+  # alias Koko.Web.CredentialsView
   alias Koko.User.Token
   # alias Koko.Authentication
 
@@ -13,16 +14,16 @@ defmodule Koko.Web.CredentialsController do
   end
 
   def send_credentials(conn) do
-    IO.inspect get_header(conn, "authorization"), label: "HEADERS"
+    # IO.inspect get_header(conn, "authorization"), label: "HEADERS"
     p = conn.params
-    IO.inspect p, label: "conn.params"
+    # IO.inspect p, label: "conn.params"
     path = p["path"]
     filename = p["filename"]
     mimetype = p["mimetype"]
 
-    upload = %S3DirectUpload{file_name: filename, mimetype: mimetype, path: "/jxx", region: "us-east-1"}
-    credentials = S3DirectUpload.presigned upload
-    IO.inspect(credentials, label: "CREDENTIALS @ CONTROLLER")
+    credentials = %S3DirectUpload{file_name: filename, mimetype: mimetype, path: "/jxx", region: "us-east-1"}
+     |> S3DirectUpload.presigned
+    IO.inspect(credentials, label: "CREDENTIALS !!!")
     render(conn, "credentials.json", credentials: credentials)
   end
 
@@ -36,6 +37,7 @@ defmodule Koko.Web.CredentialsController do
   # TEST HEADER: %{"authorization": "Bearer abc... uvwxy"}
   def presigned(conn, _) do
       auth = Token.authenticated_from_header(conn)
+      # IO.inspect auth, label: "AUTH!!!"
       case auth do
         {:ok, true} -> send_credentials(conn)
         {:ok, false} -> send_error(conn)
