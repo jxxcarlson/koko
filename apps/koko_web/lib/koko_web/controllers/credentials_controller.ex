@@ -21,8 +21,13 @@ defmodule Koko.Web.CredentialsController do
     filename = p["filename"]
     mimetype = p["mimetype"]
 
-    credentials = %S3DirectUpload{file_name: filename, mimetype: mimetype, path: "/jxx"}
-       |> S3DirectUpload.presigned
+    # upload = %S3DirectUpload{file_name: filename, mimetype: mimetype, path: "/jxx"}
+    # IO.inspect(upload, label: "UPLOAD !!!")
+    # IO.puts "upload.acl = #{upload.acl}"
+    # credentials = upload |> S3DirectUpload.presigned
+
+    credentials = %S3DirectUpload{file_name: filename, mimetype: mimetype, path: "/jxx", acl: "public-read"}
+      |> S3DirectUpload.presigned
     IO.inspect(credentials, label: "CREDENTIALS !!!")
     render(conn, "credentials.json", credentials: credentials)
   end

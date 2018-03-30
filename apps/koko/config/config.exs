@@ -18,6 +18,6 @@ config :s3_direct_upload,
   aws_access_key: System.get_env("AWS_ACCESS_KEY_ID"),
   aws_secret_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
   aws_s3_bucket: System.get_env("AWS_S3_BUCKET"),
-  aws_region: System.get_env("AWS_REGION")
+  aws_region: System.get_env("AWS_REGION")  
 
 import_config "#{Mix.env}.exs"
