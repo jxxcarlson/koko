@@ -61,7 +61,7 @@ defmodule Koko.User.Authentication do
 
   def user_available(username, email) do
     username = username || ""
-    email = email || ""
+    email = email || "--"
     errors = []
     cond do
       String.length(username) < 4 ->
@@ -73,7 +73,7 @@ defmodule Koko.User.Authentication do
       Query.get_by_username(username) != nil ->
           errors ++ ["That username is taken"]
       true ->
-          errors
+          IO.inspect errors
     end
   end
 

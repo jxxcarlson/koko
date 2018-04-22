@@ -32,7 +32,7 @@ defmodule Koko.Web.DocumentController do
   """
   def index(conn, _params) do
     IO.puts "Koko.Web.DocumentController:: In INDEX, QS = #{conn.query_string}"
-    query_string = conn.query_string || "" |> IO.inspect(label: "QUERYSTRING")
+    query_string = conn.query_string || "" |> IO.inspect(label: "Doc Controller, QUERYSTRING")
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
           master_document_id = MasterDocument.get_master_doc_id(conn.query_string)
@@ -98,6 +98,7 @@ defmodule Koko.Web.DocumentController do
   Display a document if it is owned by the user defined by the token.
   """
   def show(conn, %{"id" => id}) do
+    IO.puts "Doc controller, show, id = #{id}"
     document = DocManager.get_document!(id)
     with {:ok, user_id} <- Token.user_id_from_header(conn),
       true <- ((document.attributes["public"] == true) || (user_id == document.author_id))
