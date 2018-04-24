@@ -226,6 +226,7 @@ defmodule Koko.Document.MasterDocument do
     |> Enum.map( fn(child) -> Document.set_parent(Document.child_document(child), master_document.id) end)
   end
 
+
   def attach(document, position, remaining_commands) do
     [child_command|remaining_commands] = remaining_commands
     ["child", child_id_str] = child_command # error handling

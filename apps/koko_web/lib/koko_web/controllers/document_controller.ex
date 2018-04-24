@@ -82,7 +82,6 @@ defmodule Koko.Web.DocumentController do
   """
   def create(conn, %{"document" => payload}) do
     document_params = Koko.Utility.project2map(payload)
-    IO.inspect document_params, label: "document_params"
     with  {:ok, user_id} <- Token.user_id_from_header(conn),
       {:ok, %Document{} = document} <- DocManager.create_document(document_params, user_id)
     do
