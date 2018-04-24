@@ -177,6 +177,8 @@ defmodule Koko.Document.DocManager do
       MasterDocument.update_levels(document.children, new_document.children)
     end
 
+    # This is where additional processing, e.g., attaching a
+    # document to a master document, occurs
     if query_string != "" do
       execute_query_string_commands(document, query_string)
     end
