@@ -128,12 +128,8 @@ defmodule Koko.Web.DocumentController do
   """
   def update(conn, %{"id" => id, "document" => payload}) do
 
-    IO.puts "UPDATE, id = #{id}"
     document_params = Koko.Utility.project2map(payload)
     document = DocManager.get_document!(id)
-    IO.inspect document.access
-    IO.inspect Token.username_from_header(conn)
-    IO.puts "----"
     # failure_message = "User id and document author id do not match"
 
     with {:ok, user_id} <- Token.user_id_from_header(conn),

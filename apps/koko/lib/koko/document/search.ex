@@ -116,6 +116,7 @@ defmodule Koko.Document.Search do
 
    # REF: https://stackoverflow.com/questions/31220622/get-random-elements-from-a-list
    def random_user query_string do
+     IO.puts "In Search.random_user, query_string = #{query_string}"
      user_id_ = parse_query_string(query_string)
        |> Enum.filter(fn(item) -> hd(item) == "random_user" end)
        |> hd

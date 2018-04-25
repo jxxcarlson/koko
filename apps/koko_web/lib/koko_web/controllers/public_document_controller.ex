@@ -51,7 +51,7 @@ defmodule Koko.Web.PublicDocumentController do
   @doc """
   All public documents are readable/displayble.
   """
-  def show_public(conn, %{"id" => id}) do
+  def show(conn, %{"id" => id}) do
     document = DocManager.get_document!(id)
     if document.attributes["public"] == true do
       cs = Document.changeset(document, %{viewed_at: DateTime.utc_now()})
