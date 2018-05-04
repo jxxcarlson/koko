@@ -57,6 +57,7 @@ defmodule Koko.Web.DocumentController do
             true ->
               documents = Search.get_documents_for_user(user_id, conn.query_string, [])
            end
+           IO.puts "Number of documents found: #{length(documents)}"
            if String.contains?  query_string, "loading" do
              render(conn, "index_loading.json", documents: documents)
            else

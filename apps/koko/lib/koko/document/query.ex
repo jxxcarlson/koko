@@ -33,6 +33,7 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
      "author" => 4,
      "authorname" => 4,
      "public_user" => 4,
+     "days_before" => 4,
      "text" => 3,
      "public" => 2,
      "is_master" => 3,
@@ -101,6 +102,8 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
         has_id(query, arg)
       {"ident", _} ->
           has_identifier_suffix(query, arg)
+      {"days_before", days} ->
+         days_before(query, days)
       {"limit", _} ->
           has_limit(query, arg)
       {"is_master","yes"} ->
@@ -145,6 +148,14 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
      else
        query
      end
+  end
+
+  def days_before(query, days_ago) do
+     # date = ~D[2018-04-30]
+     today = Date.utc_today
+     {k, _} = days_ago |> Integer.parse
+     start_date = Date.add(today,-k)
+     from d in query, where: fragment("?::date", d.inserted_at) >= ^start_date
   end
 
   # Search.by_query_string(:document,"has_children=yes", []) |> length

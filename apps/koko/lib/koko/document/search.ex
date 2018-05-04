@@ -69,7 +69,7 @@ defmodule Koko.Document.Search do
            [["title", "elm"], ["author", "1"], ["sort", "title"]]
   """
   def by_command_list(command_list, :document) do
-    IO.puts"CL"
+    IO.puts"COMMAND LIST"
     IO.inspect command_list
     command_list
     |> sort_commands
@@ -99,7 +99,7 @@ defmodule Koko.Document.Search do
      cols = Enum.map res.columns, &(String.to_atom(&1))
      Enum.map(res.rows, fn(row) -> struct(Document, Enum.zip(cols, row)) end)
      |> Enum.filter(fn(item) -> item.attributes["public"] end)
-     |> Enum.take(10)
+     |> Enum.take(15)
      |> Enum.sort(fn(x,y) -> x.title < y.title end)
    end
 
@@ -198,7 +198,7 @@ defmodule Koko.Document.Search do
   @doc"""
   Example: Search for documents by query string
 
-  > Koko.Document.Search.by_query_string(:document,"title=vis&title=lit&sort=viewed", []) |> length
+    > Koko.Document.Search.by_query_string(:document,"title=vis&title=lit&sort=viewed", []) |> length
   1
   """
   def by_query_string(domain, query_string, options) do
