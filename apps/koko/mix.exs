@@ -20,7 +20,7 @@ defmodule Koko.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Koko.Application, []},
-     extra_applications: [:logger, :runtime_tools, :ex_aws, :hackney, :poison, :arc_ecto]]
+     extra_applications: [:bamboo, :logger, :runtime_tools, :ex_aws, :hackney, :poison, :arc_ecto]]
   end
 
   # Specifies which paths to compile per environment.
@@ -47,6 +47,7 @@ defmodule Koko.Mixfile do
      {:arc_ecto, "~> 0.7.0"},
      {:s3_direct_upload, "~> 0.1.3"},
      {:sigaws, "~> 0.7"},
+     {:bamboo, "~> 0.8"},
      { :uuid, "~> 1.1" }]
   end
 
