@@ -31,7 +31,7 @@ defmodule Koko.Web.Router do
     get "/hello", StatusController, :hello
     get "/credentials", CredentialsController, :presigned
 
-    get "/mail/test/:command", MailController, :test
+    post "/mail", MailController, :mail
   end
 
   scope "/archive", Koko.Web do
