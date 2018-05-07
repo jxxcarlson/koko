@@ -91,7 +91,7 @@ defmodule Koko.Web.UserController do
 
   def delete(conn, %{"id" => id}) do
     IO.puts "TOKEN"
-    {:ok token} = Token.token_from_header(conn)
+    {:ok, token} = Token.token_from_header(conn)
     IO.puts token
     IO.inspect Token.payload(token)
     with  {:ok, admin_id} <- Token.user_id_from_header(conn),
