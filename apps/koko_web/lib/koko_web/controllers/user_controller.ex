@@ -6,6 +6,7 @@ defmodule Koko.Web.UserController do
   alias Koko.User.Authentication
   alias Koko.User.Token
   alias Koko.User.User
+  alias Koko.Repo
   alias Koko.Document.DocManager
   alias Koko.Document.Search
 
@@ -89,9 +90,15 @@ defmodule Koko.Web.UserController do
 
 
   def delete(conn, %{"id" => id}) do
-    user = Authentication.get_user!(id)
-    with {:ok, %User{}} <- Authentication.delete_user(user) do
+    with  {:ok, admin_id} <- Token.user_id_from_header(conn),
+      true <- admin_id == 1
+    do
+      user = Repo.get(User, id)
+      Repo.delete(user)
       render(conn, "reply.json", reply: "deleted user #{id} (#{user.name})")
+    else
+      err -> render(conn, "reply.json", reply: "Could not delete user #{id} (#{user.name})")
+
     end
   end
 end

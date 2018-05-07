@@ -9,8 +9,12 @@ echo
 echo "${color}Push to Heroku${reset}"
 git push heroku master
 
+# echo
+# echo "${color}Restart local server${reset}"
+# sh run.sh
+
 echo
-echo "${color}Restart local server${reset}"
-sh run.sh
+echo "${color}Run Heroku logs${reset}"
+heroku logs --tail
 
 echo
