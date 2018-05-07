@@ -15,6 +15,7 @@ defmodule Koko.User.User do
     field :public, :boolean, default: true
     field :document_ids, {:array, :integer}
     field :current_document_id, :integer
+    field :active, :boolean
     timestamps()
   end
 
@@ -22,7 +23,8 @@ defmodule Koko.User.User do
   @doc false
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:name, :username, :email, :password, :password_hash, :admin, :blurb, :public, :document_ids, :current_document_id])
+    |> cast(attrs, [:name, :username, :email, :password, :password_hash, :admin, :blurb,
+      :public, :document_ids, :current_document_id, :active])
     |> validate_required([:name, :username, :email, :password])
   end
 
@@ -54,7 +56,7 @@ defmodule Koko.User.User do
       end
     end
 
-    
+
     def get_user(id) do
       result = Koko.Repo.get(User, id)
       case result do
