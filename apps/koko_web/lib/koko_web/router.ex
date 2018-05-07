@@ -32,6 +32,11 @@ defmodule Koko.Web.Router do
     get "/credentials", CredentialsController, :presigned
 
     post "/mail", MailController, :mail
+
+    get "/password/request", PasswordController, :show_request_form
+    get "/password/mail_reset_link", PasswordController, :mail_reset_link
+    get "/password/form", PasswordController, :show_reset_form
+    get "/password/reset", PasswordController, :reset_password
   end
 
   scope "/archive", Koko.Web do
