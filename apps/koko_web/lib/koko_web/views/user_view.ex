@@ -43,4 +43,8 @@ defmodule Koko.Web.UserView do
     %{error: error_message}
   end
 
+  def render("reply.json", %{reply: reply}) do
+    %{reply: reply}
+  end
+
 end

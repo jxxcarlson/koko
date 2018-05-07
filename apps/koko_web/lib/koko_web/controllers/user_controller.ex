@@ -91,7 +91,7 @@ defmodule Koko.Web.UserController do
   def delete(conn, %{"id" => id}) do
     user = Authentication.get_user!(id)
     with {:ok, %User{}} <- Authentication.delete_user(user) do
-      send_resp(conn, :no_content, "")
+      render(conn, "reply.json", reply: "deleted user #{id} (#{user.name})")
     end
   end
 end
