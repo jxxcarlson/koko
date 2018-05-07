@@ -17,7 +17,7 @@ defmodule Koko.Web.Router do
   scope "/api", Koko.Web do
     pipe_through :api
     resources "/documents", DocumentController
-    resources "/users", UserController, except: [:edit, :delete]
+    resources "/users", UserController, except: [:edit]
     resources "/authentication", AuthenticationController
 
     put "/share/:id/:username/:action", DocumentController, :share

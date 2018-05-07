@@ -97,9 +97,9 @@ defmodule Koko.Web.UserController do
     with  {:ok, admin_id} <- Token.user_id_from_header(conn),
       true <- admin_id == 1
     do
-      puts "Admin id = #{admin_id}"
+      IO.puts "Admin id = #{admin_id}"
       user = Repo.get(User, id)
-      puts "User to delete = #{user.username}"
+      IO.puts "User to delete = #{user.username}"
       Repo.delete(user)
       render(conn, "reply.json", reply: "deleted user #{id} (#{user.username})")
     else
