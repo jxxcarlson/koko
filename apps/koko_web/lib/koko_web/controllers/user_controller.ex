@@ -97,7 +97,7 @@ defmodule Koko.Web.UserController do
       Repo.delete(user)
       render(conn, "reply.json", reply: "deleted user #{id} (#{user.name})")
     else
-      err -> render(conn, "reply.json", reply: "Could not delete user #{id} (#{user.name})")
+      err -> render(conn, "reply.json", reply: "Could not delete user #{id}")
 
     end
   end
