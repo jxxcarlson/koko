@@ -18,8 +18,9 @@ defmodule Koko.Web.UserView do
       token: "-",
       email: user.email,
       admin: user.admin,
-      blurb: user.blurb},
+      blurb: user.blurb,
       active: user.active
+    }
   end
 
   def render("userstate.json", %{user: user} ) do
