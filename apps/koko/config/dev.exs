@@ -6,6 +6,6 @@ config :koko, Koko.Repo,
   username: "postgres",
   password: "postgres",
   #url: "ecto://postgres:postgres@localhost/ecto_simple",
-  database: "koko_dev",
+  database: "koko_dev2",
   hostname: "localhost",
   pool_size: 10
