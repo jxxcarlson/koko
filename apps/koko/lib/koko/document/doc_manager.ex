@@ -116,8 +116,15 @@ defmodule Koko.Document.DocManager do
 
   """
   def create_document(attrs, author_id) do
+    author = Repo.get(User, author_id)
+    complete_attributes = Map.merge Document.default_attributes, (attrs["attributes"] || %{})
+    additional_attrs = %{ "attributes" => complete_attributes, "author_id" => author_id, "author_name" => author.name } 
+      |> IO.inspect(label: "additional_attrs")
+    attrs = Map.merge(attrs, additional_attrs)
+       |> IO.inspect(label: "FINAL ATTRS")
     result = %Document{}
-      |> Document.changeset(Map.merge(attrs, %{"author_id" => author_id}))
+      |> Document.changeset(attrs)
+      |> IO.inspect(label: "new doc changeset")
       |> Repo.insert()
     case result  do
       {:ok, doc} ->
@@ -267,14 +274,16 @@ defmodule Koko.Document.DocManager do
   end
 
   def add_notes_for_user(user_id) do
-    default_attrs = %{ "attributes" => Document.default_attributes }
+    author = Repo.get(User, user_id)
+    complete_attributes = Document.default_attributes
+    attrs_1 = %{ "attributes" => complete_attributes, "author_id" => user_id, "author_name" => author.name }
     other_attrs = %{
        "tags" => ["sidebarNotes"],
        "title" => "Notes",
        "content" => "Your notes here",
        "rendered_content" => "Your notes here"
     }
-    attrs = Map.merge(default_attrs, other_attrs)
+    attrs = Map.merge(attrs_1, other_attrs)
     create_document(attrs, user_id)
   end
 

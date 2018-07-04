@@ -58,6 +58,7 @@ defmodule Koko.Web.DocumentController do
               documents = Search.get_documents_for_user(user_id, conn.query_string, [])
            end
            IO.puts "Number of documents found: #{length(documents)}"
+           documents |> Enum.map(fn(doc) -> IO.puts "#{doc.id}: #{doc.title}" end)
            if String.contains?  query_string, "loading" do
              render(conn, "index_loading.json", documents: documents)
            else
