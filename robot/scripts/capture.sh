@@ -12,7 +12,7 @@ heroku pg:backups:download
 
 echo
 echo "${color}Loading backup into local database${reset}"
-pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgres -d koko_dev latest.dump
+pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgres -d koko_dev2 latest.dump
 
 echo
 echo "${color}Done${reset}"
