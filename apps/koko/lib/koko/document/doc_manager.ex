@@ -117,7 +117,7 @@ defmodule Koko.Document.DocManager do
   """
   def create_document(attrs, author_id) do
     result = %Document{}
-      |> Document.changeset(attrs)
+      |> Document.changeset(Map.merge(attrs, %{"author_id" => author_id}))
       |> Repo.insert()
     case result  do
       {:ok, doc} ->

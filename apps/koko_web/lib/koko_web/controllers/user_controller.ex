@@ -18,7 +18,7 @@ defmodule Koko.Web.UserController do
     render(conn, "index.json", users: users)
   end
 
-  defp home_page_params(user) do
+  def home_page_params(user) do
     %{
       "title" => "#{String.capitalize(user.username)}'s Home Page",
       "content" => "This is your home page. Edit it to make it be like you want it",
@@ -44,7 +44,7 @@ defmodule Koko.Web.UserController do
     user_params = Koko.Utility.project2map(payload)
     with {:ok, %User{} = user} <- Authentication.create_user(user_params) do
       {:ok, token} = Token.get(user.id, user.username, 86400)
-      user = Map.merge(user, %{token: token, blurb: "", active: true})
+      user = IO.inspect Map.merge(user, %{token: token, blurb: "", active: true}), label: "new user"
       DocManager.create_document(home_page_params(user), user.id)
       DocManager.add_notes_for_user(user.id)
       conn
