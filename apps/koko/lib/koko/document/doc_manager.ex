@@ -34,6 +34,16 @@ defmodule Koko.Document.DocManager do
     Search.by_query_string(:document, "author=#{user_id}", [])
   end
 
+
+  def list_children(:generic, user_id, id) do
+    master_document = Repo.get(Document, id)
+    if master_document.attributes["public"] do 
+      list_children(:public, id) 
+    else 
+      list_children(:user, user_id, id)
+    end
+  end
+
   def list_children(:public, id) do
     master_document = Repo.get(Document, id)
     cond do

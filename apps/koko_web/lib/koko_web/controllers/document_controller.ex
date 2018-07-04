@@ -35,7 +35,7 @@ defmodule Koko.Web.DocumentController do
     query_string = conn.query_string || "" |> IO.inspect(label: "Doc Controller, QUERYSTRING")
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
-          master_document_id = MasterDocument.get_master_doc_id(conn.query_string)
+          master_document_id = IO.inspect  MasterDocument.get_master_doc_id(conn.query_string), label: "master doc id"
           {:ok, username} = Token.username_from_header(conn)
           cond do
             String.contains? query_string, "random=public" ->
@@ -53,7 +53,7 @@ defmodule Koko.Web.DocumentController do
                 documents = Search.by_query_string(:document, remove_string("&shared=yes", query_string),
                    ["shared_with=#{user_id},#{username}" ])
             master_document_id > 0 ->
-              documents = DocManager.list_children(:user, user_id, master_document_id)
+              documents = DocManager.list_children(:generic, user_id, master_document_id)
             true ->
               documents = Search.get_documents_for_user(user_id, conn.query_string, [])
            end
