@@ -178,6 +178,17 @@ defmodule Koko.User.Authentication do
     end
   end
 
+  def get_token2(email, password) do
+    with  {:ok, user} <- get_user(email),
+          {:ok, _} <- checkpw2(password, user.password_hash),
+          {:ok, token} <- Koko.User.Token.get(user.id, user.username)
+    do
+      {:ok, token, user.username}
+    else
+      {:error, _} -> {:error, "Incorrect username (email) or password"}
+    end
+  end
+
   defp get_user(nil), do: {:error, "email is required"}
 
   defp get_user(email) do
