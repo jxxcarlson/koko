@@ -100,21 +100,32 @@ defmodule Koko.Web.DocumentController do
   Display a document if it is owned by the user defined by the token.
   """
   def show(conn, %{"id" => id}) do
-    IO.puts "Doc controller, show, id = #{id}"
+    api_version = api_version_from_headers(conn)
     document = DocManager.get_document!(id)
+    
     with {:ok, user_id} <- Token.user_id_from_header(conn),
       true <- ((document.attributes["public"] == true) || (user_id == document.author_id))
     do
       cs = Document.changeset(document, %{})
       |> Document.update_viewed_at
       Repo.update(cs)
-      render(conn, "show.json", document: document)
+      case api_version do 
+        "V1" -> render(conn, "show.json", document: document)
+        "V2" -> render(conn, "documentRecordV2.json", document: document)
+        _ -> render(conn, "error.json", error: "Unknown API")
+      end
       else
       {:error, error} -> {:error, error}
     end
   end
 
+  def request_header_map(conn) do
+    Enum.into conn.req_headers, %{}
+  end
 
+  def api_version_from_headers(conn) do 
+    request_header_map(conn)["apiversion"] || "V1"
+  end
 
   defp match_items(a, b, success_message, failure_message) do
     if a == b do
