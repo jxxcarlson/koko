@@ -93,6 +93,7 @@ defmodule Koko.Document.Search do
  #     query1 = """
  # SELECT * FROM documents WHERE attributes @> '{"public": true}' OFFSET floor(random()*176) LIMIT 20;
  # """
+     IO.puts "Yowza! random_public here!!!"
      rows = rows_in_table("documents")
      query = "SELECT * FROM documents OFFSET floor(random()*#{rows}) LIMIT 40;"
      res = Ecto.Adapters.SQL.query!(Repo, query, [])

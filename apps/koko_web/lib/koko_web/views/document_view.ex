@@ -7,6 +7,10 @@ defmodule Koko.Web.DocumentView do
     %{documents: render_many(documents, DocumentView, "document.json")}
   end
 
+  def render("indexV2.json", %{documents: documents}) do
+    %{documents: render_many(documents, DocumentView, "documentV2.json")}
+  end
+
   def render("index_loading.json", %{documents: documents}) do
     %{documents: render_many(documents, DocumentView, "document_loading.json")}
   end
@@ -20,12 +24,16 @@ defmodule Koko.Web.DocumentView do
     %{document: document_view}
   end
 
+  def render("aadocumentV2.json", %{document: document}) do 
+    %{document: render("inner_documentV2.json", %{document: document})}
+  end
+
   def render("documentV2.json", %{document: document}) do
     %{id: document.id,
       identifier: document.identifier,
       authorId: document.author_id,
       authorIdentifier: "NOT YET IMPLEMENTED",
-      authorName: document.author_name,
+      authorName: document.author_name || ""  ,
       title: document.title,
       content:  document.content,
       level: document.attributes["level"] || 0,
@@ -46,22 +54,43 @@ defmodule Koko.Web.DocumentView do
   end
 
   def to_posix1(date_time) do 
-      DateTime.to_unix(date_time)*1000
+      IO.inspect date_time, label: "BADASS (1) !!"
+      # if is_nil(date_time) do 
+      #   0 
+      # else 
+      #   DateTime.to_unix(date_time)*1000
+      # end
+      # IO.inspect date_time, label: "date_timeXYZ"
+      # 
+      0
   end
+
+  # IO.inspect date_time, label: "date_timeXYZ"
+  # if date_time == nil do 
+  #   0
+  # else 
+  #   DateTime.to_unix(date_time)*1000
     
   def to_posix2(date_time) do 
-    with {:ok, dt} <- DateTime.from_naive(date_time, "Etc/UTC") do 
-      DateTime.to_unix(dt)*1000
-    else
-      {:error, _} -> 0
-    end 
+    IO.inspect date_time, label: "BADASS (2) !!"
+    # if is_nil(date_time) do 
+    #   0 
+    # else 
+    #   IO.inspect date_time, label: "BADASS!!"
+    #   with {:ok, dt} <- DateTime.from_naive(date_time, "Etc/UTC") do 
+    #     DateTime.to_unix(dt)*1000
+    #   else
+    #     {:error, _} -> 0
+    #   end 
+    # end
+    0
   end
 
   def render("document.json", %{document: document}) do
     %{id: document.id,
       identifier: document.identifier,
       author_id: document.author_id,
-      author_name: document.author_name,
+      author_name: document.author_name || "",
       access: document.access || %{},
       title: document.title,
       content:  document.content,
@@ -95,5 +124,5 @@ defmodule Koko.Web.DocumentView do
     %{error: error}
   end
 
-  
+
 end

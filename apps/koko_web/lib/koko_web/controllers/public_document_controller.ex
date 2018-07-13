@@ -31,6 +31,8 @@ defmodule Koko.Web.PublicDocumentController do
   def index(conn, _params) do
     query_string = conn.query_string || "" |> IO.inspect(label: "Public Doc Controller, QUERYSTRING")
     master_document_id = MasterDocument.get_master_doc_id(query_string)
+    api_version = api_version_from_headers(conn)
+    IO.puts "api_version : #{api_version}"
     cond do
       master_document_id > 0 ->
         documents = DocManager.list_children(:public, master_document_id)
@@ -45,7 +47,12 @@ defmodule Koko.Web.PublicDocumentController do
       true ->
         documents = Search.by_query_string(:document, query_string, ["public=yes" ,"limit=#{Search.search_limit()}"])
     end
-    render(conn, "index.json", documents: documents)
+    IO.puts "#{length documents} documents found"
+    case api_version do 
+      "V1" -> render(conn, "index.json", documents: documents)
+      "V2" -> render(conn, "indexV2.json", documents: documents) 
+      _ -> render(conn, "error.json", error: "Unknown API")
+    end
   end
 
   @doc """
@@ -53,13 +60,27 @@ defmodule Koko.Web.PublicDocumentController do
   """
   def show(conn, %{"id" => id}) do
     document = DocManager.get_document!(id)
+    api_version = IO.inspect api_version_from_headers(conn), label: "api version"
     if document.attributes["public"] == true do
       cs = Document.changeset(document, %{viewed_at: DateTime.utc_now()})
       Repo.update(cs)
-      render(conn, "show.json", document: document)
+      case api_version do 
+        "V1" -> render(conn, "show.json", document: document)
+        "V2" -> render(conn, "showV2.json", document: document) 
+        _ -> render(conn, "error.json", error: "Unknown API")
+      end
+      
     else
       {:error, "Cannot display document"}
     end
+  end
+
+  def request_header_map(conn) do
+    Enum.into conn.req_headers, %{}
+  end
+
+  def api_version_from_headers(conn) do 
+    request_header_map(conn)["apiversion"] || "V1"
   end
 
 end

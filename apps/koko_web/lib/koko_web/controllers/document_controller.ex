@@ -33,6 +33,7 @@ defmodule Koko.Web.DocumentController do
   def index(conn, _params) do
     IO.puts "Koko.Web.DocumentController:: In INDEX, QS = #{conn.query_string}"
     query_string = conn.query_string || "" |> IO.inspect(label: "Doc Controller, QUERYSTRING")
+    api_version = api_version_from_headers(conn)
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
           master_document_id = IO.inspect  MasterDocument.get_master_doc_id(conn.query_string), label: "master doc id"
@@ -62,7 +63,11 @@ defmodule Koko.Web.DocumentController do
            if String.contains?  query_string, "loading" do
              render(conn, "index_loading.json", documents: documents)
            else
-             render(conn, "index.json", documents: documents)
+            case api_version do 
+              "V1" -> render(conn, "index.json", documents: documents)
+              "V2" -> render(conn, "indexV2.json", documents: documents) 
+              _ -> render(conn, "error.json", error: "Unknown API")
+            end
            end
       else
         _ -> IO.puts "Error getting documents (not authorized) "; {:error, "Not authorized"}
