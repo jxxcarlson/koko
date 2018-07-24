@@ -129,12 +129,9 @@ defmodule Koko.Document.DocManager do
     author = Repo.get(User, author_id)
     complete_attributes = Map.merge Document.default_attributes, (attrs["attributes"] || %{})
     additional_attrs = %{ "attributes" => complete_attributes, "author_id" => author_id, "author_name" => author.name } 
-      |> IO.inspect(label: "additional_attrs")
     attrs = Map.merge(attrs, additional_attrs)
-       |> IO.inspect(label: "FINAL ATTRS")
     result = %Document{}
       |> Document.changeset(attrs)
-      |> IO.inspect(label: "new doc changeset")
       |> Repo.insert()
     case result  do
       {:ok, doc} ->
@@ -198,6 +195,7 @@ defmodule Koko.Document.DocManager do
 
   def execute_query_string_commands(document, query_string) do
     [command|remaining_commands] = String.split(query_string, "&") |> Enum.map(fn(item) -> String.split(item, "=") end)
+    IO.inspect [command|remaining_commands], label: "[command|remaining_commands]"
     [cmd, arg] = command
     case cmd do
       "adopt_children" ->

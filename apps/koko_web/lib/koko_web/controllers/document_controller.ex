@@ -31,12 +31,11 @@ defmodule Koko.Web.DocumentController do
   defined in the token.
   """
   def index(conn, _params) do
-    IO.puts "Koko.Web.DocumentController:: In INDEX, QS = #{conn.query_string}"
-    query_string = conn.query_string || "" |> IO.inspect(label: "Doc Controller, QUERYSTRING")
+    query_string = conn.query_string || "" 
     api_version = api_version_from_headers(conn)
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
-          master_document_id = IO.inspect  MasterDocument.get_master_doc_id(conn.query_string), label: "master doc id"
+          master_document_id =  MasterDocument.get_master_doc_id(conn.query_string)
           {:ok, username} = Token.username_from_header(conn)
           cond do
             String.contains? query_string, "random=public" ->
@@ -58,8 +57,6 @@ defmodule Koko.Web.DocumentController do
             true ->
               documents = Search.get_documents_for_user(user_id, conn.query_string, [])
            end
-           IO.puts "Number of documents found: #{length(documents)}"
-           documents |> Enum.map(fn(doc) -> IO.puts "#{doc.id}: #{doc.title}" end)
            if String.contains?  query_string, "loading" do
              render(conn, "index_loading.json", documents: documents)
            else
@@ -88,6 +85,7 @@ defmodule Koko.Web.DocumentController do
   information in that token is used to define ownership of the document.
   """
   def create(conn, %{"document" => payload}) do
+    api_version = api_version_from_headers(conn)
     document_params = Koko.Utility.project2map(payload)
     with  {:ok, user_id} <- Token.user_id_from_header(conn),
       {:ok, %Document{} = document} <- DocManager.create_document(document_params, user_id)
@@ -95,7 +93,11 @@ defmodule Koko.Web.DocumentController do
       conn
       |> put_status(:created)
       |> put_resp_header("location", document_path(conn, :show, document))
-      |> render("show.json", document: document)
+      case api_version do 
+        "V1" -> render(conn, "show.json", document: document)
+        "V2" -> render(conn, "documentRecordV2.json", document: document)
+        _ -> render(conn, "error.json", error: "Unknown API")
+      end
     else
       {:error, error} -> {:error, error}
     end
@@ -145,7 +147,7 @@ defmodule Koko.Web.DocumentController do
   A user can only update the documents he owns.
   """
   def update(conn, %{"id" => id, "document" => payload}) do
-
+    api_version = api_version_from_headers(conn)
     document_params = Koko.Utility.project2map(payload)
     document = DocManager.get_document!(id)
     # failure_message = "User id and document author id do not match"
@@ -155,7 +157,12 @@ defmodule Koko.Web.DocumentController do
       {:ok, _} <- authorize_update(document, user_id, username),
       {:ok, %Document{} = document} <- DocManager.update_document(document, document_params, conn.query_string)
     do
-      render(conn, "show.json", document: document)
+      case api_version do 
+        "V1" -> render(conn, "show.json", document: document)
+        "V2" -> render(conn, "documentRecordV2.json", document: document)
+        _ -> render(conn, "error.json", error: "Unknown API")
+      end
+      
     else
       {:error, error} -> {:error, error} #{ }"error: #{error}"
     end
@@ -164,7 +171,6 @@ defmodule Koko.Web.DocumentController do
 
   def share(conn, %{"id" => id, "username" => username, "action" => action}) do
     document = DocManager.get_document!(id)
-    IO.inspect [id, username, action]
     with {:ok, user_id} <- Token.user_id_from_header(conn)
     do
         Access.set_user_access(document, username, action)
@@ -187,12 +193,17 @@ defmodule Koko.Web.DocumentController do
   A user can only delete the documents he owns.
   """
   def delete(conn, %{"id" => id}) do
+     api_version = api_version_from_headers(conn)
      document = DocManager.get_document!(id)
      with {:ok, user_id} <- Token.user_id_from_header(conn),
       true <- user_id == document.author_id,
       {:ok, %Document{}} <- DocManager.delete_document(document)
      do
-      send_resp(conn, :no_content, "")
+      case api_version do 
+        "V1" -> send_resp(conn, :no_content, "")
+        "V2" -> render(conn, "reply.json", reply: "#{id}")
+        _ -> render(conn, "error.json", error: "Unknown API")
+      end
      else
       _ -> {:error, "Could not delete document"}
      end

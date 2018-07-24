@@ -226,7 +226,17 @@ defmodule Koko.Document.MasterDocument do
     |> Enum.map( fn(child) -> Document.set_parent(Document.child_document(child), master_document.id) end)
   end
 
-
+  # ---
+  # In `attach`, `document` is a master document,
+  # 456 refers to the ID of a child of the master,
+  # and 123 is the ID of a child to be added.
+  # 
+  # comand example: "child=123&current=456" 
+  # => [["child", "123"], ["current", "456"]]
+  # attach(doc, "below", "child=123&current=456")
+  # from QS = "attach=below&child=123&current=456"
+  # This will place document 123 below document 456
+  # in the children of `document`.
   def attach(document, position, remaining_commands) do
     [child_command|remaining_commands] = remaining_commands
     ["child", child_id_str] = child_command # error handling

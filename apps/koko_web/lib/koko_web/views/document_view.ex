@@ -24,9 +24,6 @@ defmodule Koko.Web.DocumentView do
     %{document: document_view}
   end
 
-  def render("aadocumentV2.json", %{document: document}) do 
-    %{document: render("inner_documentV2.json", %{document: document})}
-  end
 
   def render("documentV2.json", %{document: document}) do
     %{id: document.id,
@@ -123,6 +120,9 @@ defmodule Koko.Web.DocumentView do
   def render("error.json", %{error: error}) do
     %{error: error}
   end
-
+  
+  def render("reply.json", %{reply: reply}) do
+    %{reply: reply}
+  end
 
 end

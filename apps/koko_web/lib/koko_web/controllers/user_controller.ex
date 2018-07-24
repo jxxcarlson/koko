@@ -40,7 +40,16 @@ defmodule Koko.Web.UserController do
 
   end
 
+  def request_header_map(conn) do
+    Enum.into conn.req_headers, %{}
+  end
+
+  def api_version_from_headers(conn) do 
+    request_header_map(conn)["apiversion"] || "V1"
+  end
+
   def create(:success, conn, payload) do
+    api_version = api_version_from_headers(conn)
     user_params = Koko.Utility.project2map(payload)
     with {:ok, %User{} = user} <- Authentication.create_user(user_params) do
       {:ok, token} = Token.get(user.id, user.username, 86400)
@@ -50,7 +59,15 @@ defmodule Koko.Web.UserController do
       conn
       |> put_status(:created)
       |> put_resp_header("location", user_path(conn, :show, user))
-      |> render("show_with_token.json", user: user)
+      |> render_for_create_user(api_version, user)
+    end
+  end
+
+  def render_for_create_user conn, api_version, user do 
+    case api_version do 
+      "V1" ->  render(conn, "show_with_token.json", user: user)
+      "V2" ->  render(conn, "return_token.json", user: user) 
+      _ -> render(conn, "error.json", error: "Unknown API")
     end
   end
 
@@ -81,25 +98,18 @@ defmodule Koko.Web.UserController do
   end
 
   def getuserstate(conn, %{"id" => id}) do
-    IO.puts "x1x1: in getuserstate, id = #{id}"
     user = Authentication.get_user!(id)
-    IO.inspect user, label: "x1x1: in getuserstate"
     render(conn, "userstate.json", user: user)
   end
 
 
 
   def delete(conn, %{"id" => id}) do
-    IO.puts "TOKEN"
     {:ok, token} = Token.token_from_header(conn)
-    IO.puts token
-    IO.inspect Token.payload(token)
     with  {:ok, admin_id} <- Token.user_id_from_header(conn),
       true <- admin_id == 1
     do
-      IO.puts "Admin id = #{admin_id}"
       user = Repo.get(User, id)
-      IO.puts "User to delete = #{user.username}"
       Repo.delete(user)
       render(conn, "reply.json", reply: "deleted user #{id} (#{user.username})")
     else
