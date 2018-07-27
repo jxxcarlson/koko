@@ -41,7 +41,7 @@ defmodule Koko.Web.Endpoint do
     origins: ["http://knode.io", "https://knode.io", "http://www.knode.io", 
       "https://www.knode.io", "http://localhost:3000", 
       "http://localhost:8080", "http://localhost:8081",
-      "https://dist-odooawoior.now.sh"],
+      "https://dist-odooawoior.now.sh", "https://xknode.tech"],
     allow_headers: ["content-type", "authorization", "apiversion"]
 
 
