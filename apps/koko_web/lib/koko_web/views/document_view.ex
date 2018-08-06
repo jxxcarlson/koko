@@ -51,7 +51,7 @@ defmodule Koko.Web.DocumentView do
   end
 
   def to_posix1(date_time) do 
-      IO.inspect date_time, label: "BADASS (1) !!"
+      # IO.inspect date_time, label: "BADASS (1) !!"
       # if is_nil(date_time) do 
       #   0 
       # else 
@@ -69,7 +69,7 @@ defmodule Koko.Web.DocumentView do
   #   DateTime.to_unix(date_time)*1000
     
   def to_posix2(date_time) do 
-    IO.inspect date_time, label: "BADASS (2) !!"
+    # IO.inspect date_time, label: "BADASS (2) !!"
     # if is_nil(date_time) do 
     #   0 
     # else 

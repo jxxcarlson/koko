@@ -28,7 +28,7 @@ defmodule Koko.Web.CredentialsController do
 
     credentials = %S3DirectUpload{file_name: filename, mimetype: mimetype, path: "/jxx", acl: "public-read"}
       |> S3DirectUpload.presigned
-    IO.inspect(credentials, label: "CREDENTIALS !!!")
+    # IO.inspect(credentials, label: "CREDENTIALS !!!")
     render(conn, "credentials.json", credentials: credentials)
   end
 
@@ -37,7 +37,7 @@ defmodule Koko.Web.CredentialsController do
     IO.puts "Error authenticating token"
     render(conn, "error.json", error: "authorization failure")
   end
-
+    
 
   # TEST URL: http://localhost:4000/api/credentials?filename=foo.jpg&mimetype=image/jpeg&bucket=noteimages&path=bar
   # TEST HEADER: %{"authorization": "Bearer abc... uvwxy"}

@@ -146,7 +146,8 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
       from d in query,
         where: d.author_id == ^author.id
      else
-       query
+      from d in query,
+      where: d.title == ^"xy2ek!!fo9r3" # stupid way to abort search
      end
   end
 

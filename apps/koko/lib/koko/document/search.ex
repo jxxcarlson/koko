@@ -203,6 +203,7 @@ defmodule Koko.Document.Search do
   1
   """
   def by_query_string(domain, query_string, options) do
+    IO.puts "by_query_string"
     [preprocess_options, postprocess_options] = prepare_options(options)
     IO.inspect [preprocess_options, postprocess_options]
     IO.puts "Query string = #{query_string}"

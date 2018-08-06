@@ -29,7 +29,13 @@ defmodule Koko.Web.PublicDocumentController do
   All public documents are listable and searchable.
   """
   def index(conn, _params) do
-    query_string = conn.query_string || "" |> IO.inspect(label: "Public Doc Controller, QUERYSTRING")
+    IO.puts "PUBLIC DOC CONTROLLER"
+    query_string =  case conn.query_string do
+        nil -> "title=xy78837493kfe!gjj!"
+        "" ->  "title=xy78837493kfe!gjj!"
+        _ -> conn.query_string
+      end
+    
     master_document_id = MasterDocument.get_master_doc_id(query_string)
     api_version = api_version_from_headers(conn)
     IO.puts "api_version : #{api_version}"
