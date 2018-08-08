@@ -40,7 +40,7 @@ defmodule Koko.Web.CredentialsController do
     # IO.inspect p, label: "conn.params"
     path = p["path"]
     bucket = p["bucket"]
-    {:ok, presigned_url} = ExAws.Config.new(:s3) |> ExAws.S3.presigned_url(:put, bucket, path)
+    {:ok, presigned_url} = ExAws.Config.new(:s3) |> ExAws.S3.presigned_url(:put, bucket, path, acl: :public_read)
     render(conn, "presigned.json", url: presigned_url)
   end
 
