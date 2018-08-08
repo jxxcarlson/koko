@@ -6,6 +6,9 @@ def render("credentials.json", %{credentials: credentials}) do
   credentials
 end
 
+def render("presigned.json", %{url: presigned_url}) do
+  presigned_url
+end
 
 def render("error.json", %{error: error}) do
   %{error: error}

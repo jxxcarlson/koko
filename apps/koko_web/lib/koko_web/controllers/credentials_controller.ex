@@ -33,6 +33,16 @@ defmodule Koko.Web.CredentialsController do
     render(conn, "credentials.json", credentials: credentials)
   end
 
+  # ExAws.Config.new(:s3) |> ExAws.S3.presigned_url(:put, "noteimages", "foo.jpg")
+  def send_presigned_url(conn) do
+    # IO.inspect get_header(conn, "authorization"), label: "HEADERS"
+    p = conn.params
+    # IO.inspect p, label: "conn.params"
+    path = p["path"]
+    bucket = p["bucket"]
+    {:ok, presigned_url} = ExAws.Config.new(:s3) |> ExAws.S3.presigned_url(:put, bucket, path)
+    render(conn, "presigned.json", url: presigned_url)
+  end
 
   def send_error(conn) do
     IO.puts "Error authenticating token"
@@ -42,7 +52,7 @@ defmodule Koko.Web.CredentialsController do
 
   # TEST URL: http://localhost:4000/api/credentials?filename=foo.jpg&mimetype=image/jpeg&bucket=noteimages&path=bar
   # TEST HEADER: %{"authorization": "Bearer abc... uvwxy"}
-  def presigned(conn, _) do
+  def credentials(conn, _) do
       auth = Token.authenticated_from_header(conn)
       # IO.inspect auth, label: "AUTH!!!"
       case auth do
@@ -51,5 +61,15 @@ defmodule Koko.Web.CredentialsController do
       end
   end
 
+  # TEST URL: http://localhost:4000/api/credentials?filename=foo.jpg&mimetype=image/jpeg&bucket=noteimages&path=bar
+  # TEST HEADER: %{"authorization": "Bearer abc... uvwxy"}
+  def presigned(conn, _) do
+    auth = Token.authenticated_from_header(conn)
+    # IO.inspect auth, label: "AUTH!!!"
+    case auth do
+      {:ok, true} -> send_presigned_url(conn)
+      {:ok, false} -> send_error(conn)
+    end
+end
 
 end

@@ -12,8 +12,15 @@ defmodule Koko.Archive.Item do
   alias Koko.Archive.Archive
   alias Koko.Utility
 
+  ## Examples
+  ##  ExAws.S3.list_objects("noteimages")  |> ExAws.request(region: "us-east-1")
 
-  schema "archive_items" do
+  ## iex(3)> ExAws.Config.new(:s3) |> ExAws.S3.presigned_url(:put, "noteimages", "foo.jpg")
+  ## {:ok,
+  ## "https://s3.amazonaws.com/noteimages/foo.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJQYJYCIAWH6DGHIQ%2F20180807%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20180807T232859Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=14fcb5ef6f845ce95e3a22beb92a663e001c4bad698f41ecea1885360516adf2"}
+  
+  
+   schema "archive_items" do
     field :archive_id, :integer
     field :doc_id, :integer
     field :author_id, :integer

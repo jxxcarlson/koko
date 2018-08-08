@@ -29,7 +29,8 @@ defmodule Koko.Web.Router do
     get "/public/documents/:id", PublicDocumentController, :show
 
     get "/hello", StatusController, :hello
-    get "/credentials", CredentialsController, :presigned
+    get "/credentials", CredentialsController, :credentials
+    get "/presigned", CredentialsController, :presigned
 
     post "/mail", MailController, :mail
 
