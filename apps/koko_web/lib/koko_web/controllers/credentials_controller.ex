@@ -27,7 +27,7 @@ defmodule Koko.Web.CredentialsController do
     # IO.puts "upload.acl = #{upload.acl}"
     # credentials = upload |> S3DirectUpload.presigned
 
-    credentials = %S3DirectUpload{file_name: filename, mimetype: mimetype, path: path, [acl: :public_read]}
+    credentials = %S3DirectUpload{file_name: filename, mimetype: mimetype, path: path, acl: "public-read"}
       |> S3DirectUpload.presigned
     # IO.inspect(credentials, label: "CREDENTIALS !!!")
     render(conn, "credentials.json", credentials: credentials)
@@ -40,7 +40,7 @@ defmodule Koko.Web.CredentialsController do
     # IO.inspect p, label: "conn.params"
     path = p["path"]
     bucket = p["bucket"]
-    {:ok, presigned_url} = ExAws.Config.new(:s3) |> ExAws.S3.presigned_url(:put, bucket, path, acl: :public_read)
+    {:ok, presigned_url} = ExAws.Config.new(:s3) |> ExAws.S3.presigned_url(:put, bucket, path, acl: "public-read")
     render(conn, "presigned.json", url: presigned_url)
   end
 
