@@ -33,18 +33,22 @@ defmodule Koko.Web.CredentialsController do
     render(conn, "credentials.json", credentials: credentials)
   end
 
-  # ExAws.Config.new(:s3) |> ExAws.S3.presigned_url(:put, "noteimages", "foo.jpg")
-  def send_presigned_url(conn) do
-    # IO.inspect get_header(conn, "authorization"), label: "HEADERS"
-    p = conn.params
-    # IO.inspect p, label: "conn.params"
-    path = p["path"]
-    bucket = p["bucket"]
-    query_params = [{"ContentType", "image/jpeg"}, {"ACL", "public-read"}]
+  def make_presigned_url(bucket, path, mime_type) do
+    # query_params = [{"ContentType", mime_type}, {"acl", "public-read"}]
+    query_params = [{"ContentType", mime_type}]
     presign_options = [query_params: query_params]
     {:ok, presigned_url} = ExAws.Config.new(:s3) 
       |> ExAws.S3.presigned_url(:put, bucket, path, presign_options)
-    render(conn, "presigned.json", url: presigned_url)
+    presigned_url 
+  end
+
+  # Example: ExAws.Config.new(:s3) |> ExAws.S3.presigned_url(:put, "noteimages", "foo.jpg")
+  def send_presigned_url(conn) do
+    p = conn.params
+    path = p["path"]
+    bucket = p["bucket"]
+    mime_type = p["mime_type"] || "image/jpeg"
+    render(conn, "presigned.json", url: make_presigned_url(bucket, path, mime_type))
   end
 
   def send_error(conn) do
