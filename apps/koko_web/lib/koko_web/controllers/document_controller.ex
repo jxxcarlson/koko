@@ -32,6 +32,7 @@ defmodule Koko.Web.DocumentController do
   """
   def index(conn, _params) do
     query_string = conn.query_string || "" 
+    IO.puts "DC, QUERY STRING = #{query_string}"
     api_version = api_version_from_headers(conn)
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do

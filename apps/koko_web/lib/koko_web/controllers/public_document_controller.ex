@@ -30,7 +30,8 @@ defmodule Koko.Web.PublicDocumentController do
   """
   def index(conn, _params) do
     IO.puts "PUBLIC DOC CONTROLLER"
-    query_string =  case conn.query_string do
+    IO.puts "QS: #{conn.query_string}"
+     query_string =  case conn.query_string do
         nil -> "title=xy78837493kfe!gjj!"
         "" ->  "title=xy78837493kfe!gjj!"
         _ -> conn.query_string

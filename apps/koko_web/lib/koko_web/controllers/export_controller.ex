@@ -7,7 +7,7 @@ defmodule Koko.Web.ExportController do
 
   plug :put_layout, false
 
-  def export_latex(text, texmacros) do
+  defp export_latex(text, texmacros) do
     text2 = Parser.transform_images(text) |> Parser.transform_text
     prefix <> "\n\n" <> texmacros <> "\n\n" <> text2 <> suffix
   end
@@ -51,7 +51,7 @@ defmodule Koko.Web.ExportController do
     # end
   end
 
-  def export_standard_document(conn, document) do
+  defp export_standard_document(conn, document) do
     text_type = document.attributes["text_type"]
     # title = document.title
     # author = document.author_name
@@ -70,7 +70,7 @@ defmodule Koko.Web.ExportController do
   end
 
 
-  def export_master_latex_document(conn, document) do
+  defp export_master_latex_document(conn, document) do
     text_type = document.attributes["text_type"]
     texmacro_text = Document.texmacros(document)
     concatenated_source =
@@ -82,7 +82,7 @@ defmodule Koko.Web.ExportController do
     conn |> render("latex.html", text: concatenated_source )
   end
 
-  def enclose(text, texmacro_text)  do
+  defp enclose(text, texmacro_text)  do
     prefix <> texmacro_text <> text <> suffix
   end
 
