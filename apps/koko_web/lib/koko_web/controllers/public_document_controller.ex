@@ -31,11 +31,11 @@ defmodule Koko.Web.PublicDocumentController do
   def index(conn, _params) do
     IO.puts "PUBLIC DOC CONTROLLER"
     IO.puts "QS: #{conn.query_string}"
-     query_string =  case conn.query_string do
+    query_string =  case conn.query_string do
         nil -> "title=xy78837493kfe!gjj!"
         "" ->  "title=xy78837493kfe!gjj!"
         _ -> conn.query_string
-      end
+    end
     
     master_document_id = MasterDocument.get_master_doc_id(query_string)
     api_version = api_version_from_headers(conn)

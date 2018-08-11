@@ -69,7 +69,7 @@ defmodule Koko.Document.Search do
            [["title", "elm"], ["author", "1"], ["sort", "title"]]
   """
   def by_command_list(command_list, :document) do
-    IO.puts"COMMAND LIST"
+    IO.puts "COMMAND LIST"
     IO.inspect command_list
     command_list
     |> sort_commands

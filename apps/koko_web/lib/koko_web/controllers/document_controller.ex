@@ -31,12 +31,19 @@ defmodule Koko.Web.DocumentController do
   defined in the token.
   """
   def index(conn, _params) do
-    query_string = conn.query_string || "" 
+    query_string = cond do 
+         conn.query_string == nil -> "title=wui8kjdhf13e3-aa" 
+         conn.query_string == "" -> "title=wui8kjdhf13e3-aa"
+         conn.query_string == "&docs=any" -> "title=wui8kjdhf13e3-aa"
+         true -> conn.query_string
+    end
+    
+    
     IO.puts "DC, QUERY STRING = #{query_string}"
     api_version = api_version_from_headers(conn)
     with {:ok, user_id} <- Token.user_id_from_header(conn)
       do
-          master_document_id =  MasterDocument.get_master_doc_id(conn.query_string)
+          master_document_id =  MasterDocument.get_master_doc_id(query_string)
           {:ok, username} = Token.username_from_header(conn)
           cond do
             String.contains? query_string, "random=public" ->
@@ -56,7 +63,7 @@ defmodule Koko.Web.DocumentController do
             master_document_id > 0 ->
               documents = DocManager.list_children(:generic, user_id, master_document_id)
             true ->
-              documents = Search.get_documents_for_user(user_id, conn.query_string, [])
+              documents = Search.get_documents_for_user(user_id, query_string, [])
            end
            if String.contains?  query_string, "loading" do
              render(conn, "index_loading.json", documents: documents)
