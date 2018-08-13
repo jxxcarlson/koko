@@ -38,6 +38,8 @@ defmodule Koko.Web.Router do
     get "/password/mail_reset_link", PasswordController, :mail_reset_link
     get "/password/form", PasswordController, :show_reset_form
     get "/password/reset", PasswordController, :reset_password
+
+    get "/export/:id", ExportToJsonController, :show
   end
 
   scope "/archive", Koko.Web do
