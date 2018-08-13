@@ -56,6 +56,7 @@ defmodule Koko.Web.Router do
   scope "/export", Koko.Web do
     pipe_through :browser
     get "/documents/:id", ExportController, :show
+    get "/json/:id", ExportController, :export_latex_to_json
   end
 
   scope "/imagecatalogue", Koko.Web do
