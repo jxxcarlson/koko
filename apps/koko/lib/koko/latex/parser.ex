@@ -30,6 +30,13 @@ defmodule Koko.Latex.Parser do
       |> Enum.reduce "", (fn(item, acc) -> acc <> "\n#{image_link(item)}\n" end )
   end
 
+  # String -> List String
+  def image_url_list(str) do
+    str
+      |> list_images
+      |> Enum.map(fn item -> "https://" <> item.url end)
+  end
+
   def transform_image(image_match, str) do
     parsed_image = parse_image image_match
     rendered_image = render_image parsed_image

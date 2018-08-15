@@ -40,6 +40,7 @@ defmodule Koko.Web.Router do
     get "/password/reset", PasswordController, :reset_password
 
     get "/export/:id", ExportToJsonController, :show
+    get "/image_list/:id", ExportToJsonController, :image_list
   end
 
   scope "/archive", Koko.Web do
