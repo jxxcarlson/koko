@@ -19,7 +19,9 @@ defmodule Koko.Web.UserView do
       email: user.email,
       admin: user.admin,
       blurb: user.blurb,
-      active: user.active
+      active: user.active,
+      documentCount: user.document_count,
+      mediaCount: user.media_count
     }
   end
 
