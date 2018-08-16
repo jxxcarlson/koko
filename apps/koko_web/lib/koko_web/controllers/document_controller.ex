@@ -23,6 +23,7 @@ defmodule Koko.Web.DocumentController do
   alias Koko.Document.Search
   alias Koko.Repo
   alias Koko.Document.Access
+  alias Koko.User.User
 
   action_fallback Koko.Web.FallbackController
 
@@ -98,6 +99,9 @@ defmodule Koko.Web.DocumentController do
     with  {:ok, user_id} <- Token.user_id_from_header(conn),
       {:ok, %Document{} = document} <- DocManager.create_document(document_params, user_id)
     do
+      user = Repo.get(User, user_id)
+      User.change_document_count(user, 1)
+      
       conn
       |> put_status(:created)
       |> put_resp_header("location", document_path(conn, :show, document))

@@ -86,4 +86,9 @@ defmodule Koko.User.User do
       Repo.update(cs)
     end 
 
+    def change_document_count(user, delta) do 
+      cs = safe_changeset(user, %{document_count: user.document_count + delta})
+      Repo.update(cs)
+    end 
+
 end
