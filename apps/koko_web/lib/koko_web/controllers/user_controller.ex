@@ -103,7 +103,6 @@ defmodule Koko.Web.UserController do
   end
 
 
-
   def delete(conn, %{"id" => id}) do
     {:ok, token} = Token.token_from_header(conn)
     with  {:ok, admin_id} <- Token.user_id_from_header(conn),
@@ -117,4 +116,5 @@ defmodule Koko.Web.UserController do
 
     end
   end
+
 end

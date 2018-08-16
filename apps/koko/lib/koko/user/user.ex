@@ -2,6 +2,9 @@ defmodule Koko.User.User do
   use Ecto.Schema
   import Ecto.Changeset
   alias Koko.User.User
+  alias Koko.Document.Query
+  alias Koko.Document.Document
+  alias Koko.Repo
 
 
   schema "authentication_users" do
@@ -16,6 +19,8 @@ defmodule Koko.User.User do
     field :document_ids, {:array, :integer}
     field :current_document_id, :integer
     field :active, :boolean
+    field :document_count, :integer
+    field :media_count, :integer
     timestamps()
   end
 
@@ -24,8 +29,14 @@ defmodule Koko.User.User do
   def changeset(%User{} = user, attrs) do
     user
     |> cast(attrs, [:name, :username, :email, :password, :password_hash, :admin, :blurb,
-      :public, :document_ids, :current_document_id, :active])
+      :public, :document_ids, :current_document_id, :active, :document_count, :media_count])
     |> validate_required([:name, :username, :email, :password])
+  end
+
+  def safe_changeset(%User{} = user, attrs) do
+    user
+    |> cast(attrs, [:name,  :blurb,
+      :public, :document_ids, :current_document_id, :active, :document_count, :media_count])
   end
 
   def minimal_changeset(%User{} = user, attrs) do
@@ -64,5 +75,15 @@ defmodule Koko.User.User do
         _ -> {:ok, result}
       end
     end
+
+    def get_document_count(user_id) do 
+      Document |> Query.has_author(user_id) |> Repo.all |> length
+    end 
+
+    def update_document_count(user) do 
+      count = get_document_count(user.id)
+      cs = safe_changeset(user, %{document_count: count})
+      Repo.update(cs)
+    end 
 
 end
