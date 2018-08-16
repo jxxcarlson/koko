@@ -91,4 +91,9 @@ defmodule Koko.User.User do
       Repo.update(cs)
     end 
 
+    def increment_media_count(user) do 
+      cs = safe_changeset(user, %{media_count: user.media_count + 1})
+      Repo.update(cs)
+    end 
+
 end

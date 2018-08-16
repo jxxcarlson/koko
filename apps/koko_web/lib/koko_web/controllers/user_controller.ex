@@ -117,4 +117,10 @@ defmodule Koko.Web.UserController do
     end
   end
 
+  def increment_media_count(conn, %{"id" => id}) do
+    user = Authentication.get_user!(id)
+    User.increment_media_count(user)
+    render(conn, "reply.json", reply: "#{user.media_count + 1}")
+  end
+
 end

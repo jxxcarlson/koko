@@ -24,6 +24,7 @@ defmodule Koko.Web.Router do
 
     put "/users/saveuserstate/:id", UserController, :saveuserstate
     get "/users/getuserstate/:id", UserController, :getuserstate
+    post "/users/increment_media_count/:id", UserController, :increment_media_count
 
     get "/public/documents", PublicDocumentController, :index
     get "/public/documents/:id", PublicDocumentController, :show
