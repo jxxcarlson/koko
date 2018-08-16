@@ -21,6 +21,4 @@ defmodule Koko.Web.ImageCatalogueController do
 
   end
 
-
-
 end
