@@ -101,7 +101,7 @@ defmodule Koko.Web.DocumentController do
     do
       user = Repo.get(User, user_id)
       User.change_document_count(user, 1)
-      
+
       conn
       |> put_status(:created)
       |> put_resp_header("location", document_path(conn, :show, document))
@@ -211,6 +211,8 @@ defmodule Koko.Web.DocumentController do
       true <- user_id == document.author_id,
       {:ok, %Document{}} <- DocManager.delete_document(document)
      do
+      user = Repo.get(User, user_id)
+      User.change_document_count(user, 1)
       case api_version do 
         "V1" -> send_resp(conn, :no_content, "")
         "V2" -> render(conn, "reply.json", reply: "#{id}")
