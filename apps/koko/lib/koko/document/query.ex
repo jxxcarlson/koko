@@ -38,7 +38,8 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
      "public" => 2,
      "is_master" => 3,
      "sort" => 1,
-     "limit"  => 0
+     "limit"  => 0,
+     "user_id" => 7
    }
  end
 
@@ -72,6 +73,8 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
         for_user_or_public(query, arg)
       {"author",_} ->
         has_author(query, arg)
+      {"user_id",_} ->
+        has_user_id(query, arg)
       {"authorname",_} ->
           has_author_name(query, arg)
       {"title", _} ->
@@ -119,6 +122,11 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
   def has_author(query, author_id) do
     from d in query,
       where: d.author_id == ^author_id
+  end
+
+  def has_user_id(query, user_id) do
+    from d in query,
+      where: d.user_id == ^user_id
   end
 
   ###################### USER QUERIES ##########################

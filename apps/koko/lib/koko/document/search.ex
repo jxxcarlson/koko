@@ -5,6 +5,7 @@ defmodule Koko.Document.Search do
   alias Koko.Repo
   alias Koko.User.User
   alias Koko.Document.Access
+  alias Koko.Image
 
   def search_limit do
     20
@@ -74,6 +75,15 @@ defmodule Koko.Document.Search do
     command_list
     |> sort_commands
     |> Enum.reduce(Document, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
+    |> Repo.all
+  end
+
+  def by_command_list(command_list, :image) do
+    IO.puts "COMMAND LIST"
+    IO.inspect command_list
+    command_list
+    |> sort_commands
+    |> Enum.reduce(Image, fn [cmd, arg], query -> Query.by(query, cmd, arg) end)
     |> Repo.all
   end
 
@@ -210,8 +220,10 @@ defmodule Koko.Document.Search do
     query_string
     |> prepend_options(preprocess_options)
     |> parse_query_string
+    |> IO.inspect(label: "(1)")
     |> by_command_list(domain)
     |> postprocess(postprocess_options)
+    |> IO.inspect(label: "OUT")
   end
 
   def postprocess(documents, postprocess_options) do
