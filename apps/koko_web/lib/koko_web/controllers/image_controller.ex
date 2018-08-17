@@ -4,12 +4,17 @@ defmodule Koko.Web.ImageController do
     alias Koko.User.Token
     alias Koko.Repo
     alias Koko.Image
+    alias Koko.Document.Query
 
   
     action_fallback Koko.Web.FallbackController
 
-    def index(conn, _params) do  
-      images = Image |> Repo.all
+    def index(conn, _params) do 
+      query_string = conn.query_string
+      images = cond do 
+        query_string == "" -> Image |> Repo.all
+        true -> Image |> Query.has_name(query_string) |> Repo.all
+      end  
       render(conn, "index.json", %{images: images})
     end
   
