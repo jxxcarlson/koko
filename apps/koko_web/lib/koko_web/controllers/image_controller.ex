@@ -4,8 +4,14 @@ defmodule Koko.Web.ImageController do
     alias Koko.User.Token
     alias Koko.Repo
     alias Koko.Image
+
   
     action_fallback Koko.Web.FallbackController
+
+    def index(conn, _params) do  
+      images = Image |> Repo.all
+      render(conn, "index.json", %{images: images})
+    end
   
     def create(conn, params) do
       IO.inspect params, label: "image_params"

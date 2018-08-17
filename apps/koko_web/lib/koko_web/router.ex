@@ -43,6 +43,7 @@ defmodule Koko.Web.Router do
     get "/export/:id", ExportToJsonController, :show
     get "/image_list/:id", ExportToJsonController, :image_list
     post "/image", ImageController, :create
+    get  "/images", ImageController, :index
   end
 
   scope "/archive", Koko.Web do
