@@ -114,6 +114,22 @@ defmodule Koko.Document.Search do
      |> Enum.sort(fn(x,y) -> x.title < y.title end)
    end
 
+   def random_image(_query_string) do
+
+    #     query1 = """
+    # SELECT * FROM documents WHERE attributes @> '{"public": true}' OFFSET floor(random()*176) LIMIT 20;
+    # """
+        IO.puts "Yowza! random_image here!!!"
+        rows = rows_in_table("images")
+        query = "SELECT * FROM images OFFSET floor(random()*#{rows}) LIMIT 40;"
+        res = Ecto.Adapters.SQL.query!(Repo, query, [])
+        cols = Enum.map res.columns, &(String.to_atom(&1))
+        Enum.map(res.rows, fn(row) -> struct(Image, Enum.zip(cols, row)) end)
+        |> Enum.filter(fn(item) -> item.public == true end)
+        |> Enum.take(15)
+        |> Enum.sort(fn(x,y) -> x.name < y.name end)
+      end
+
    @doc"""
    Use raw SQL query to get a count of rows in any table, e.g.
      > Search.rows_in_table("documents")

@@ -16,7 +16,10 @@ defmodule Koko.Web.ImageController do
       #   query_string == "" -> Image |> Repo.all
       #   true -> Image |> Query.has_name(query_string) |> Repo.all
       # end 
-      images = Search.by_query_string(:image, query_string, []) 
+      images = cond do
+        query_string == "random=yes" -> Search.random_image("foo")
+        true -> Search.by_query_string(:image, query_string, []) 
+      end 
       render(conn, "index.json", %{images: images})
     end
   
