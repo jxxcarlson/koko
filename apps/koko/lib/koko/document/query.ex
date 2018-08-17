@@ -39,7 +39,8 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
      "is_master" => 3,
      "sort" => 1,
      "limit"  => 0,
-     "user_id" => 7
+     "user_id" => 7,
+     "name" => 7
    }
  end
 
@@ -79,6 +80,8 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
           has_author_name(query, arg)
       {"title", _} ->
         has_title(query, arg)
+      {"name", _} ->
+        has_name(query, arg)
       {"sort", "created"} ->
         sort_by_inserted_at(query)
       {"sort", "updated"} ->
