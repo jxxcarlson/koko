@@ -7,7 +7,7 @@ defmodule Koko.Web.ImageView do
     end
 
     def render("image.json", %{image: image}) do
-        %{name: image.name, url: image.url}
+        %{id: image.id, name: image.name, url: image.url}
     end
   
     def render("reply.json", params) do
