@@ -3,6 +3,9 @@ defmodule Koko.Email do
   import Bamboo.Email
 
   alias Koko.Mailer
+  alias Koko.User.Token
+  alias Koko.Configuration
+  # alias Koko.User.User
 
 
   def email(params) do
@@ -34,6 +37,23 @@ defmodule Koko.Email do
     |> Mailer.deliver_now
   end
 
+  def welcome_letter(user) do
+    {:ok, token} = Token.get(user.id, user.username, 30*60*1000)
+    """
+<p>
+Dear #{user.username}
+</p>
 
+<p>Thank you for joining knode.io. Please
+<a href="#{Configuration.host}/api/verify/#{token}" >click on this link</a> to activate
+your account.</p>
+
+<br>
+Regards,
+<br>
+The kNode Team
+
+"""
+end
 
 end

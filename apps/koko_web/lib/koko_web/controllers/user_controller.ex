@@ -56,11 +56,23 @@ defmodule Koko.Web.UserController do
       user = Map.merge(user, %{token: token, blurb: "", active: true})
       DocManager.create_document(home_page_params(user), user.id)
       DocManager.add_notes_for_user(user.id)
+      send_confirmation_email(conn, user)
       conn
       |> put_status(:created)
       |> put_resp_header("location", user_path(conn, :show, user))
       |> render_for_create_user(api_version, user)
     end
+  end
+
+  def send_confirmation_email(conn, user) do
+    message = Email.welcome_letter(user)
+    Email.email_html %{
+        recipient: user.email, 
+        from: "support@knode.io", 
+        subject: "Congratulatins",
+        body: message
+      }
+    render(conn, "reply.json", %{ reply: "Verification email sent to #{user.email}" })  
   end
 
   def render_for_create_user conn, api_version, user do 
