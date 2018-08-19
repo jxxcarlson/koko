@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body style="margin: 60px;">
+
+<div style="padding: 20px; width: 300px; height: 400px; background-color: #eee">
+
+<h2>Congratulations!</h2>
+
+<p>Your account is now verified &mdash; check your email for confirmation.
+</p>
+
+</div>
+
+
+</body>
+</html>
