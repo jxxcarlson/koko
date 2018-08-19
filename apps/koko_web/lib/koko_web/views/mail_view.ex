@@ -4,7 +4,7 @@ defmodule Koko.Web.MailView do
 
 
 def render("reply.json", %{message: message}) do
-  %{message: message}
+  %{reply: message}
 end
 
 
