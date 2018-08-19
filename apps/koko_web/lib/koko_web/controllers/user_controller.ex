@@ -71,6 +71,7 @@ defmodule Koko.Web.UserController do
       {:ok, payload} = Token.payload token
       username = payload["username"]
       user_id = payload["user_id"]
+      user = Repo.get(User, user_id)
       Email.email_plain %{
         "recipient" => user.email, 
         "from" => "support@knode.io", 
