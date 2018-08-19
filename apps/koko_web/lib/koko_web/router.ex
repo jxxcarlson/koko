@@ -26,7 +26,10 @@ defmodule Koko.Web.Router do
     get "/users/getuserstate/:id", UserController, :getuserstate
     post "/users/increment_media_count/:id", UserController, :increment_media_count
     get "/verify/:token", UserController, :verify
+    get "/request_verification", UserController, :request_verification
+    get "/send_verification_email", UserController, :send_verification_email
 
+    
     get "/public/documents", PublicDocumentController, :index
     get "/public/documents/:id", PublicDocumentController, :show
 

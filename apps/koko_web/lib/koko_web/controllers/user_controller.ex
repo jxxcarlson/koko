@@ -3,6 +3,8 @@ defmodule Koko.Web.UserController do
 
   plug :scrub_params, "user" when action in [:create]
 
+  plug :put_layout, false
+
   alias Koko.User.Authentication
   alias Koko.User.Token
   alias Koko.User.User
@@ -85,6 +87,27 @@ defmodule Koko.Web.UserController do
       err ->  render(conn, "reply.json", %{ reply: "NOT verified"})
     end
   end 
+
+  def request_verification(conn, params) do 
+     IO.puts "request_verification"
+     render conn, "request_verification.html"
+  end 
+
+  def send_verification_email(conn, params) do 
+
+    IO.inspect params, label: "PARAMS"
+
+    # Email.email_html %{
+    #   "recipient" => user.email, 
+    #   "from" => "support@knode.io", 
+    #   "subject" => "Congratulations!",
+    #   "body" => Email.verification_letter(user)
+    # }
+
+    render(conn, "reply.json", %{ reply: "Verification email sent" })
+
+  end 
+
 
   def send_confirmation_email(conn, user) do
    
