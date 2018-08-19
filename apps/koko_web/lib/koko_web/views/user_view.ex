@@ -22,7 +22,8 @@ defmodule Koko.Web.UserView do
       active: user.active,
       documentCount: user.document_count,
       mediaCount: user.media_count,
-      verified: user.verified
+      verified: user.verified,
+      public: user.public
     }
   end
 

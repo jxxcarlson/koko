@@ -15,7 +15,7 @@ defmodule Koko.User.User do
     field :password_hash, :string
     field :password, :string, virtual: true
     field :username, :string
-    field :public, :boolean, default: true
+    field :public, :boolean, default: false
     field :document_ids, {:array, :integer}
     field :current_document_id, :integer
     field :active, :boolean
