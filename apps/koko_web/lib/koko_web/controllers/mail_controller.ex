@@ -22,14 +22,13 @@ defmodule Koko.Web.MailController do
   # params: %{"subject" => SUBJECT, "recipient" => RECIPIENT, "body" => BODY}
   def mail(conn, params) do
     IO.inspect params
-     with {:ok, user_id} <- Token.user_id_from_header(conn),
-     do
+     with {:ok, user_id} <- Token.user_id_from_header(conn) do
        if user_id == 1 do 
          Email.email(params)
          render(conn, "reply.json", message: "Email sent for #{params["recipient"]}")
        else 
         render(conn, "error.json", error: "Mailer error")
-       end
+        end
      else
        _ -> render(conn, "error.json", error: "Mailer error")
      end
