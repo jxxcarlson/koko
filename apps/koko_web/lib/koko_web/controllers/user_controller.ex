@@ -9,6 +9,7 @@ defmodule Koko.Web.UserController do
   alias Koko.Repo
   alias Koko.Document.DocManager
   alias Koko.Document.Search
+  alias Koko.Email
 
 
   action_fallback Koko.Web.FallbackController
@@ -64,14 +65,26 @@ defmodule Koko.Web.UserController do
     end
   end
 
+  def verify(conn, params) do
+    IO.inspect params, label: "PARAMS"
+    token = params["token"]
+    with {:ok, user_id} <- Token.user_id_from_header(conn) do
+      {:ok, username} = Token.username_from_header(conn) 
+      render(conn, "reply.json", %{ reply: "#{username}: verified"}) 
+    else 
+      err ->  render(conn, "reply.json", %{ reply: "NOT verified"})
+    end
+  end 
+
   def send_confirmation_email(conn, user) do
-    message = Email.welcome_letter(user)
+   
     Email.email_html %{
-        recipient: user.email, 
-        from: "support@knode.io", 
-        subject: "Congratulatins",
-        body: message
+        "recipient" => user.email, 
+        "from" => "support@knode.io", 
+        "subject" => "Congratulations!",
+        "body" => Email.welcome_letter(user)
       }
+
     render(conn, "reply.json", %{ reply: "Verification email sent to #{user.email}" })  
   end
 
