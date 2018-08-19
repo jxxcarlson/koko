@@ -66,10 +66,17 @@ defmodule Koko.Web.UserController do
   end
 
   def verify(conn, params) do
-    IO.inspect params, label: "PARAMS"
     token = params["token"]
-    with {:ok, user_id} <- Token.user_id_from_header(conn) do
-      {:ok, username} = Token.username_from_header(conn) 
+    with true <- Token.authenticated token do
+      {:ok, payload} = Token.payload token
+      username = payload["username"]
+      user_id = payload["user_id"]
+      Email.email_plain %{
+        "recipient" => user.email, 
+        "from" => "support@knode.io", 
+        "subject" => "Verified!",
+        "body" => "Congratulations, #{username}, your account is now verified.\n\n-- the kNode team"
+      }
       render(conn, "reply.json", %{ reply: "#{username}: verified"}) 
     else 
       err ->  render(conn, "reply.json", %{ reply: "NOT verified"})
