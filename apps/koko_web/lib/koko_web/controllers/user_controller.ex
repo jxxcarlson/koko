@@ -72,6 +72,8 @@ defmodule Koko.Web.UserController do
       username = payload["username"]
       user_id = payload["user_id"]
       user = Repo.get(User, user_id)
+      cs = User.changest(user, %{verified: true})
+      Repo.update(cs)
       Email.email_plain %{
         "recipient" => user.email, 
         "from" => "support@knode.io", 
