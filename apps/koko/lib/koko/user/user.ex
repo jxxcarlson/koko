@@ -21,6 +21,7 @@ defmodule Koko.User.User do
     field :active, :boolean
     field :document_count, :integer
     field :media_count, :integer
+    field :verified, :boolean, default: false
     timestamps()
   end
 
@@ -29,14 +30,14 @@ defmodule Koko.User.User do
   def changeset(%User{} = user, attrs) do
     user
     |> cast(attrs, [:name, :username, :email, :password, :password_hash, :admin, :blurb,
-      :public, :document_ids, :current_document_id, :active, :document_count, :media_count])
+      :public, :document_ids, :current_document_id, :active, :document_count, :media_count, :verified])
     |> validate_required([:name, :username, :email, :password])
   end
 
   def safe_changeset(%User{} = user, attrs) do
     user
     |> cast(attrs, [:name,  :blurb,
-      :public, :document_ids, :current_document_id, :active, :document_count, :media_count])
+      :public, :document_ids, :current_document_id, :active, :document_count, :media_count, :verified])
   end
 
   def minimal_changeset(%User{} = user, attrs) do
