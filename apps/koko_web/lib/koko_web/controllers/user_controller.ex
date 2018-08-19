@@ -82,9 +82,9 @@ defmodule Koko.Web.UserController do
         "subject" => "Verified!",
         "body" => "Congratulations, #{username}, your account is now verified.\n\n-- the kNode team"
       }
-      render(conn, "reply.json", %{ reply: "#{username}: verified"}) 
+      render(conn, "account_is_verified.html") 
     else 
-      err ->  render(conn, "reply.json", %{ reply: "NOT verified"})
+      err ->  render(conn, "sorry_not_verified.html")
     end
   end 
 
@@ -105,7 +105,7 @@ defmodule Koko.Web.UserController do
       "body" => Email.verification_letter(user)
     }
 
-    render(conn, "reply.json", %{ reply: "Verification email sent" })
+    render(conn, "verification_link_sent.html")
 
   end 
 
