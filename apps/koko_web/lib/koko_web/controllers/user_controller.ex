@@ -72,7 +72,7 @@ defmodule Koko.Web.UserController do
       username = payload["username"]
       user_id = payload["user_id"]
       user = Repo.get(User, user_id)
-      cs = User.changeset(user, %{verified: true})
+      cs = User.safe_changeset(user, %{verified: true})
       Repo.update(cs)
       Email.email_plain %{
         "recipient" => user.email, 
