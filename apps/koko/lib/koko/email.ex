@@ -19,7 +19,7 @@ defmodule Koko.Email do
     |> to(params["recipient"])
     |> from("support@node.io")
     |> subject(params["subject"])
-    |> html_body(params["body"])
+    |> html(params["body"])
     |> Mailer.deliver_now
   end
 
@@ -30,7 +30,7 @@ defmodule Koko.Email do
     |> to(params["recipient"])
     |> from("support@node.io")
     |> subject(params["subject"])
-    |> text_body(params["body"])
+    |> text(params["body"])
     |> Mailer.deliver_now
   end
 
