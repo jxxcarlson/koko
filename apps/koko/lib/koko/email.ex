@@ -56,23 +56,23 @@ The kNode Team
 """
 end
 
-# def verify_letter(user) do
-#   {:ok, token} = Token.get(user.id, user.username, 30*60*1000)
-#   """
-# <p>
-# Dear #{user.username}
-# </p>
+def verification_letter(user) do
+  {:ok, token} = Token.get(user.id, user.username, 30*60*1000)
+  """
+<p>
+Dear #{user.username}
+</p>
 
-# <p>Please
-# <a href="#{Configuration.host}/api/verify/#{token}" >click on this link</a> to activate
-# your account.</p>
+<p>Please
+<a href="#{Configuration.host}/api/verify/#{token}" >click on this link</a> to activate
+your account.</p>
 
-# <br>
-# Regards,
-# <br>
-# The kNode Team
+<br>
+Regards,
+<br>
+The kNode Team
 
-# """
-# end
+"""
+end
 
 end

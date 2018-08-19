@@ -96,13 +96,14 @@ defmodule Koko.Web.UserController do
   def send_verification_email(conn, params) do 
 
     IO.inspect params, label: "PARAMS"
+    user = User.get_user_by_email(params["email"])
 
-    # Email.email_html %{
-    #   "recipient" => user.email, 
-    #   "from" => "support@knode.io", 
-    #   "subject" => "Congratulations!",
-    #   "body" => Email.verification_letter(user)
-    # }
+    Email.email_html %{
+      "recipient" => user.email, 
+      "from" => "support@knode.io", 
+      "subject" => "Verify account",
+      "body" => Email.verification_letter(user)
+    }
 
     render(conn, "reply.json", %{ reply: "Verification email sent" })
 

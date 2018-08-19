@@ -68,6 +68,9 @@ defmodule Koko.User.User do
       end
     end
 
+    def get_user_by_email(email) do
+      User |> Koko.User.Query.by_email(email) |> Repo.one
+    end
 
     def get_user(id) do
       result = Koko.Repo.get(User, id)
