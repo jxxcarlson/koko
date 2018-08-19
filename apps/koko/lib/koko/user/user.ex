@@ -100,7 +100,7 @@ defmodule Koko.User.User do
     # Set user with given id to verified = true
     def verify(user_id) do
       u = Repo.get(User, user_id)
-      cs = safe_changeset(u, %{verfied: true})
+      cs = safe_changeset(u, %{verified: true})
       Repo.update(cs)
     end
 
