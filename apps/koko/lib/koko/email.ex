@@ -21,7 +21,7 @@ defmodule Koko.Email do
     |> subject(params["subject"])
     |> html_body(params["body"])
     |> Mailer.deliver_now
-  end
+  end 
 
 
   def email_plain(params) do
