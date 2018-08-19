@@ -104,4 +104,12 @@ defmodule Koko.User.User do
       Repo.update(cs)
     end
 
+    # Set user with given id to verified = false
+    def unverify(user_id) do
+      u = Repo.get(User, user_id)
+      cs = safe_changeset(u, %{verified: false})
+      Repo.update(cs)
+    end
+  
+
 end
