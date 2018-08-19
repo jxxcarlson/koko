@@ -20,7 +20,7 @@ defmodule Koko.Email do
     IO.puts "Email.email, sending to #{params["recipient"]}"
     new_email
     |> to(params["recipient"])
-    |> from("support@node.io")
+    |> from("support@knode.io")
     |> subject(params["subject"])
     |> html_body(params["body"])
     |> Mailer.deliver_now
@@ -31,7 +31,7 @@ defmodule Koko.Email do
     IO.puts "Email.email, sending to #{params["recipient"]}"
     new_email
     |> to(params["recipient"])
-    |> from("support@node.io")
+    |> from("support@knode.io")
     |> subject(params["subject"])
     |> text_body(params["body"])
     |> Mailer.deliver_now
