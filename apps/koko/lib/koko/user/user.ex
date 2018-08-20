@@ -42,7 +42,7 @@ defmodule Koko.User.User do
 
   def minimal_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:blurb])
+    |> cast(attrs, [:blurb, :public])
   end
 
   def user_state_changeset(%User{} = user, attrs) do
