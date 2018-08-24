@@ -34,6 +34,9 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
      "authorname" => 4,
      "public_user" => 4,
      "days_before" => 4,
+     "created" => 4,
+     "updated" => 4,
+     "viewed" => 4,
      "text" => 3,
      "public" => 2,
      "is_master" => 3,
@@ -110,6 +113,12 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
           has_identifier_suffix(query, arg)
       {"days_before", days} ->
          days_before(query, days)
+      {"created", days} ->
+        created(query, days)
+      {"updated", days} ->
+        updated(query, days)
+      {"viewed", days} ->
+        viewed(query, days)
       {"limit", _} ->
           has_limit(query, arg)
       {"is_master","yes"} ->
@@ -169,6 +178,38 @@ alias Koko.DocManager.Query; alias Koko.DocManager.Document; alias Koko.Repo; al
      start_date = Date.add(today,-k)
      from d in query, where: fragment("?::date", d.inserted_at) >= ^start_date
   end
+
+  def days_before(query, days_ago) do
+    # date = ~D[2018-04-30]
+    today = Date.utc_today
+    {k, _} = days_ago |> Integer.parse
+    start_date = Date.add(today,-k)
+    from d in query, where: fragment("?::date", d.inserted_at) >= ^start_date
+ end
+
+ def created(query, created) do
+  # date = ~D[2018-04-30]
+  today = Date.utc_today
+  {k, _} = created |> Integer.parse
+  start_date = Date.add(today,-k)
+  from d in query, where: fragment("?::date", d.inserted_at) >= ^start_date
+end
+
+def updated(query, updated) do
+  # date = ~D[2018-04-30]
+  today = Date.utc_today
+  {k, _} = updated |> Integer.parse
+  start_date = Date.add(today,-k)
+  from d in query, where: fragment("?::date", d.updated_at) >= ^start_date
+end
+
+def viewed(query, viewed) do
+  # date = ~D[2018-04-30]
+  today = Date.utc_today
+  {k, _} = viewed |> Integer.parse
+  start_date = Date.add(today,-k)
+  from d in query, where: fragment("?::date", d.viewed_at) >= ^start_date
+end
 
   # Search.by_query_string(:document,"has_children=yes", []) |> length
   def is_master(query) do
