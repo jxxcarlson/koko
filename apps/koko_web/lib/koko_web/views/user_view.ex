@@ -23,7 +23,8 @@ defmodule Koko.Web.UserView do
       documentCount: user.document_count,
       mediaCount: user.media_count,
       verified: user.verified,
-      public: user.public
+      public: user.public,
+      created: user.inserted_at |> Calendar.NaiveDateTime.to_date_time_utc |> Calendar.DateTime.Format.unix
     }
   end
 
