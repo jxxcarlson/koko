@@ -44,7 +44,7 @@ defmodule Koko.Web.DocumentView do
       docType: document.attributes["doc_type"] || "standard",
       archive: document.attributes["archive"] || "default",
       version: document.attributes["version"] || 0,
-      lastViewed: document.viewed_at |> Calendar.NaiveDateTime.to_date_time_utc |> Calendar.DateTime.Format.unix,
+      lastViewed: document.viewed_at |> ensureNonNilDate |> Calendar.NaiveDateTime.to_date_time_utc |> Calendar.DateTime.Format.unix,
       created: document.inserted_at |> Calendar.NaiveDateTime.to_date_time_utc |> Calendar.DateTime.Format.unix,
       lastModified: document.updated_at |> Calendar.NaiveDateTime.to_date_time_utc |> Calendar.DateTime.Format.unix
     }
@@ -52,6 +52,13 @@ defmodule Koko.Web.DocumentView do
 
    # document.viewed_at |> DateTime.to_unix(:milliseconds),
 
+   def ensureNonNilDate(arg) do 
+      if is_nil arg do 
+        ~N[2018-01-01 10:49:04.321812]
+      else 
+         arg
+      end 
+   end
 
   def to_posix_null{datetime} do 
     IO.inspect(datetime, label: "dt")
