@@ -128,7 +128,7 @@ defmodule Koko.Document.DocManager do
   def create_document(attrs, author_id) do
     author = Repo.get(User, author_id)
     complete_attributes = Map.merge Document.default_attributes, (attrs["attributes"] || %{})
-    additional_attrs = %{ "attributes" => complete_attributes, "author_id" => author_id, "author_name" => author.name } 
+    additional_attrs = %{ "attributes" => complete_attributes, "author_id" => author_id, "author_name" => author.username } 
     attrs = Map.merge(attrs, additional_attrs)
     result = %Document{}
       |> Document.changeset(attrs)
