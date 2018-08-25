@@ -44,21 +44,27 @@ defmodule Koko.Web.DocumentView do
       docType: document.attributes["doc_type"] || "standard",
       archive: document.attributes["archive"] || "default",
       version: document.attributes["version"] || 0,
-      lastViewed: document.viewed_at |> DateTime.to_unix(:milliseconds),
-      created: document.inserted_at |> to_posix2,
-      lastModified: document.updated_at |> to_posix2
+      lastViewed: document.viewed_at |> Calendar.NaiveDateTime.to_date_time_utc |> Calendar.DateTime.Format.unix,
+      created: document.inserted_at |> Calendar.NaiveDateTime.to_date_time_utc |> Calendar.DateTime.Format.unix,
+      lastModified: document.updated_at |> Calendar.NaiveDateTime.to_date_time_utc |> Calendar.DateTime.Format.unix
     }
   end
 
+   # document.viewed_at |> DateTime.to_unix(:milliseconds),
+
+
+  def to_posix_null{datetime} do 
+    IO.inspect(datetime, label: "dt")
+    0
+  end
+
+
+  def to_posix{datetime} do 
+    {{y, mo, d}, {h, m, s, ms}} = datetime
+    31557600*y + 2592000*mo + d*86400
+  end
+
   def to_posix1(date_time) do 
-      # IO.inspect date_time, label: "BADASS (1) !!"
-      # if is_nil(date_time) do 
-      #   0 
-      # else 
-      #   DateTime.to_unix(date_time)*1000
-      # end
-      # IO.inspect date_time, label: "date_timeXYZ"
-      # 
       0
   end
 
@@ -69,12 +75,15 @@ defmodule Koko.Web.DocumentView do
   #   DateTime.to_unix(date_time)*1000
     
   def to_posix2(naive_date_time) do
-    with {:ok, dt} =  DateTime.from_naive(naive_date_time, "Etc/UTC")  do 
+    with {:ok, dt} =  DateTime.from_naive(naive_date_time, "Etc/UTC")  
+    do 
      dt |> DateTime.to_unix(:milliseconds)
     else
       error -> 0
     end
   end
+
+    
 
   def render("document.json", %{document: document}) do
     %{id: document.id,

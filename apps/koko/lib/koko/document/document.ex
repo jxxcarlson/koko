@@ -21,7 +21,7 @@ defmodule Koko.Document.Document do
     embeds_many :children, Child, on_replace: :delete
     field :parent_id, :integer
     field :viewed_at, :utc_datetime
-
+   
     timestamps()
   end
 
