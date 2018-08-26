@@ -192,7 +192,12 @@ defmodule Koko.Document.MasterDocument do
   end
 
   def stringOfChild(child) do
-    "#{string_of_level(child.level)} #{child.doc_id} #{child.title} // #{child.comment}\n"
+    IO.puts "COMMENT:#{child.comment}"
+    if child.comment == "" || child.comment == "comment" do 
+      "#{string_of_level(child.level)} #{child.doc_id} #{child.title}\n"
+    else 
+       "#{string_of_level(child.level)} #{child.doc_id} #{child.title} // #{child.comment}\n"
+    end 
   end
 
   def updated_text_from_children(content, children) do
