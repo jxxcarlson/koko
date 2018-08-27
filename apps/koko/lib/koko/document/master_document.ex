@@ -19,11 +19,6 @@ defmodule Koko.Document.MasterDocument do
     |> String.to_integer
   end
 
-
-  def parse(content) do
-    parse_string(content)
-  end
-
   def set_defaults(changeset, _document) do
     # if document.attributes["doc_type"] == "master" do
     #   if !String.contains?(document.content, table_of_contents_separator()) do
@@ -108,37 +103,31 @@ defmodule Koko.Document.MasterDocument do
     end
   end
 
-  def table_of_contents_separator do
-    "++ Table of Contents\n"
-  end
-
-  def parse_string(input) do
-    [a|b] = String.split(input, table_of_contents_separator())
-    str = if b == [] do
-      a
-    else
-      b |> hd
-    end
-
-    String.split(str, ["\n", "\r", "\r\n"])
+  def parse(input) do
+    String.split(input, ["\n", "\r", "\r\n"])
       |> Enum.map(fn(line) -> String.trim(line) end) # trim line
       |> Enum.with_index(1)                          # map line to {line, line_number}
       |> Enum.map(fn(item) -> parse_line(item) end)
   end
 
+  # parse_line {line, N} 
+  #      => {:blank, N, ""}
+  #      => {:item, N, child_document_item}
+  #      => {:comment, N, line}
+  #      => {:error, N, ["unrecognized line", line]}
   def parse_line(item) do
     {line, line_number} = item
     words = line |> String.split(" ")
       |> Enum.filter(fn(word) -> word != "" end)
     cond do
-      length(words) == 0 ->
-        {:blank, line_number, ""}
-      hd(words) =~ ~r/^=*$/ ->
+      length(words) == 0 ->                      # blank line
+        {:blank, line_number, ""} 
+      hd(words) =~ ~r/^=*$/ ->                   # the line begins with =
         parse_item(words, line_number, line)
-      hd(words) == "//" ->
+      hd(words) == "//" ->                       # comment line
         {:comment, line_number, line}
       true ->
-        {:error, line_number, ["unrecognized line", line]}
+        {:error, line_number, ["unrecognized line", line]}  # error
     end
   end
 
@@ -167,10 +156,19 @@ defmodule Koko.Document.MasterDocument do
     end
   end
 
+  # Typical lines:
+  # == 123 Atoms and molecules // This is a est
+  # == 123
+  #
+  # parse_item(words, line_number, line) 
+  #   => {:item, N, child_document_item}
+  #   => {:error, N, "Bad line", line}
+  # where N is the line
   defp parse_item(words, line_number, line) do
     [firstWord|tail] = words
     level = String.length firstWord
 
+    # Get the trailing comment, if any
     [_|tail2] = String.split(line, "//")
     comment = if tail2 == [] do
       ""
@@ -178,13 +176,15 @@ defmodule Koko.Document.MasterDocument do
       tail2 |> hd |> String.trim
     end
 
+    # First, get the document id. If successful,
+    # get the corresponding document
     with {:ok, id} <- get_id(tail),
       {:ok, document} <- get_document(id)
     do
-      toc_item = %Child{doc_id: id, level: level,
+      child_document_item = %Child{doc_id: id, level: level,
         title: document.title, doc_identifier: document.identifier,
         comment: comment}
-      {:item, line_number, toc_item}
+      {:item, line_number, child_document_item}
     else
       err -> {:error, line_number, "Bad line", line}
     end
@@ -202,18 +202,11 @@ defmodule Koko.Document.MasterDocument do
 
   def updated_text_from_children(content, children) do
     content = if String.ends_with? content, "\n" do content else content <> "\n" end
-    content = if !(String.contains? content, table_of_contents_separator())  do
-      content <> table_of_contents_separator() <> "\n"
-    else
-      content
-    end
-    top_content = String.split(content, table_of_contents_separator()) |> hd
-    toc_text = toc_from_children(children)
-    top_content <> table_of_contents_separator() <> toc_text
+    toc_text = "\n\n" <> toc_from_children(children)
   end
 
   def update_text_from_children({children, changeset}, document, content) do
-    if document.attributes["doc_type"] == "master" && String.contains? content, table_of_contents_separator() do
+    if document.attributes["doc_type"] == "master" do
       Ecto.Changeset.put_change(changeset, :content, updated_text_from_children(content, children))
     else
       changeset
