@@ -47,7 +47,7 @@ defmodule Koko.Document.Document do
 
   def default_attributes() do
     %{ "public" => false,
-       "text_type" => "adoc",
+       "text_type" => "latex",
        "doc_type" => "standard",
        "level" => 0
      }
