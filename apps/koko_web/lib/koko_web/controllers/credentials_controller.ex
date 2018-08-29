@@ -35,7 +35,7 @@ defmodule Koko.Web.CredentialsController do
 
   def make_presigned_url(bucket, path, mime_type) do
     # query_params = [{"ContentType", mime_type}, {"acl", "public-read"}]
-    query_params = [{"ContentType", mime_type}]
+    query_params = [{"ContentType", mime_type}, {"ContentDisposition", "inline"}]
     presign_options = [query_params: query_params]
     {:ok, presigned_url} = ExAws.Config.new(:s3) 
       |> ExAws.S3.presigned_url(:put, bucket, path, presign_options)
