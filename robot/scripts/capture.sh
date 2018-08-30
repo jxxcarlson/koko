@@ -1,10 +1,10 @@
 color=`tput setaf 48`
 reset=`tput setaf 7`
 
-echo
-echo "${color}Removing latest dump and capturing database at Heroku${reset}"
-rm latest.dump
-heroku pg:backups:capture
+# echo
+# echo "${color}Removing latest dump and capturing database at Heroku${reset}"
+# rm latest.dump
+# heroku pg:backups:capture
 
 echo
 echo "${color}Downloading backup${reset}"
