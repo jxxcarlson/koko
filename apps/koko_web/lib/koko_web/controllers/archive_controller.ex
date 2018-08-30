@@ -71,10 +71,16 @@ defmodule Koko.Web.ArchiveController do
       version = Document.get_version(document) + 1
       title = document.title
       characters = String.length(document.content)
+      
+      # |> render("archive_document.html", doc_id: doc_id, title: title,
+      #    version: version, characters: characters, bucket: bucket, archive_name: archive_name)
+
+      document = Repo.get(Document, String.to_integer(doc_id))
+      links = Koko.Archive.Item.links_for_document(document)
+  
       conn
       |> put_status(:created)
-      |> render("archive_document.html", doc_id: doc_id, title: title,
-         version: version, characters: characters, bucket: bucket, archive_name: archive_name)
+      |> render("index.html", links: links, title: document.title)
     else
       {:error, error} -> conn |> render("archive_document_error.html",
          doc_id: doc_id )
