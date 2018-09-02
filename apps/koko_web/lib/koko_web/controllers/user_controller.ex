@@ -141,6 +141,8 @@ defmodule Koko.Web.UserController do
   end
 
   def update(conn, %{"id" => id, "user" => payload}) do
+    IO.puts "UPDATE USER  #{id}"
+    IO.inspect payload, label: "PAYLOAD"
     user_params = Koko.Utility.project2map(payload)
     user = Authentication.get_user!(id)
     with {:ok, user_id} <- Token.user_id_from_header(conn) ,

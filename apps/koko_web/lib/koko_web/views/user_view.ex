@@ -11,6 +11,7 @@ defmodule Koko.Web.UserView do
   end
 
   def render("user.json", %{user: user}) do
+    IO.puts "RENDER ME #{hd user.document_ids}"
     %{id: user.id,
       name: user.name,
       username: user.username,
@@ -24,7 +25,8 @@ defmodule Koko.Web.UserView do
       mediaCount: user.media_count,
       verified: user.verified,
       public: user.public,
-      created: user.inserted_at |> Calendar.NaiveDateTime.to_date_time_utc |> Calendar.DateTime.Format.unix
+      created: user.inserted_at |> Calendar.NaiveDateTime.to_date_time_utc |> Calendar.DateTime.Format.unix,
+      documentIds: user.document_ids
     }
   end
 
