@@ -66,25 +66,29 @@ defmodule Koko.Document.Latex do
   \\newcommand{\\ellie}[1]{\\href{#1}{Link to Ellie}}
   % \\newcommand{\\image}[3]{\\includegraphics[width=3cm]{#1}}
 
-  \\newcommand{\\imagecenter}[3]{{
+\\newcommand{\\mdash}{---}
+\\newcommand{\\ndash}{--}
+
+\\newcommand{\\imagecenter}[3]{{
   \\centering
-    \\includegraphics[width=0.30\\textwidth]{#1}
+    \\includegraphics[width=#3]{#1}
     \\vglue-10pt \\par {#2}
   }}
+    
 
-  \\newcommand{\\imagefloatright}[3]{
-    \\begin{wrapfigure}{R}{0.30\\textwidth}
-    \\includegraphics[width=0.30\\textwidth]{#1}
-    \\caption{#2}
-    \\end{wrapfigure}
-  }
+\\newcommand{\\imagefloatright}[3]{
+  \\begin{wrapfigure}{R}{0.30\\textwidth}
+  \\includegraphics[width=#3]{#1}
+  \\caption{#2}
+  \\end{wrapfigure}
+}
 
-  \\newcommand{\\imagefloatleft}[3]{
-    \\begin{wrapfigure}{L}{0.3-\\textwidth}
-    \\includegraphics[width=0.30\\textwidth]{#1}
-    \\caption{#2}
-    \\end{wrapfigure}
-  }
+\\newcommand{\\imagefloatleft}[3]{
+  \\begin{wrapfigure}{L}{0.3-\\textwidth}
+  \\includegraphics[width=#3]{#1}
+  \\caption{#2}
+  \\end{wrapfigure}
+}
 
 
   \\newcommand{\\italic}[1]{{\\sl #1}}

@@ -113,8 +113,8 @@ defmodule Koko.Latex.Parser do
   end
 
   def  centered_image(image) do
-    width = image.attributes["width"]
-    "\\imagecenter{image/#{image.filename}}{#{image.title}}{#{width}px}"
+    {width, _} = Integer.parse image.attributes["width"]
+    "\\imagecenter{image/#{image.filename}}{#{image.title}}{#{6.0*width/700}in}"
   end
 
   def transform_text(text) do
