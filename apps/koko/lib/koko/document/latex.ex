@@ -68,6 +68,8 @@ defmodule Koko.Document.Latex do
 
 \\newcommand{\\mdash}{---}
 \\newcommand{\\ndash}{--}
+\\newcommand{\\bs}[1]{$\\backslash$#1}
+\\newcommand{\\texarg}[1]{\\{#1\\}}
 
 \\newcommand{\\imagecenter}[3]{{
   \\centering

@@ -118,7 +118,9 @@ defmodule Koko.Latex.Parser do
   end
 
   def transform_text(text) do
-    text |> String.replace("#", "\\#")
+    text 
+      |> String.replace("#", "\\#")
+      |> String.replace("\\backslash", "\\bs")
   end
 
 
