@@ -18,7 +18,7 @@ defmodule Koko.Web.UserView do
       token: "-",
       email: user.email,
       admin: user.admin,
-      blurb: user.blurb,
+      blurb: user.blurb || "",
       active: user.active,
       documentCount: user.document_count,
       mediaCount: user.media_count,
