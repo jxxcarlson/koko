@@ -52,8 +52,11 @@ defmodule Koko.Web.UserController do
   end
 
   def create(:success, conn, payload) do
+    IO.puts "CREATE USER"
     api_version = api_version_from_headers(conn)
     user_params = Koko.Utility.project2map(payload)
+    IO.inspect api_version, label: "api_version"
+    IO.inspect user_params, label: "user_params"
     with {:ok, %User{} = user} <- Authentication.create_user(user_params) do
       {:ok, token} = Token.get(user.id, user.username, 86400)
       user = Map.merge(user, %{token: token, blurb: "", active: true, verified: false})
@@ -105,7 +108,7 @@ defmodule Koko.Web.UserController do
       "body" => Email.verification_letter(user)
     }
 
-    render(conn, "verification_link_sent.html")
+    # render(conn, "verification_link_sent.html")
 
   end 
 
@@ -119,7 +122,8 @@ defmodule Koko.Web.UserController do
         "body" => Email.welcome_letter(user)
       }
 
-    render(conn, "reply.json", %{ reply: "Verification email sent to #{user.email}" })  
+    # render(conn, "reply.json", %{ reply: "Verification email sent to #{user.email}" }) 
+    # conn 
   end
 
   def render_for_create_user conn, api_version, user do 
