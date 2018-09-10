@@ -37,7 +37,7 @@ defmodule Koko.User.User do
   def safe_changeset(%User{} = user, attrs) do
     user
     |> cast(attrs, [:name,  :blurb,
-      :public, :document_ids, :current_document_id, :active, :document_count, :media_count, :verified])
+      :public, :document_ids, :current_document_id, :active, :document_count, :media_count, :verified, :updated_at])
   end
 
   def minimal_changeset(%User{} = user, attrs) do
