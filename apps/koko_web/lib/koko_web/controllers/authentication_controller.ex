@@ -21,7 +21,7 @@ defmodule Koko.Web.AuthenticationController do
       user_id = payload["user_id"]
       user = Repo.get(User, user_id)
       cs = User.safe_changeset(user, %{updated_at: NaiveDateTime.utc_now})
-      Repo.update(user, cs)
+      Repo.update(cs)
       IO.puts "USER.verified: #{user.verified}"
       if user.verified || true do 
           conn
