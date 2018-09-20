@@ -126,6 +126,7 @@ defmodule Koko.Document.DocManager do
 
   """
   def create_document(attrs, author_id) do
+    IO.puts "doc manager, CREATE DOCUMENT"
     author = Repo.get(User, author_id)
     complete_attributes = Map.merge Document.default_attributes, (attrs["attributes"] || %{})
     additional_attrs = %{ "attributes" => complete_attributes, "author_id" => author_id, "author_name" => author.username } 
@@ -133,6 +134,24 @@ defmodule Koko.Document.DocManager do
     result = %Document{}
       |> Document.changeset(attrs)
       |> Repo.insert()
+    {:ok, doc} = result
+    IO.puts "New document id = #{doc.id}"
+    IO.puts "Parent document id = #{doc.parent_id}"
+    IO.puts "DOC CONTENT: #{doc.content}"
+    last_word = doc.content |> String.split(" ") |> Enum.reverse |> hd
+    if String.contains?  last_word, ":" do 
+      target_doc_id_string = last_word |> String.split(":") |> tl |> hd
+    end
+    
+    if doc.parent_id > 0 do 
+      master_doc = Repo.get(Document, doc.parent_id)
+      if String.contains?  last_word, ":" do 
+        target_doc_id_string = last_word |> String.split(":") |> tl |> hd
+        MasterDocument.attach!(master_doc, "below", [["child", "#{doc.id}"], ["current", target_doc_id_string]])
+      else 
+        MasterDocument.attach!(master_doc, "at-bottom", [["child", "#{doc.id}"]])
+      end
+    end
     case result  do
       {:ok, doc} ->
         Document.set_identifier(doc)

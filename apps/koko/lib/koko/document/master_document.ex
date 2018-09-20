@@ -236,6 +236,7 @@ defmodule Koko.Document.MasterDocument do
   # This will place document 123 below document 456
   # in the children of `document`.
   def attach(document, position, remaining_commands) do
+    IO.inspect remaining_commands, label: "remaining_commands"
     [child_command|remaining_commands] = remaining_commands
     ["child", child_id_str] = child_command # error handling
     child_id = String.to_integer(child_id_str)

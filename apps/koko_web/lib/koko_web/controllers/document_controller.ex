@@ -94,6 +94,7 @@ defmodule Koko.Web.DocumentController do
   information in that token is used to define ownership of the document.
   """
   def create(conn, %{"document" => payload}) do
+    IO.puts "doc controller, CREATE"
     api_version = api_version_from_headers(conn)
     document_params = Koko.Utility.project2map(payload)
     with  {:ok, user_id} <- Token.user_id_from_header(conn),
