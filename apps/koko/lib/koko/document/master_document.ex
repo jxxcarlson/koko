@@ -219,9 +219,10 @@ defmodule Koko.Document.MasterDocument do
 
   ############
 
+  # Uset set_parent_safe to prevent children from being "stolen"
   def adopt_children(master_document) do
     master_document.children
-    |> Enum.map( fn(child) -> Document.set_parent(Document.child_document(child), master_document.id) end)
+    |> Enum.map( fn(child) -> Document.set_parent_safe(Document.child_document(child), master_document.id) end)
   end
 
   # ---

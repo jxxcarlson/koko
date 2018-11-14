@@ -209,6 +209,16 @@ defmodule Koko.Document.Document do
     Repo.update(cs)
   end
 
+  # If parent_id of document is not set,
+  # set it to id.
+  def set_parent_safe(document, id) do
+    parent_id = document.parent_id || 0
+    if parent_id > 0 do 
+      cs = changeset(document, %{parent_id: id})
+      Repo.update(cs)
+    end  
+  end
+
   def set_tags(document, tags) do
     cs = changeset(document, %{tags:  tags})
     Repo.update(cs)
