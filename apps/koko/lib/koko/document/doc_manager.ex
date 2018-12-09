@@ -37,9 +37,9 @@ defmodule Koko.Document.DocManager do
 
   def list_children(:generic, user_id, id) do
     master_document = Repo.get(Document, id)
-    if master_document.attributes["public"] do 
-      list_children(:public, id) 
-    else 
+    if master_document.attributes["public"] do
+      list_children(:public, id)
+    else
       list_children(:user, user_id, id)
     end
   end
@@ -129,8 +129,10 @@ defmodule Koko.Document.DocManager do
     IO.puts "doc manager, CREATE DOCUMENT"
     author = Repo.get(User, author_id)
     complete_attributes = Map.merge Document.default_attributes, (attrs["attributes"] || %{})
-    additional_attrs = %{ "attributes" => complete_attributes, "author_id" => author_id, "author_name" => author.username } 
+    additional_attrs = %{ "attributes" => complete_attributes,
+      "author_id" => author_id, "author_name" => author.username, "parent_id" => 0 }
     attrs = Map.merge(attrs, additional_attrs)
+    IO.inspect attrs, label: "ATTRIBUTES"
     result = %Document{}
       |> Document.changeset(attrs)
       |> Repo.insert()
@@ -139,16 +141,16 @@ defmodule Koko.Document.DocManager do
     IO.puts "Parent document id = #{doc.parent_id}"
     IO.puts "DOC CONTENT: #{doc.content}"
     last_word = doc.content |> String.split(" ") |> Enum.reverse |> hd
-    if String.contains?  last_word, ":" do 
+    if String.contains?  last_word, ":" do
       target_doc_id_string = last_word |> String.split(":") |> tl |> hd
     end
-    
-    if doc.parent_id > 0 do 
+
+    if doc.parent_id > 0 do
       master_doc = Repo.get(Document, doc.parent_id)
-      if String.contains?  last_word, ":" do 
+      if String.contains?  last_word, ":" do
         target_doc_id_string = last_word |> String.split(":") |> tl |> hd
         MasterDocument.attach!(master_doc, "below", [["child", "#{doc.id}"], ["current", target_doc_id_string]])
-      else 
+      else
         MasterDocument.attach!(master_doc, "at-bottom", [["child", "#{doc.id}"]])
       end
     end
