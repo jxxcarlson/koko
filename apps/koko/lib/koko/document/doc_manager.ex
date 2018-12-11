@@ -130,7 +130,7 @@ defmodule Koko.Document.DocManager do
     author = Repo.get(User, author_id)
     complete_attributes = Map.merge Document.default_attributes, (attrs["attributes"] || %{})
     additional_attrs = %{ "attributes" => complete_attributes,
-      "author_id" => author_id, "author_name" => author.username, "parent_id" => 0 }
+      "author_id" => author_id, "author_name" => author.username }
     attrs = Map.merge(attrs, additional_attrs)
     IO.inspect attrs, label: "ATTRIBUTES"
     result = %Document{}
@@ -145,15 +145,19 @@ defmodule Koko.Document.DocManager do
       target_doc_id_string = last_word |> String.split(":") |> tl |> hd
     end
 
-    if doc.parent_id > 0 do
-      master_doc = Repo.get(Document, doc.parent_id)
-      if String.contains?  last_word, ":" do
-        target_doc_id_string = last_word |> String.split(":") |> tl |> hd
-        MasterDocument.attach!(master_doc, "below", [["child", "#{doc.id}"], ["current", target_doc_id_string]])
-      else
-        MasterDocument.attach!(master_doc, "at-bottom", [["child", "#{doc.id}"]])
-      end
-    end
+    # THE FUNCIONALITY COMMENTED OUT IS TAKEN CARE OF
+    # IN doc_manager.execute_query_string_commands
+    #
+    # if doc.parent_id > 0 do
+    #   IO.puts "EXECUTE QUERY STRING (ATTACH : 1)"
+    #   master_doc = Repo.get(Document, doc.parent_id)
+    #   if String.contains?  last_word, ":" do
+    #     target_doc_id_string = last_word |> String.split(":") |> tl |> hd
+    #     MasterDocument.attach!(master_doc, "below", [["child", "#{doc.id}"], ["current", target_doc_id_string]])
+    #   else
+    #     MasterDocument.attach!(master_doc, "at-bottom", [["child", "#{doc.id}"]])
+    #   end
+    # end
     case result  do
       {:ok, doc} ->
         Document.set_identifier(doc)
@@ -217,6 +221,7 @@ defmodule Koko.Document.DocManager do
   def execute_query_string_commands(document, query_string) do
     [command|remaining_commands] = String.split(query_string, "&") |> Enum.map(fn(item) -> String.split(item, "=") end)
     IO.inspect [command|remaining_commands], label: "[command|remaining_commands]"
+    IO.puts "EXECUTE QUERY STRING (ATTACH : 2)"
     [cmd, arg] = command
     case cmd do
       "adopt_children" ->

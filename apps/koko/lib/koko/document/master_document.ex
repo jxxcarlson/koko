@@ -110,7 +110,7 @@ defmodule Koko.Document.MasterDocument do
       |> Enum.map(fn(item) -> parse_line(item) end)
   end
 
-  # parse_line {line, N} 
+  # parse_line {line, N}
   #      => {:blank, N, ""}
   #      => {:item, N, child_document_item}
   #      => {:comment, N, line}
@@ -121,7 +121,7 @@ defmodule Koko.Document.MasterDocument do
       |> Enum.filter(fn(word) -> word != "" end)
     cond do
       length(words) == 0 ->                      # blank line
-        {:blank, line_number, ""} 
+        {:blank, line_number, ""}
       hd(words) =~ ~r/^=*$/ ->                   # the line begins with =
         parse_item(words, line_number, line)
       hd(words) == "//" ->                       # comment line
@@ -160,7 +160,7 @@ defmodule Koko.Document.MasterDocument do
   # == 123 Atoms and molecules // This is a est
   # == 123
   #
-  # parse_item(words, line_number, line) 
+  # parse_item(words, line_number, line)
   #   => {:item, N, child_document_item}
   #   => {:error, N, "Bad line", line}
   # where N is the line
@@ -193,11 +193,11 @@ defmodule Koko.Document.MasterDocument do
 
   def stringOfChild(child) do
     IO.puts "COMMENT:#{child.comment}"
-    if child.comment == "" || child.comment == "comment" do 
+    if child.comment == "" || child.comment == "comment" do
       "#{string_of_level(child.level)} #{child.doc_id} #{child.title}\n"
-    else 
+    else
        "#{string_of_level(child.level)} #{child.doc_id} #{child.title} // #{child.comment}\n"
-    end 
+    end
   end
 
   def updated_text_from_children(content, children) do
@@ -219,7 +219,7 @@ defmodule Koko.Document.MasterDocument do
 
   ############
 
-  # Uset set_parent_safe to prevent children from being "stolen"
+  # Use set_parent_safe to prevent children from being "stolen"
   def adopt_children(master_document) do
     master_document.children
     |> Enum.map( fn(child) -> Document.set_parent_safe(Document.child_document(child), master_document.id) end)
@@ -229,8 +229,8 @@ defmodule Koko.Document.MasterDocument do
   # In `attach`, `document` is a master document,
   # 456 refers to the ID of a child of the master,
   # and 123 is the ID of a child to be added.
-  # 
-  # comand example: "child=123&current=456" 
+  #
+  # comand example: "child=123&current=456"
   # => [["child", "123"], ["current", "456"]]
   # attach(doc, "below", "child=123&current=456")
   # from QS = "attach=below&child=123&current=456"

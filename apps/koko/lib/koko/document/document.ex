@@ -21,7 +21,7 @@ defmodule Koko.Document.Document do
     embeds_many :children, Child, on_replace: :delete
     field :parent_id, :integer
     field :viewed_at, :utc_datetime
-   
+
     timestamps()
   end
 
@@ -107,7 +107,7 @@ defmodule Koko.Document.Document do
    Repo.update(cs)
   end
 
-  
+
 
   def set_archive_name(document, archive_name) do
      attributes = Map.merge(document.attributes, %{archive: archive_name})
@@ -213,10 +213,12 @@ defmodule Koko.Document.Document do
   # set it to id.
   def set_parent_safe(document, id) do
     parent_id = document.parent_id || 0
-    if parent_id > 0 do 
+    IO.inspect parent_id, label: "parent_id"
+    IO.inspect id, label: "id of parent"
+    if parent_id == 0 do
       cs = changeset(document, %{parent_id: id})
       Repo.update(cs)
-    end  
+    end
   end
 
   def set_tags(document, tags) do
