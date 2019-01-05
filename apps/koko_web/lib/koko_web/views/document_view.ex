@@ -19,7 +19,7 @@ defmodule Koko.Web.DocumentView do
     %{document: render_one(document, DocumentView, "document.json")}
   end
 
-  def render("documentRecordV2.json", %{document: document}) do 
+  def render("documentRecordV2.json", %{document: document}) do
     document_view = render("documentV2.json", %{document: document})
     %{document: document_view}
   end
@@ -33,6 +33,8 @@ defmodule Koko.Web.DocumentView do
       authorName: document.author_name || ""  ,
       title: document.title,
       content:  document.content,
+      sectionNumber:  document.section_number || 1,
+      texMacroDocumentId:  document.tex_macro_document_id || 0,
       level: document.attributes["level"] || 0,
       public: document.attributes["public"] || false,
       access: document.access || %{},
@@ -52,45 +54,45 @@ defmodule Koko.Web.DocumentView do
 
    # document.viewed_at |> DateTime.to_unix(:milliseconds),
 
-   def ensureNonNilDate(arg) do 
-      if is_nil arg do 
+   def ensureNonNilDate(arg) do
+      if is_nil arg do
         ~N[2018-01-01 10:49:04.321812]
-      else 
+      else
          arg
-      end 
+      end
    end
 
-  def to_posix_null{datetime} do 
+  def to_posix_null{datetime} do
     IO.inspect(datetime, label: "dt")
     0
   end
 
 
-  def to_posix{datetime} do 
+  def to_posix{datetime} do
     {{y, mo, d}, {h, m, s, ms}} = datetime
     31557600*y + 2592000*mo + d*86400
   end
 
-  def to_posix1(date_time) do 
+  def to_posix1(date_time) do
       0
   end
 
   # IO.inspect date_time, label: "date_timeXYZ"
-  # if date_time == nil do 
+  # if date_time == nil do
   #   0
-  # else 
+  # else
   #   DateTime.to_unix(date_time)*1000
-    
+
   def to_posix2(naive_date_time) do
-    with {:ok, dt} =  DateTime.from_naive(naive_date_time, "Etc/UTC")  
-    do 
+    with {:ok, dt} =  DateTime.from_naive(naive_date_time, "Etc/UTC")
+    do
      dt |> DateTime.to_unix(:milliseconds)
     else
       error -> 0
     end
   end
 
-    
+
 
   def render("document.json", %{document: document}) do
     %{id: document.id,
@@ -129,7 +131,7 @@ defmodule Koko.Web.DocumentView do
   def render("error.json", %{error: error}) do
     %{error: error}
   end
-  
+
   def render("reply.json", %{reply: reply}) do
     %{reply: reply}
   end

@@ -12,6 +12,8 @@ defmodule Koko.Document.Document do
     field :content, :string
     field :rendered_content, :string
     field :title, :string
+    field :section_number, :integer
+    field :tex_macro_document_id, :integer
     field :author_id, :integer
     field :author_name, :string
     field :attributes, :map
@@ -40,7 +42,7 @@ defmodule Koko.Document.Document do
     document
     |> cast(attrs, [:title, :author_id, :content, :rendered_content,
       :attributes, :access, :tags, :identifier, :parent_id, :viewed_at,
-      :author_name])
+      :author_name, :section_number, :tex_macro_document_id])
     |> cast_embed(:children)
     |> validate_required([:title, :author_id, :content])
   end
@@ -49,7 +51,9 @@ defmodule Koko.Document.Document do
     %{ "public" => false,
        "text_type" => "latex",
        "doc_type" => "standard",
-       "level" => 0
+       "level" => 0,
+       "section_number" => 1,
+       "tex_macro_document_id" => 0
      }
   end
 
