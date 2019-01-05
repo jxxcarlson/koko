@@ -299,6 +299,28 @@ defmodule Koko.Document.Document do
     end
   end
 
+  def tex_macro_id(document) do
+    tex_macro_tags = document.tags
+      |> (Enum.filter (fn(tag) -> String.starts_with? tag, "texmacros:" end))
+    if tex_macro_tags != [] do
+      tex_macro_tags
+        |> hd
+        |> (String.replace "texmacros:", "")
+        |> String.to_integer
+    else
+      0
+    end
+  end
+
+  def update_tex_macro_ref(document) do
+    cs = changeset(document, %{tex_macro_document_id: tex_macro_id(document)})
+    Repo.update(cs)
+  end
+
+  def update_all_tex_macro_refs do
+    Repo.all(Document)
+      |> (Enum.map (fn(doc) -> update_tex_macro_ref(doc) end))
+  end
 
   # Return the texmacros associated with a document
   # if there are any. Return the empty string otherwise.
