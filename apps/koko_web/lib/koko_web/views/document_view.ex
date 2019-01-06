@@ -35,6 +35,7 @@ defmodule Koko.Web.DocumentView do
       content:  document.content,
       sectionNumber:  document.section_number || 1,
       texMacroDocumentId:  document.tex_macro_document_id || 0,
+      coverArtUrl:  document.cover_art_url || "",
       level: document.attributes["level"] || 0,
       public: document.attributes["public"] || false,
       access: document.access || %{},

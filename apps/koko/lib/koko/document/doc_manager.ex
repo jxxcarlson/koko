@@ -132,7 +132,6 @@ defmodule Koko.Document.DocManager do
     additional_attrs = %{ "attributes" => complete_attributes,
       "author_id" => author_id, "author_name" => author.username }
     attrs = Map.merge(attrs, additional_attrs)
-    IO.inspect attrs, label: "ATTRIBUTES"
     result = %Document{}
       |> Document.changeset(attrs)
       |> Repo.insert()
@@ -191,7 +190,6 @@ defmodule Koko.Document.DocManager do
     default_attrs = %{ "attributes" => Document.default_attributes }
     attrs =
       Map.merge(default_attrs, attrs)
-
     document
       |> Document.changeset(attrs)
       # |> render(document)

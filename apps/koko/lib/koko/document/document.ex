@@ -14,6 +14,7 @@ defmodule Koko.Document.Document do
     field :title, :string
     field :section_number, :integer
     field :tex_macro_document_id, :integer
+    field :cover_art_url, :string
     field :author_id, :integer
     field :author_name, :string
     field :attributes, :map
@@ -42,7 +43,7 @@ defmodule Koko.Document.Document do
     document
     |> cast(attrs, [:title, :author_id, :content, :rendered_content,
       :attributes, :access, :tags, :identifier, :parent_id, :viewed_at,
-      :author_name, :section_number, :tex_macro_document_id])
+      :author_name, :section_number, :tex_macro_document_id, :cover_art_url])
     |> cast_embed(:children)
     |> validate_required([:title, :author_id, :content])
   end
@@ -53,7 +54,8 @@ defmodule Koko.Document.Document do
        "doc_type" => "standard",
        "level" => 0,
        "section_number" => 1,
-       "tex_macro_document_id" => 0
+       "tex_macro_document_id" => 0,
+       "cover_art_url" => ""
      }
   end
 
@@ -320,6 +322,29 @@ defmodule Koko.Document.Document do
   def update_all_tex_macro_refs do
     Repo.all(Document)
       |> (Enum.map (fn(doc) -> update_tex_macro_ref(doc) end))
+  end
+
+  def get_cover_art_url(document) do
+    tags = document.tags
+      |> (Enum.filter (fn(tag) -> String.starts_with? tag, "coverArt:" end))
+    if tags != [] do
+      tags
+        |> hd
+        |> (String.replace "coverArt:", "")
+        |> String.trim
+    else
+      0
+    end
+  end
+
+    def update_cover_art_url(document) do
+    cs = changeset(document, %{cover_art_url: get_cover_art_url(document)})
+    Repo.update(cs)
+  end
+
+  def update_all_cover_art_urls do
+    Repo.all(Document)
+      |> (Enum.map (fn(doc) -> update_cover_art_url(doc) end))
   end
 
   # Return the texmacros associated with a document
