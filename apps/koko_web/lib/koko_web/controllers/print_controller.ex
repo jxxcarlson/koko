@@ -36,5 +36,10 @@ defmodule Koko.Web.PrintController do
         conn |> render("asciidoc.html", text: fix_html(document.content, title, author))
     end
   end
-  
+
+    def process(conn, params) do
+    IO.inspect params
+    conn |> render("pdf.html", text: "OK")
+  end
+
 end

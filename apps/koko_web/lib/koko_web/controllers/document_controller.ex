@@ -32,14 +32,14 @@ defmodule Koko.Web.DocumentController do
   defined in the token.
   """
   def index(conn, _params) do
-    query_string = cond do 
-         conn.query_string == nil -> "title=wui8kjdhf13e3-aa" 
+    query_string = cond do
+         conn.query_string == nil -> "title=wui8kjdhf13e3-aa"
          conn.query_string == "" -> "title=wui8kjdhf13e3-aa"
          conn.query_string == "&docs=any" -> "title=wui8kjdhf13e3-aa"
          true -> conn.query_string
     end
-    
-    
+
+
     IO.puts "DC, QUERY STRING = #{query_string}"
     api_version = api_version_from_headers(conn)
     with {:ok, user_id} <- Token.user_id_from_header(conn)
@@ -69,9 +69,9 @@ defmodule Koko.Web.DocumentController do
            if String.contains?  query_string, "loading" do
              render(conn, "index_loading.json", documents: documents)
            else
-            case api_version do 
+            case api_version do
               "V1" -> render(conn, "index.json", documents: documents)
-              "V2" -> render(conn, "indexV2.json", documents: documents) 
+              "V2" -> render(conn, "indexV2.json", documents: documents)
               _ -> render(conn, "error.json", error: "Unknown API")
             end
            end
@@ -106,7 +106,7 @@ defmodule Koko.Web.DocumentController do
       conn
       |> put_status(:created)
       |> put_resp_header("location", document_path(conn, :show, document))
-      case api_version do 
+      case api_version do
         "V1" -> render(conn, "show.json", document: document)
         "V2" -> render(conn, "documentRecordV2.json", document: document)
         _ -> render(conn, "error.json", error: "Unknown API")
@@ -122,14 +122,14 @@ defmodule Koko.Web.DocumentController do
   def show(conn, %{"id" => id}) do
     api_version = api_version_from_headers(conn)
     document = DocManager.get_document!(id)
-    
+
     with {:ok, user_id} <- Token.user_id_from_header(conn),
       true <- ((document.attributes["public"] == true) || (user_id == document.author_id))
     do
       cs = Document.changeset(document, %{})
       |> Document.update_viewed_at
       Repo.update(cs)
-      case api_version do 
+      case api_version do
         "V1" -> render(conn, "show.json", document: document)
         "V2" -> render(conn, "documentRecordV2.json", document: document)
         _ -> render(conn, "error.json", error: "Unknown API")
@@ -143,7 +143,7 @@ defmodule Koko.Web.DocumentController do
     Enum.into conn.req_headers, %{}
   end
 
-  def api_version_from_headers(conn) do 
+  def api_version_from_headers(conn) do
     request_header_map(conn)["apiversion"] || "V1"
   end
 
@@ -170,12 +170,12 @@ defmodule Koko.Web.DocumentController do
       {:ok, _} <- authorize_update(document, user_id, username),
       {:ok, %Document{} = document} <- DocManager.update_document(document, document_params, conn.query_string)
     do
-      case api_version do 
+      case api_version do
         "V1" -> render(conn, "show.json", document: document)
         "V2" -> render(conn, "documentRecordV2.json", document: document)
         _ -> render(conn, "error.json", error: "Unknown API")
       end
-      
+
     else
       {:error, error} -> {:error, error} #{ }"error: #{error}"
     end
@@ -214,7 +214,7 @@ defmodule Koko.Web.DocumentController do
      do
       user = Repo.get(User, user_id)
       User.change_document_count(user, -1)
-      case api_version do 
+      case api_version do
         "V1" -> send_resp(conn, :no_content, "")
         "V2" -> render(conn, "reply.json", reply: "#{id}")
         _ -> render(conn, "error.json", error: "Unknown API")

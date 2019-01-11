@@ -170,7 +170,7 @@ defmodule Koko.User.Authentication do
   def get_token(params \\ %{}) do
     with  {:ok, user} <- get_user(params["email"]),
           {:ok, _} <- checkpw2(params["password"], user.password_hash),
-          {:ok, token} <- Koko.User.Token.get(user.id, user.username)
+          {:ok, token} <- Koko.User.Token.get(user.id, user.username, params["csrf_token"])
     do
       {:ok, token, user.username}
     else
@@ -178,16 +178,6 @@ defmodule Koko.User.Authentication do
     end
   end
 
-  def get_token2(email, password) do
-    with  {:ok, user} <- get_user(email),
-          {:ok, _} <- checkpw2(password, user.password_hash),
-          {:ok, token} <- Koko.User.Token.get(user.id, user.username)
-    do
-      {:ok, token, user.username}
-    else
-      {:error, _} -> {:error, "Incorrect username (email) or password"}
-    end
-  end
 
   defp get_user(nil), do: {:error, "email is required"}
 

@@ -8,11 +8,12 @@ defmodule Koko.User.Token do
     import Joken
 
 
+
     @doc """
     Return a signed token with payload %{user_id: USER_ID, username: USERNAME.
     NOTE: the payload is NOT encrypted and so can be read by anyone
     """
-    def get(user_id, username, seconds_from_now \\ -1) do
+    def get(user_id, username, csrf_token, seconds_from_now \\ -1) do
       t = if (seconds_from_now < 0) do
         System.get_env("KOKO_EXPIRATION") |> String.to_integer
       else
@@ -22,8 +23,10 @@ defmodule Koko.User.Token do
       cond do
         user_id == nil -> {:error, 400}
         username == nil -> {:error, 400}
+        csrf_token == nil -> {:error, 400}
         true ->
           %{"user_id" => user_id, "username" => username,
+             "csrf_token" => csrf_token,
              "exp" => expiration_time(t)}
           |> token
           |> with_validation("user_id", &(&1 == user_id))

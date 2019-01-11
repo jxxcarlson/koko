@@ -14,7 +14,9 @@ defmodule Koko.Web.AuthenticationController do
 
 
   def create(conn, %{"authenticate" => payload}) do
-    params = Koko.Utility.project2map(payload)
+    params_ = Koko.Utility.project2map(payload)
+    csrf_token = get_csrf_token
+    params = Map.merge(params_, %{"csrf_token" => csrf_token})
     with {:ok, token, _} <- Authentication.get_token(params) do
       {:ok, payload} = Token.payload token
       IO.inspect payload, label: "payload"
@@ -23,12 +25,13 @@ defmodule Koko.Web.AuthenticationController do
       cs = User.safe_changeset(user, %{updated_at: NaiveDateTime.utc_now})
       Repo.update(cs)
       IO.puts "USER.verified: #{user.verified}"
-      if user.verified || true do 
+
+      if user.verified || true do
           conn
           |> put_status(:created)
           |> put_resp_header("location", authentication_path(conn, :show, "headquarters"))
           |> render("show.json", token: token)
-      else 
+      else
         render(conn, "error.json", error: "Account not verified")
       end
     else

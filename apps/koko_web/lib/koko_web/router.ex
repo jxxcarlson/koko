@@ -29,7 +29,7 @@ defmodule Koko.Web.Router do
     get "/request_verification", UserController, :request_verification
     get "/send_verification_email", UserController, :send_verification_email
 
-    
+
     get "/public/documents", PublicDocumentController, :index
     get "/public/documents/:id", PublicDocumentController, :show
 
@@ -61,6 +61,7 @@ defmodule Koko.Web.Router do
   scope "/print", Koko.Web do
     pipe_through :browser
     get "/documents/:id", PrintController, :show
+    post "/pdf/:title", PrintController, :process
   end
 
   scope "/export", Koko.Web do
