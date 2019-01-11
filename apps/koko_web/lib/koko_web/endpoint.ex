@@ -38,14 +38,14 @@ defmodule Koko.Web.Endpoint do
 
   plug Corsica,
     log: [rejected: :error],
-    origins: ["http://knode.io", "https://knode.io", "http://www.knode.io", 
-      "https://www.knode.io", "http://localhost:3000", 
+    origins: ["http://knode.io", "https://knode.io", "http://www.knode.io",
+      "https://www.knode.io", "http://localhost:3000",
       "http://localhost:8080", "http://localhost:8081",
       "https://xknode.tech"],
-    allow_headers: ["content-type", "authorization", "apiversion"]
+    allow_headers: ["content-type", "authorization", "apiversion", "x-csrf-token"]
 
   #  "https://dist-odooawoior.now.sh",
-  
+
   plug Koko.Web.Router
 
   @doc """

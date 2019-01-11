@@ -14,9 +14,7 @@ defmodule Koko.Web.AuthenticationController do
 
 
   def create(conn, %{"authenticate" => payload}) do
-    params_ = Koko.Utility.project2map(payload)
-    csrf_token = get_csrf_token
-    params = Map.merge(params_, %{"csrf_token" => csrf_token})
+    params = Koko.Utility.project2map(payload)
     with {:ok, token, _} <- Authentication.get_token(params) do
       {:ok, payload} = Token.payload token
       IO.inspect payload, label: "payload"

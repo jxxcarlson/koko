@@ -37,8 +37,8 @@ defmodule Koko.Web.PrintController do
     end
   end
 
-    def process(conn, params) do
-    IO.inspect params
+  def process(conn, params) do
+    IO.inspect params, label: "process-params"
     conn |> render("pdf.html", text: "OK")
   end
 
