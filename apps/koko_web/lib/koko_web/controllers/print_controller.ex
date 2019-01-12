@@ -38,8 +38,8 @@ defmodule Koko.Web.PrintController do
   end
 
   def process(conn, params) do
-    IO.inspect params, label: "process-params"
-    conn |> render("pdf.html", text: "OK")
+    IO.inspect params, label: "params for 'process'"
+    conn |> render("pdf.json", url: "OK")
   end
 
 end

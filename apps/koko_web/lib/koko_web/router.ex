@@ -48,6 +48,8 @@ defmodule Koko.Web.Router do
     get "/image_list/:id", ExportToJsonController, :image_list
     post "/image", ImageController, :create
     get  "/images", ImageController, :index
+
+    post "/print/pdf/:title", PrintController, :process
   end
 
   scope "/archive", Koko.Web do
@@ -61,7 +63,6 @@ defmodule Koko.Web.Router do
   scope "/print", Koko.Web do
     pipe_through :browser
     get "/documents/:id", PrintController, :show
-    post "/pdf/:title", PrintController, :process
   end
 
   scope "/export", Koko.Web do
