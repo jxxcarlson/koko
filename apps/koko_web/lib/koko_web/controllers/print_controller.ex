@@ -65,6 +65,8 @@ defmodule Koko.Web.PrintController do
     # System.cmd("tar", ["xvf", path])
     System.cmd("tar", ["-xf", tar_path, "-C", prefix ])
     File.cd prefix
+    {:ok, cwd} = File.cwd
+    IO.puts "CWD, @prefix: #{cwd}"
     System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
     System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
     case File.read(texfile) do
