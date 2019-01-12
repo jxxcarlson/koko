@@ -55,6 +55,11 @@ defmodule Koko.Web.PrintController do
     IO.binwrite file, body
     File.close file
 
+    case File.read(tar_path) do
+      {:ok, body} -> IO.puts "XX, FILE EXISTS: #{tar_path}"
+      {:error, reason} -> IO.puts "XX, NO SUCH FILE: #{tar_path}"
+    end
+
     # System.cmd("tar", ["xvf", path])
     System.cmd("tar", ["-xf", tar_path, "-C", prefix ])
     File.cd prefix
