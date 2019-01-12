@@ -46,8 +46,10 @@ defmodule Koko.Web.PrintController do
     bare_filename = params["filename"]
     tarfile = "#{bare_filename}.tar"
     texfile = params["filename"] <> ".tex"
+    pdffile = params["filename"] <> ".pdf"
     prefix = "printfiles/#{params["filename"]}"
     {:ok, cwd} = File.cwd
+    IO.puts "CWD: #{cwd}"
     File.mkdir_p prefix
     tar_path = "#{prefix}/#{tarfile}"
     IO.puts "PATH: " <> tar_path
@@ -68,6 +70,10 @@ defmodule Koko.Web.PrintController do
     case File.read(texfile) do
       {:ok, body} -> IO.puts "XX, TEX FILE EXISTS: #{texfile}"
       {:error, reason} -> IO.puts "XX,  NO SUCH TEX FILE: #{texfile}"
+    end
+    case File.read(pdffile) do
+      {:ok, body} -> IO.puts "XX, PDF FILE EXISTS: #{pdffile}"
+      {:error, reason} -> IO.puts "XX,  NO SUCH PDF FILE: #{pdffile}"
     end
     File.cd cwd
 
