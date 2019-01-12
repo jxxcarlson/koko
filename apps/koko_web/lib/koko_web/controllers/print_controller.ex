@@ -57,7 +57,7 @@ defmodule Koko.Web.PrintController do
     File.close file
 
     # System.cmd("tar", ["xvf", path])
-    System.cmd("tar", ["-zxf", tar_path, "-C", prefix ])
+    System.cmd("tar", ["-xf", tar_path, "-C", prefix ])
     File.cd prefix
     System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
     System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
