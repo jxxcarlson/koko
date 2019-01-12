@@ -62,6 +62,7 @@ defmodule Koko.Web.Router do
 
   scope "/print", Koko.Web do
     pipe_through :browser
+    get "pdf/:filename", PrintController, :display_pdf_file
     get "/documents/:id", PrintController, :show
   end
 

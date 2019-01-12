@@ -39,31 +39,40 @@ defmodule Koko.Web.PrintController do
 
   def process(conn, params) do
 
-    IO.inspect params, label: "params for 'process'"
-    {:ok, body, conn} = Plug.Conn.read_body(conn, length: 1_000_000)
-    IO.inspect body, label: "BODY"
+    # IO.inspect params, label: "params for 'process'"
+    {:ok, body, conn} = Plug.Conn.read_body(conn, length: 3_000_000)
+    # IO.inspect body, label: "BODY"
 
-    filename = params["filename"] <> ".tar"
+    bare_filename = params["filename"]
+    tarfile = "#{bare_filename}.tar"
     texfile = params["filename"] <> ".tex"
     prefix = "printfiles/#{params["filename"]}"
     {:ok, cwd} = File.cwd
     File.mkdir_p prefix
-    path = "#{prefix}/#{filename}"
-    IO.puts "PATH: " <> path
-    {:ok, file} = File.open path, [:write]
+    tar_path = "#{prefix}/#{tarfile}"
+    pdf_path = "#{prefix}/#{bare_filename}.pdf"
+    # IO.puts "PATH: " <> path
+    {:ok, file} = File.open tar_path, [:write]
     IO.binwrite file, body
     File.close file
 
     # System.cmd("tar", ["xvf", path])
-    System.cmd("tar", ["xvf", path, "-C", prefix ])
+    System.cmd("tar", ["-zxf", tar_path, "-C", prefix ])
     File.cd prefix
     System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
     System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
     File.cd cwd
 
-    conn |> render("pdf.json", url: "OK")
+    conn |> render("pdf.json", url: bare_filename)
   end
 
+  def display_pdf_file(conn, %{"filename" => filename}) do
+    path = "printfiles/#{filename}/#{filename}.pdf"
+    case File.read(path) do
+      {:ok, body} -> Plug.Conn.send_file(conn, 200, path)
+      {:error, reason} -> conn |> render("pdf_error.html", path: "Sorry, couldn't find the PDF file.")
+    end
 
+  end
 
 end

@@ -1,0 +1,18 @@
+
+<style>
+
+.plain_text {
+  font-size:1.0em;
+  margin-top: 0.75in;
+  margin-left: 0.75in;
+  padding-bottom:4em;
+}
+
+</style>
+
+
+<div class="plain_text">
+  <h4>PDF File</h4>
+
+   <%= @path %>
+</div>
