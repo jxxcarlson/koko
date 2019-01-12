@@ -40,7 +40,7 @@ defmodule Koko.Web.PrintController do
   def process(conn, params) do
 
     IO.inspect params, label: "params for 'process'"
-    {:ok, body, conn} = Plug.Conn.read_body(conn)
+    {:ok, body, conn} = Plug.Conn.read_body(conn, length: 1_000_000)
     IO.inspect body, label: "BODY"
 
     filename = params["filename"] <> ".tar"
@@ -57,8 +57,8 @@ defmodule Koko.Web.PrintController do
     # System.cmd("tar", ["xvf", path])
     System.cmd("tar", ["xvf", path, "-C", prefix ])
     File.cd prefix
-    System.cmd("pdflatex", [texfile])
-    System.cmd("pdflatex", [texfile])
+    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
+    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
     File.cd cwd
 
     conn |> render("pdf.json", url: "OK")
