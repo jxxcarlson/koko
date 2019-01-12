@@ -67,7 +67,7 @@ defmodule Koko.Web.PrintController do
     System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
     case File.read(texfile) do
       {:ok, body} -> IO.puts "XX, TEX FILE EXISTS: #{texfile}"
-      {:error, reason} -> IO.puts "XX,  NO SUCH TEX FILE: #{texfiles}"
+      {:error, reason} -> IO.puts "XX,  NO SUCH TEX FILE: #{texfile}"
     end
     File.cd cwd
 
