@@ -67,12 +67,17 @@ defmodule Koko.Web.PrintController do
     File.cd prefix
     {:ok, cwd} = File.cwd
     IO.puts "CWD, @prefix: #{cwd}"
-    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
-    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
+    
     case File.read(texfile) do
       {:ok, body} -> IO.puts "XX, TEX FILE EXISTS: #{texfile}"
       {:error, reason} -> IO.puts "XX,  NO SUCH TEX FILE: #{texfile}"
     end
+
+    IO.puts "Running pdflatex (1) ..."
+    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
+    IO.puts "Running pdflatex (2) ..."
+    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
+
     case File.read(pdffile) do
       {:ok, body} -> IO.puts "XX, PDF FILE EXISTS: #{pdffile}"
       {:error, reason} -> IO.puts "XX,  NO SUCH PDF FILE: #{pdffile}"
