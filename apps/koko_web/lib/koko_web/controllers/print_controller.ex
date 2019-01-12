@@ -40,7 +40,7 @@ defmodule Koko.Web.PrintController do
   def process(conn, params) do
 
     IO.inspect params, label: "params for 'process'"
-    {:ok, body, conn} = Plug.Conn.read_body(conn, length: 3_000_000)
+    {:ok, body, conn} = Plug.Conn.read_body(conn, length: 40_000_000)
     IO.inspect body, label: "BODY"
 
     bare_filename = params["filename"]
@@ -56,8 +56,8 @@ defmodule Koko.Web.PrintController do
     File.close file
 
     case File.read(tar_path) do
-      {:ok, body} -> IO.puts "XX, FILE EXISTS: #{tar_path}"
-      {:error, reason} -> IO.puts "XX, NO SUCH FILE: #{tar_path}"
+      {:ok, body} -> IO.puts "XX, TAR FILE EXISTS: #{tar_path}"
+      {:error, reason} -> IO.puts "XX,  NO SUCH TAR FILE: #{tar_path}"
     end
 
     # System.cmd("tar", ["xvf", path])
@@ -65,6 +65,10 @@ defmodule Koko.Web.PrintController do
     File.cd prefix
     System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
     System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
+    case File.read(texfile) do
+      {:ok, body} -> IO.puts "XX, TEX FILE EXISTS: #{texfile}"
+      {:error, reason} -> IO.puts "XX,  NO SUCH TEX FILE: #{texfiles}"
+    end
     File.cd cwd
 
     conn |> render("pdf.json", url: bare_filename)
@@ -76,7 +80,6 @@ defmodule Koko.Web.PrintController do
       {:ok, body} -> Plug.Conn.send_file(conn, 200, path)
       {:error, reason} -> conn |> render("pdf_error.html", path: "Sorry, couldn't find the PDF file.")
     end
-
   end
 
 end
