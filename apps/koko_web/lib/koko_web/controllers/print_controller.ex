@@ -50,8 +50,7 @@ defmodule Koko.Web.PrintController do
     {:ok, cwd} = File.cwd
     File.mkdir_p prefix
     tar_path = "#{prefix}/#{tarfile}"
-    pdf_path = "#{prefix}/#{bare_filename}.pdf"
-    IO.puts "PATH: " <> path
+    IO.puts "PATH: " <> tar_path
     {:ok, file} = File.open tar_path, [:write]
     IO.binwrite file, body
     File.close file
