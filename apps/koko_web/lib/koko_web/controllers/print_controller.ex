@@ -39,9 +39,9 @@ defmodule Koko.Web.PrintController do
 
   def process(conn, params) do
 
-    # IO.inspect params, label: "params for 'process'"
+    IO.inspect params, label: "params for 'process'"
     {:ok, body, conn} = Plug.Conn.read_body(conn, length: 3_000_000)
-    # IO.inspect body, label: "BODY"
+    IO.inspect body, label: "BODY"
 
     bare_filename = params["filename"]
     tarfile = "#{bare_filename}.tar"
@@ -51,7 +51,7 @@ defmodule Koko.Web.PrintController do
     File.mkdir_p prefix
     tar_path = "#{prefix}/#{tarfile}"
     pdf_path = "#{prefix}/#{bare_filename}.pdf"
-    # IO.puts "PATH: " <> path
+    IO.puts "PATH: " <> path
     {:ok, file} = File.open tar_path, [:write]
     IO.binwrite file, body
     File.close file
