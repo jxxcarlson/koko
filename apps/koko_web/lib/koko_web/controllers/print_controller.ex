@@ -39,6 +39,11 @@ defmodule Koko.Web.PrintController do
 
   def process(conn, params) do
     IO.inspect params, label: "params for 'process'"
+    {:ok, body, conn} = Plug.Conn.read_body(conn)
+    IO.inspect body, label: "BODY"
+    {:ok, file} = File.open "tarfileXXX.tar", [:write]
+    IO.binwrite file, body
+    File.close file
     conn |> render("pdf.json", url: "OK")
   end
 
