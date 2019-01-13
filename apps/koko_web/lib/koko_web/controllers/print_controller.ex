@@ -62,7 +62,6 @@ defmodule Koko.Web.PrintController do
       {:error, reason} -> IO.puts "XX,  NO SUCH TAR FILE: #{tar_path}"
     end
 
-    # System.cmd("tar", ["xvf", path])
     System.cmd("tar", ["-xf", tar_path, "-C", prefix ])
     File.cd prefix
     {:ok, cwd} = File.cwd
@@ -73,10 +72,13 @@ defmodule Koko.Web.PrintController do
       {:error, reason} -> IO.puts "NO SUCH TEX FILE: #{texfile}"
     end
 
+    {message, _} = System.cmd("pdflatex" , ["--version"])
+    IO.puts message
+
     IO.puts "Running pdflatex (1) ..."
 
-    {_, 0} = System.cmd("pdflatex", [texfile], stderr_to_stdout: true)
-    ## System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
+    ## {_, 0} = System.cmd("pdflatex", [texfile], stderr_to_stdout: true)
+    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
 
     case File.read(pdffile) do
       {:ok, body} -> IO.puts "(1) PDF FILE EXISTS: #{pdffile}"
@@ -90,21 +92,27 @@ defmodule Koko.Web.PrintController do
       {:ok, body} -> IO.puts "(2) PDF FILE EXISTS: #{pdffile}"
       {:error, reason} -> IO.puts "(2)  NO SUCH PDF FILE: #{pdffile}"
     end
+
+    # File.cd "/Users/carlson/dev/apps/MiniLatexProject/koko"
     File.cd "/app"
 
     conn |> render("pdf.json", url: bare_filename)
   end
 
   def display_pdf_file(conn, %{"filename" => filename}) do
+    
     # File.cd "/Users/carlson/dev/apps/MiniLatexProject/koko"
     File.cd "/app"
+
     {:ok, cwd} = File.cwd
     IO.puts "CWD, display: #{cwd}"
     path = "printfiles/#{filename}/#{filename}.pdf"
+
     case File.read(path) do
       {:ok, body} -> Plug.Conn.send_file(conn, 200, path)
       {:error, reason} -> conn |> render("pdf_error.html", path: "No PDF file (#{path})")
     end
+
   end
 
 end
