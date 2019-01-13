@@ -74,9 +74,9 @@ defmodule Koko.Web.PrintController do
     end
 
     IO.puts "Running pdflatex (1) ..."
-    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
+    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
     IO.puts "Running pdflatex (2) ..."
-    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile])
+    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
 
     case File.read(pdffile) do
       {:ok, body} -> IO.puts "XX, PDF FILE EXISTS: #{pdffile}"
