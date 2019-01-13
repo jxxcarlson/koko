@@ -38,7 +38,7 @@ defmodule Koko.Web.PrintController do
   end
 
   def home do
-    "/app"
+     "/app"
     #{ }"/Users/carlson/dev/apps/MiniLatexProject/koko"
   end
 
@@ -71,7 +71,7 @@ defmodule Koko.Web.PrintController do
       {:error, reason} -> IO.puts "XX,  NO SUCH TAR FILE: #{tar_path}"
     end
 
-    System.cmd("tar", ["-xf", tar_path, "-C", prefix ])
+    System.cmd("tar", ["-xvf", tar_path, "-C", prefix ])
     File.cd prefix
     {:ok, cwd} = File.cwd
     IO.puts "change directory, CWD: #{cwd}"
