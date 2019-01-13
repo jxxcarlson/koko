@@ -38,7 +38,7 @@ defmodule Koko.Web.PrintController do
   end
 
   def home do
-     "/app"
+    "/app"
     #{ }"/Users/carlson/dev/apps/MiniLatexProject/koko"
   end
 
@@ -106,6 +106,18 @@ defmodule Koko.Web.PrintController do
     File.cd home
 
     conn |> render("pdf.json", url: bare_filename)
+  end
+
+  def reset(conn, params) do
+
+    File.cd home
+    bare_filename = params["filename"]
+    IO.puts "bare_filename = #{bare_filename}"
+    archive = "printfiles/#{bare_filename}"
+    :timer.sleep(10000);
+    File.rm_rf(archive)
+
+    conn |> render("resetarchive.json", message: bare_filename)
   end
 
   def display_pdf_file(conn, %{"filename" => filename}) do

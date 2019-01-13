@@ -50,6 +50,7 @@ defmodule Koko.Web.Router do
     get  "/images", ImageController, :index
 
     post "/print/pdf/:filename", PrintController, :process
+    post "/print/reset/:filename", PrintController, :reset
   end
 
   scope "/archive", Koko.Web do
