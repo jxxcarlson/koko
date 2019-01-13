@@ -37,8 +37,19 @@ defmodule Koko.Web.PrintController do
     end
   end
 
+  def home do
+    "/app"
+     # "/Users/carlson/dev/apps/MiniLatexProject/koko"
+  end
+
+  def texCommand do
+    # "pdflatex"
+    "pdfTeX"
+  end
+
   def process(conn, params) do
 
+    File.cd home
     IO.inspect params, label: "params for 'process'"
     {:ok, body, conn} = Plug.Conn.read_body(conn, length: 40_000_000)
     IO.inspect body, label: "BODY"
@@ -48,8 +59,10 @@ defmodule Koko.Web.PrintController do
     texfile = params["filename"] <> ".tex"
     pdffile = params["filename"] <> ".pdf"
     prefix = "printfiles/#{params["filename"]}"
+
     {:ok, cwd} = File.cwd
     IO.puts "CWD: #{cwd}"
+
     File.mkdir_p prefix
     tar_path = "#{prefix}/#{tarfile}"
     IO.puts "PATH: " <> tar_path
@@ -78,7 +91,7 @@ defmodule Koko.Web.PrintController do
     IO.puts "Running pdflatex (1) ..."
 
     ## {_, 0} = System.cmd("pdflatex", [texfile], stderr_to_stdout: true)
-    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
+    System.cmd(texCommand, ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
 
     case File.read(pdffile) do
       {:ok, body} -> IO.puts "(1) PDF FILE EXISTS: #{pdffile}"
@@ -86,23 +99,21 @@ defmodule Koko.Web.PrintController do
     end
 
     IO.puts "Running pdflatex (2) ..."
-    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
+    System.cmd(texCommand, ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
 
     case File.read(pdffile) do
       {:ok, body} -> IO.puts "(2) PDF FILE EXISTS: #{pdffile}"
       {:error, reason} -> IO.puts "(2)  NO SUCH PDF FILE: #{pdffile}"
     end
 
-    # File.cd "/Users/carlson/dev/apps/MiniLatexProject/koko"
-    File.cd "/app"
+    File.cd home
 
     conn |> render("pdf.json", url: bare_filename)
   end
 
   def display_pdf_file(conn, %{"filename" => filename}) do
-    
-    # File.cd "/Users/carlson/dev/apps/MiniLatexProject/koko"
-    File.cd "/app"
+
+    File.cd home
 
     {:ok, cwd} = File.cwd
     IO.puts "CWD, display: #{cwd}"
