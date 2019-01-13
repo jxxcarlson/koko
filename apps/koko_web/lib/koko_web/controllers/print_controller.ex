@@ -50,9 +50,10 @@ defmodule Koko.Web.PrintController do
     IO.inspect body, label: "BODY"
 
     bare_filename = params["filename"]
+    IO.puts "bare_filename = #{bare_filename}"
     tarfile = "#{bare_filename}.tar"
-    texfile = params["filename"] <> ".tex"
-    pdffile = params["filename"] <> ".pdf"
+    texfile = bare_filename <> ".tex"
+    pdffile = bare_filename <> ".pdf"
     prefix = "printfiles/#{params["filename"]}"
 
     {:ok, cwd} = File.cwd
