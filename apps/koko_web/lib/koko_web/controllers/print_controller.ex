@@ -84,7 +84,7 @@ defmodule Koko.Web.PrintController do
     {message, _} = System.cmd("pdflatex" , ["--version"])
     IO.puts message
 
-    IO.puts "Running pdflatex (1) ..."
+    IO.puts "Running pdflatex (1) on file: #{texfile}"
 
     {errors, _} = System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
     IO.puts "TEX errors: #{errors}"
@@ -95,7 +95,7 @@ defmodule Koko.Web.PrintController do
       {:error, reason} -> IO.puts "(1)  NO SUCH PDF FILE: #{pdffile}"
     end
 
-    IO.puts "Running pdflatex (2) ..."
+    IO.puts "Running pdflatex (2) on file: #{texfile}"
     System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
 
     case File.read(pdffile) do
