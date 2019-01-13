@@ -66,21 +66,27 @@ defmodule Koko.Web.PrintController do
     System.cmd("tar", ["-xf", tar_path, "-C", prefix ])
     File.cd prefix
     {:ok, cwd} = File.cwd
-    IO.puts "CWD, @prefix: #{cwd}"
+    IO.puts "change directory, CWD: #{cwd}"
 
     case File.read(texfile) do
-      {:ok, body} -> IO.puts "XX, TEX FILE EXISTS: #{texfile}"
-      {:error, reason} -> IO.puts "XX,  NO SUCH TEX FILE: #{texfile}"
+      {:ok, body} -> IO.puts "TEX FILE EXISTS: #{texfile}"
+      {:error, reason} -> IO.puts "NO SUCH TEX FILE: #{texfile}"
     end
 
     IO.puts "Running pdflatex (1) ..."
-    System.cmd("pdflatex", [texfile], stderr_to_stdout: true)
+    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
+
+    case File.read(pdffile) do
+      {:ok, body} -> IO.puts "(1) PDF FILE EXISTS: #{pdffile}"
+      {:error, reason} -> IO.puts "(1)  NO SUCH PDF FILE: #{pdffile}"
+    end
+
     IO.puts "Running pdflatex (2) ..."
     System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
 
     case File.read(pdffile) do
-      {:ok, body} -> IO.puts "XX, PDF FILE EXISTS: #{pdffile}"
-      {:error, reason} -> IO.puts "XX,  NO SUCH PDF FILE: #{pdffile}"
+      {:ok, body} -> IO.puts "(2) PDF FILE EXISTS: #{pdffile}"
+      {:error, reason} -> IO.puts "(2)  NO SUCH PDF FILE: #{pdffile}"
     end
     # File.cd "/Users/carlson/dev/apps/MiniLatexProject/koko"
     File.cd "/app"
