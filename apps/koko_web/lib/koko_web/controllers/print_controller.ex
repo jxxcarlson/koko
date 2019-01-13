@@ -54,7 +54,7 @@ defmodule Koko.Web.PrintController do
     tarfile = "#{bare_filename}.tar"
     texfile = bare_filename <> ".tex"
     pdffile = bare_filename <> ".pdf"
-    prefix = "printfiles/#{params["filename"]}"
+    prefix = "printfiles/#{bare_filename}"
 
     {:ok, cwd} = File.cwd
     IO.puts "CWD: #{cwd}"
