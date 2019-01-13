@@ -39,12 +39,7 @@ defmodule Koko.Web.PrintController do
 
   def home do
     "/app"
-     # "/Users/carlson/dev/apps/MiniLatexProject/koko"
-  end
-
-  def texCommand do
-    # "pdflatex"
-    "pdfTeX"
+    #{ }"/Users/carlson/dev/apps/MiniLatexProject/koko"
   end
 
   def process(conn, params) do
@@ -90,8 +85,9 @@ defmodule Koko.Web.PrintController do
 
     IO.puts "Running pdflatex (1) ..."
 
-    ## {_, 0} = System.cmd("pdflatex", [texfile], stderr_to_stdout: true)
-    System.cmd(texCommand, ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
+    {errors, _} = System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
+    IO.puts "TEX errors: #{errors}"
+    # System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
 
     case File.read(pdffile) do
       {:ok, body} -> IO.puts "(1) PDF FILE EXISTS: #{pdffile}"
@@ -99,7 +95,7 @@ defmodule Koko.Web.PrintController do
     end
 
     IO.puts "Running pdflatex (2) ..."
-    System.cmd(texCommand, ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
+    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
 
     case File.read(pdffile) do
       {:ok, body} -> IO.puts "(2) PDF FILE EXISTS: #{pdffile}"
