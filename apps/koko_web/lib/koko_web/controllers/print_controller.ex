@@ -74,7 +74,9 @@ defmodule Koko.Web.PrintController do
     end
 
     IO.puts "Running pdflatex (1) ..."
-    System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
+
+    {_, 0} = System.cmd("pdflatex", [texfile], stderr_to_stdout: true)
+    ## System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
 
     case File.read(pdffile) do
       {:ok, body} -> IO.puts "(1) PDF FILE EXISTS: #{pdffile}"
@@ -88,7 +90,6 @@ defmodule Koko.Web.PrintController do
       {:ok, body} -> IO.puts "(2) PDF FILE EXISTS: #{pdffile}"
       {:error, reason} -> IO.puts "(2)  NO SUCH PDF FILE: #{pdffile}"
     end
-    # File.cd "/Users/carlson/dev/apps/MiniLatexProject/koko"
     File.cd "/app"
 
     conn |> render("pdf.json", url: bare_filename)
