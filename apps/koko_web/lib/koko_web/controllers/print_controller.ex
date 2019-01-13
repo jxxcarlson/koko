@@ -67,7 +67,7 @@ defmodule Koko.Web.PrintController do
     File.cd prefix
     {:ok, cwd} = File.cwd
     IO.puts "CWD, @prefix: #{cwd}"
-    
+
     case File.read(texfile) do
       {:ok, body} -> IO.puts "XX, TEX FILE EXISTS: #{texfile}"
       {:error, reason} -> IO.puts "XX,  NO SUCH TEX FILE: #{texfile}"
@@ -82,16 +82,21 @@ defmodule Koko.Web.PrintController do
       {:ok, body} -> IO.puts "XX, PDF FILE EXISTS: #{pdffile}"
       {:error, reason} -> IO.puts "XX,  NO SUCH PDF FILE: #{pdffile}"
     end
-    File.cd cwd
+    # File.cd "/Users/carlson/dev/apps/MiniLatexProject/koko"
+    File.cd "/app"
 
     conn |> render("pdf.json", url: bare_filename)
   end
 
   def display_pdf_file(conn, %{"filename" => filename}) do
+    # File.cd "/Users/carlson/dev/apps/MiniLatexProject/koko"
+    File.cd "/app"
+    {:ok, cwd} = File.cwd
+    IO.puts "CWD, display: #{cwd}"
     path = "printfiles/#{filename}/#{filename}.pdf"
     case File.read(path) do
       {:ok, body} -> Plug.Conn.send_file(conn, 200, path)
-      {:error, reason} -> conn |> render("pdf_error.html", path: "Sorry, couldn't find the PDF file.")
+      {:error, reason} -> conn |> render("pdf_error.html", path: "No PDF file (#{path})")
     end
   end
 
