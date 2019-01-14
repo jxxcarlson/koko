@@ -40,7 +40,8 @@ defmodule Koko.Web.Endpoint do
     log: [rejected: :error],
     origins: ["http://knode.io", "https://knode.io", "http://www.knode.io",
       "https://www.knode.io", "http://localhost:3000",
-      "http://localhost:8080", "http://localhost:8081",
+      "http://localhost:8080", "http://localhost:8081", "http://localhost:8000",
+      "https://localhost:8000",
       "https://xknode.tech"],
     allow_headers: ["content-type", "authorization", "apiversion", "x-csrf-token"]
 
