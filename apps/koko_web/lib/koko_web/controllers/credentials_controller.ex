@@ -35,11 +35,11 @@ defmodule Koko.Web.CredentialsController do
 
   def make_presigned_url(bucket, path, mime_type) do
     # query_params = [{"ContentType", mime_type}, {"acl", "public-read"}]
-    query_params = [{"ContentType", mime_type}, {"ContentDisposition", "inline"}]
+    query_params = [{"Content-Type", mime_type}, {"Content-Disposition", "inline"}]
     presign_options = [query_params: query_params]
-    {:ok, presigned_url} = ExAws.Config.new(:s3) 
+    {:ok, presigned_url} = ExAws.Config.new(:s3)
       |> ExAws.S3.presigned_url(:put, bucket, path, presign_options)
-    presigned_url 
+    presigned_url
   end
 
   # Example: ExAws.Config.new(:s3) |> ExAws.S3.presigned_url(:put, "noteimages", "foo.jpg")
@@ -55,7 +55,7 @@ defmodule Koko.Web.CredentialsController do
     IO.puts "Error authenticating token"
     render(conn, "error.json", error: "authorization failure")
   end
-    
+
 
   # TEST URL: http://localhost:4000/api/credentials?filename=foo.jpg&mimetype=image/jpeg&bucket=noteimages&path=bar
   # TEST HEADER: %{"authorization": "Bearer abc... uvwxy"}

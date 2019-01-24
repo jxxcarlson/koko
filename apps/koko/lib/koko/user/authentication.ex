@@ -168,6 +168,7 @@ defmodule Koko.User.Authentication do
   If the request is invalid, then {:error, "Incorrect password or email"} is returned.
   """
   def get_token(params \\ %{}) do
+    IO.puts "get_token"
     with  {:ok, user} <- get_user(params["email"]),
           {:ok, _} <- checkpw2(params["password"], user.password_hash),
           {:ok, token} <- Koko.User.Token.get(user.id, user.username)

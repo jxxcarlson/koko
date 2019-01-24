@@ -15,7 +15,9 @@ defmodule Koko.Web.AuthenticationController do
 
   def create(conn, %{"authenticate" => payload}) do
     params = Koko.Utility.project2map(payload)
+    IO.puts "In: Auth.create"
     with {:ok, token, _} <- Authentication.get_token(params) do
+      IO.puts "In: with"
       {:ok, payload} = Token.payload token
       IO.inspect payload, label: "payload"
       user_id = payload["user_id"]

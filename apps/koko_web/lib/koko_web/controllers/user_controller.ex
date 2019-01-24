@@ -81,7 +81,7 @@ defmodule Koko.Web.UserController do
       Repo.update(cs)
       Email.email_plain %{
         "recipient" => user.email, 
-        "from" => "support@knode.io", 
+        "from" => "jxxcarlson@gmail.com.io", 
         "subject" => "Verified!",
         "body" => "Congratulations, #{username}, your account is now verified.\n\n-- the kNode team"
       }
@@ -103,7 +103,7 @@ defmodule Koko.Web.UserController do
 
     Email.email_html %{
       "recipient" => user.email, 
-      "from" => "support@knode.io", 
+      "from" => "jxxcarlson@gmail.com.io", 
       "subject" => "Verify account",
       "body" => Email.verification_letter(user)
     }
@@ -117,7 +117,7 @@ defmodule Koko.Web.UserController do
    
     Email.email_html %{
         "recipient" => user.email, 
-        "from" => "support@knode.io", 
+        "from" => "jxxcarlson@gmail.com.io", 
         "subject" => "Congratulations!",
         "body" => Email.welcome_letter(user)
       }
