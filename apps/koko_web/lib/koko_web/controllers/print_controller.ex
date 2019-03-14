@@ -44,21 +44,25 @@ defmodule Koko.Web.PrintController do
 
   def process(conn, params) do
 
-    File.cd home
-    IO.inspect params, label: "params for 'process'"
-    {:ok, body, conn} = Plug.Conn.read_body(conn, length: 40_000_000)
-    IO.inspect body, label: "BODY"
 
+    {:ok, body, conn} = Plug.Conn.read_body(conn, length: 40_000_000)
+
+    # SET PATHS
     bare_filename = params["filename"]
     IO.puts "bare_filename = #{bare_filename}"
     tarfile = "#{bare_filename}.tar"
     texfile = bare_filename <> ".tex"
     pdffile = bare_filename <> ".pdf"
     prefix = "printfiles/#{bare_filename}"
+    filepath = "printfiles/#{bare_filename}/files"
+    texfile_path = "files/#{texfile}"
 
+    # CHECK CURRENT WORKING DIRECTORY
+    File.cd home
     {:ok, cwd} = File.cwd
     IO.puts "CWD: #{cwd}"
 
+    # MAKE PATH FOR TAR ARCHIVE
     File.mkdir_p prefix
     tar_path = "#{prefix}/#{tarfile}"
     IO.puts "PATH: " <> tar_path
@@ -66,25 +70,30 @@ defmodule Koko.Web.PrintController do
     IO.binwrite file, body
     File.close file
 
+    # CHECK THAT TAR PATH EXISTS
     case File.read(tar_path) do
       {:ok, body} -> IO.puts "XX, TAR FILE EXISTS: #{tar_path}"
       {:error, reason} -> IO.puts "XX,  NO SUCH TAR FILE: #{tar_path}"
     end
 
+    # EXTRACT TAR ARCHIVE AND CHANGE DIRECTORY TO WHERE THE ARCHIVE IS
     System.cmd("tar", ["-xvf", tar_path, "-C", prefix ])
-    File.cd prefix
+    File.cd filepath
     {:ok, cwd} = File.cwd
-    IO.puts "change directory, CWD: #{cwd}"
+    IO.puts "VERIFY CWD FOR FILES: #{cwd}"
+    IO.inspect (File.ls)
 
+    # VERIFY THAT THE TEX FILE IS WHERE IT SHOULD BE
     case File.read(texfile) do
       {:ok, body} -> IO.puts "TEX FILE EXISTS: #{texfile}"
       {:error, reason} -> IO.puts "NO SUCH TEX FILE: #{texfile}"
     end
 
+    # VERIFY THAT PDFLATEX IS THERE
     {message, _} = System.cmd("pdflatex" , ["--version"])
     IO.puts message
 
-    IO.puts "Running pdflatex (1) on file: #{texfile}"
+    IO.puts "Running pdflatex (1) on file: #{texfile_path}"
 
     {errors, _} = System.cmd("pdflatex", ["-interaction=nonstopmode", texfile], stderr_to_stdout: true)
     IO.puts "TEX errors: #{errors}"
@@ -122,15 +131,27 @@ defmodule Koko.Web.PrintController do
 
   def display_pdf_file(conn, %{"filename" => filename}) do
 
+    prefix = "printfiles/#{filename}"
+
+    pdf_path = "printfiles/#{filename}/files/#{filename}.pdf"
+
+    IO.puts "XXXX: This is DISPLAY PDF FILE"
+
     File.cd home
+    # File.cd prefix
 
     {:ok, cwd} = File.cwd
     IO.puts "CWD, display: #{cwd}"
-    path = "printfiles/#{filename}/#{filename}.pdf"
 
-    case File.read(path) do
-      {:ok, body} -> Plug.Conn.send_file(conn, 200, path)
-      {:error, reason} -> conn |> render("pdf_error.html", path: "No PDF file (#{path})")
+
+    case File.read(pdf_path) do
+      {:ok, body} -> IO.puts "Found the pdf file at #{pdf_path}"
+      {:error, reason} -> "Could NOT find the pdf file at #{pdf_path}"
+    end
+
+    case File.read(pdf_path) do
+      {:ok, body} -> Plug.Conn.send_file(conn, 200, pdf_path)
+      {:error, reason} -> conn |> render("pdf_error.html", path: "No PDF file at #{[pdf_path]}")
     end
 
   end

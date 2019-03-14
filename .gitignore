@@ -6,3 +6,5 @@ erl_crash.dump
 *.dump
 apps/koko_web/printfiles/
 printfiles/
+.idea/
+*.iml
