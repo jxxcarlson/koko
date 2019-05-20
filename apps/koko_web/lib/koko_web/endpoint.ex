@@ -41,10 +41,10 @@ defmodule Koko.Web.Endpoint do
     origins: [ "https://knode.io", "https://www.knode.io", "http://localhost:3000",
       "http://localhost:8080", "http://localhost:8081", "http://localhost:8000",
       "https://localhost:8000", "https://minilatex.app", "https://reader.minilatex.app",
-      "https://demo.minilatex.app",],
+      "https://demo.minilatex.app"],
     allow_headers: ["content-type", "authorization", "apiversion", "x-csrf-token"]
 
-  #  "https://dist-odooawoior.now.sh",
+  #  "https://dist-odooawoior.now.sh",      
 
   plug Koko.Web.Router
 
